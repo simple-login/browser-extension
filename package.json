@@ -1,0 +1,43 @@
+{
+  "name": "simplelogin-extension",
+  "version": "1.0.0",
+  "description": "SimpleLogin Browser Extension",
+  "author": "son@simplelogin.io",
+  "license": "MIT",
+  "scripts": {
+    "prettier": "prettier \"src/**/*.{js,vue}\"",
+    "prettier:write": "npm run prettier -- --write",
+    "build": "cross-env NODE_ENV=production webpack --hide-modules",
+    "build:dev": "cross-env NODE_ENV=development webpack --hide-modules",
+    "build-zip": "node scripts/build-zip.js",
+    "watch": "npm run build -- --watch",
+    "watch:dev": "cross-env HMR=true npm run build:dev -- --watch"
+  },
+  "dependencies": {
+    "vue": "^2.6.10",
+    "webextension-polyfill": "^0.3.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.2",
+    "@babel/plugin-proposal-optional-chaining": "^7.0.0",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/runtime-corejs3": "^7.4.0",
+    "archiver": "^3.0.0",
+    "babel-loader": "^8.0.2",
+    "copy-webpack-plugin": "^4.5.3",
+    "core-js": "^3.0.1",
+    "cross-env": "^5.2.0",
+    "css-loader": "^2.1.1",
+    "ejs": "^2.6.1",
+    "file-loader": "^1.1.11",
+    "mini-css-extract-plugin": "^0.4.4",
+    "node-sass": "^4.9.3",
+    "sass-loader": "^7.1.0",
+    "vue-loader": "^15.4.2",
+    "vue-template-compiler": "^2.6.10",
+    "web-ext-types": "^2.1.0",
+    "webpack": "^4.20.2",
+    "webpack-cli": "^3.1.2",
+    "webpack-extension-reloader": "^1.1.0"
+  }
+}
