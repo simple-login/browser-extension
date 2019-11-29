@@ -14,6 +14,8 @@
     "watch:dev": "cross-env HMR=true npm run build:dev -- --watch"
   },
   "dependencies": {
+    "bootstrap": "^4.4.1",
+    "bootstrap-vue": "^2.1.0",
     "v-clipboard": "^2.2.2",
     "vue": "^2.6.10",
     "vue-toasted": "^1.1.27",

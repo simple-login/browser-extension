@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App'
 import Clipboard from 'v-clipboard'
 import Toasted from 'vue-toasted';
+import BootstrapVue from 'bootstrap-vue'
 
 
 
@@ -10,6 +11,8 @@ Vue.prototype.$browser = global.browser
 
 Vue.use(Clipboard)
 Vue.use(Toasted, {duration: 1000})
+Vue.use(BootstrapVue)
+
 
 
 
