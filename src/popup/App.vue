@@ -112,6 +112,8 @@ export default {
       chrome.storage.sync.set({ apiKey: "" }, function() {
         that.apiKey = "";
         that.apiInput = "";
+        that.error = "";
+        that.alias = "";
       });
     },
     async getAlias() {
