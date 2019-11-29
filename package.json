@@ -14,6 +14,8 @@
     "watch:dev": "cross-env HMR=true npm run build:dev -- --watch"
   },
   "dependencies": {
+    "@sentry/browser": "^5.9.1",
+    "@sentry/integrations": "^5.8.0",
     "bootstrap": "^4.4.1",
     "bootstrap-vue": "^2.1.0",
     "v-clipboard": "^2.2.2",
