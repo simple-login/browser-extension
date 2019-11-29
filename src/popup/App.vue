@@ -1,35 +1,75 @@
 <template>
-  <div style="width: 300px">
-    <div v-if="apiKey == ''">
-      <textarea v-model="apiInput" placeholder="API Key" style="width: 100%"></textarea>
-      <br />
-      <button @click="save">Save</button>
+  <div class="container" style="width: 400px">
+    <div class="text-center mt-3">
+      <a href="https://www.simplelogin.io" target="_blank">
+        <img src="/images/horizontal-logo.svg" />
+      </a>
+      <hr>
     </div>
-    <div v-else>
-      <button @click="getAlias" style="margin-top: 10px">Create Alias</button>
+
+    <!-- No API Key set -->
+    <div v-if="apiKey == ''" class="p-2">
+      <h1 class="h5">Welcome to the most powerful email alias solution!</h1>
+
+      <p>To get started, please follow these 3 simple steps</p>
+
+      <div>
+        <span class="badge badge-primary badge-pill">1</span>
+        Create a SimpleLogin account
+        <a href="https://app.simplelogin.io/auth/register" target="_blank">here</a>
+        if this is not already done.
+      </div>
+
+      <div>
+        <span class="badge badge-primary badge-pill">2</span>
+        Create and copy your <em>API Key</em>
+        <a href="https://app.simplelogin.io/dashboard/api_key" target="_blank">here</a>.
+      </div>
+
+      <div>
+        <span class="badge badge-primary badge-pill">3</span>
+        Paste the <em>API Key</em> here 👇🏽
+      </div>
+
+      <textarea v-model="apiInput" placeholder="API Key" class="form-control mt-3" style="width: 100%"></textarea>
       <br />
-      <input v-model="alias" disabled style="width: 100%" />
+      <button @click="save" class="btn btn-primary">Save</button>
+    </div>
+
+    <!-- API Key is set -->
+    <div v-else>
+      <button @click="getAlias" class="btn btn-primary mb-3">Create Alias</button>
+      
+      <input v-model="alias" disabled class="form-control mb-3" placeholder="New alias will be created here" />
+
+      <p v-if="error != ''" class="text-danger">{{error}}</p>
+
       <button
         v-if="alias != ''"
         v-clipboard="() => alias"
         v-clipboard:success="clipboardSuccessHandler"
         v-clipboard:error="clipboardErrorHandler"
+        class="btn btn-success"
       >Copy to clipboard</button>
 
-      <hr style="margin-top: 30px"/>
-      <button @click="reset" >Logout</button>
+      <hr/>
+      <button @click="reset" class="btn btn-sm btn-link float-right">Logout</button>
     </div>
   </div>
 </template>
 
 <script>
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+
 export default {
   data() {
     return {
       apiKey: "",
       apiInput: "",
       alias: "",
-      hostName: ""
+      hostName: "",
+      error:""
     };
   },
   async mounted() {
@@ -76,15 +116,23 @@ export default {
         }
       });
 
-      if (res.ok) {
-        let json = await res.json();
+      let json = await res.json();
+      if (res.status >= 200 && res.status <= 299) {
         that.alias = json.alias;
+      } else {
+        // error
+        if (res.status == 401) { // Wrong api key
+          that.error = "Wrong API Key. Please logout and copy/paste the API Key again"
+        } else { // Unknown error
+          that.error = "Unknown error, very sorry about this! Please logout and redo the setup"
+        }
       }
+
     },
 
     // Clipboard
     clipboardSuccessHandler({ value, event }) {
-      this.$toasted.show("Copied to clipboard", { theme: "bubble" });
+      this.$toasted.show("Copied to clipboard", { type: "success" });
     },
 
     clipboardErrorHandler({ value, event }) {
