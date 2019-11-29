@@ -73,6 +73,7 @@ const config = {
     }),
     new CopyWebpackPlugin([
       { from: 'icons', to: 'icons', ignore: ['icon.xcf'] },
+      { from: 'images', to: 'images' },
       { from: 'popup/popup.html', to: 'popup/popup.html', transform: transformHtml },
       {
         from: 'manifest.json',
