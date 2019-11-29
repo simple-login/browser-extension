@@ -31,16 +31,18 @@
         Paste the <em>API Key</em> here 👇🏽
       </div>
 
-      <textarea v-model="apiInput" placeholder="API Key" class="form-control mt-3" style="width: 100%"></textarea>
+      <textarea v-model="apiInput" placeholder="API Key" autofocus class="form-control mt-3" style="width: 100%"></textarea>
       <br />
       <button @click="save" class="btn btn-primary">Save</button>
     </div>
 
     <!-- API Key is set -->
     <div v-else>
-      <button @click="getAlias" class="btn btn-primary mb-3">Create Alias</button>
+      <button @click="getAlias" class="btn btn-primary btn-block mb-2">
+        Create/Get Alias 👇🏽
+      </button>
       
-      <input v-model="alias" disabled class="form-control mb-3" placeholder="New alias will be created here" />
+      <input v-model="alias" disabled class="form-control mb-3" placeholder="Alias here" />
 
       <p v-if="error != ''" class="text-danger">{{error}}</p>
 
@@ -49,11 +51,21 @@
         v-clipboard="() => alias"
         v-clipboard:success="clipboardSuccessHandler"
         v-clipboard:error="clipboardErrorHandler"
-        class="btn btn-success"
+        class="btn btn-success btn-block mb-3"
       >Copy to clipboard</button>
 
+      <small class="mb-2">
+        If an alias is already created for this website, it will be <em>re-used</em>. Otherwise a <em>new</em> one will be created.
+        <br>
+        If you are using free plan, an alias will be picked randomly from your non-custom aliases.
+      </small>
+
       <hr/>
+      <a href="https://app.simplelogin.io/dashboard/" target="_blank" class="btn btn-sm btn-link float-left">
+        Manage Aliases
+      </a>
       <button @click="reset" class="btn btn-sm btn-link float-right">Logout</button>
+      <br>
     </div>
   </div>
 </template>
@@ -158,5 +170,10 @@ export default {
 <style lang="scss" scoped>
 p {
   font-size: 20px;
+}
+
+em {
+    font-style: normal;
+    background-color: #FFFF00;
 }
 </style>
