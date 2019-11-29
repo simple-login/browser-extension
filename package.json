@@ -16,6 +16,7 @@
   "dependencies": {
     "v-clipboard": "^2.2.2",
     "vue": "^2.6.10",
+    "vue-toasted": "^1.1.27",
     "webextension-polyfill": "^0.3.1"
   },
   "devDependencies": {
