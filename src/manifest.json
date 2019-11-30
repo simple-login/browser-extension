@@ -1,7 +1,7 @@
 {
   "name": "SimpleLogin - protect your email inbox",
-  "description": "SimpleLogin is a solution to create quickly a random email address (aka alias). All emails sent to an alias will be *forwarded* to your personal email address",
-  "version": "1.0.1",
+  "description": "Create quickly a random email address (aka alias). All emails sent to an alias will be *forwarded* to your personal email address",
+  "version": null,
   "manifest_version": 2,
   "icons": {
     "48": "icons/icon_48.png",
