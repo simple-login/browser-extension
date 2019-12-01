@@ -12,6 +12,11 @@
     "default_title": "simplelogin-extension",
     "default_popup": "popup/popup.html"
   },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "addon@simplelogin"
+    }
+  },
   "background": {
     "scripts": [
       "background.js"
