@@ -87,8 +87,8 @@ export default {
   async mounted() {
     let that = this;
     chrome.storage.sync.get("apiKey", function(data) {
-      that.apiKey = data.apiKey;
-      that.apiInput = that.apiKey;
+      that.apiKey = data.apiKey || "";
+      that.apiInput = that.apiKey || "";
     });
     this.hostName = await this.getHostName();
   },
