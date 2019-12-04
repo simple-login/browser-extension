@@ -53,6 +53,12 @@
 
     <!-- API Key is set -->
     <div v-else>
+
+      <!-- Alias option page -->
+      <div v-if="!optionsReady && loading" class="container text-center">
+        Please wait ...
+      </div>
+
       <div v-if="optionsReady && newAlias == ''" class="container">
         <div v-if="hasRecommendation" class="text-center">
           <span class="text-success">{{ recommendation.alias }}</span>
