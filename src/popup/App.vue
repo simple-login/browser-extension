@@ -84,8 +84,10 @@
               <input
                 v-model="aliasPrefix"
                 class="form-control"
-                pattern="[0-9|A-Z|a-z|-]{3,}"
+                pattern="[0-9|A-Z|a-z|-|_]{3,}"
                 title="Only letter, number or dash can be used and alias must have at least 3 characters."
+                placeholder="alias prefix"
+                autofocus
               />
             </div>
 
@@ -98,12 +100,15 @@
             </div>
           </div>
 
-          <div class="small-text">autofilled by the website domain, feel free to change it</div>
+          <div
+            class="small-text"
+            v-if="aliasPrefix"
+          >alias prefix autofilled by the current website address, feel free to change it</div>
 
           <button
             @click="createCustomAlias"
             :disabled="loading"
-            class="btn btn-primary btn-block"
+            class="btn btn-primary btn-block mt-2"
           >Create custom alias</button>
 
           <hr />
