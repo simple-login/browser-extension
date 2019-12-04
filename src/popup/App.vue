@@ -114,37 +114,40 @@ import "bootstrap-vue/dist/bootstrap-vue.css";
 // TODO: change API
 const API = "http://localhost:7777/api";
 
+function getInitialData() {
+  return {
+    // API key
+    apiKey: "",
+    apiInput: "",
+
+    // hostName obtained from chrome tabs query
+    hostName: "",
+
+    // new alias is saved here: a new alias screen will be shown
+    newAlias: "",
+
+    // only show options when GET /alias/options returns
+    optionsReady: false,
+
+    // for recommendation section
+    hasRecommendation: false,
+    recommendation: {},
+
+    // for custom
+    custom: {},
+    aliasPrefix: "",
+    aliasSuffix: "",
+
+    canCreateCustom: false,
+    canCreateRandom: false,
+
+    existing: []
+  };
+}
 
 export default {
   data() {
-    return {
-      // API key
-      apiKey: "",
-      apiInput: "",
-
-      // hostName obtained from chrome tabs query
-      hostName: "",
-
-      // new alias is saved here: a new alias screen will be shown
-      newAlias: "",
-
-      // only show options when GET /alias/options returns
-      optionsReady: false,
-
-      // for recommendation section
-      hasRecommendation: false,
-      recommendation: {},
-
-      // for custom
-      custom: {},
-      aliasPrefix: "",
-      aliasSuffix: "",
-
-      canCreateCustom: false,
-      canCreateRandom: false,
-
-      existing: []
-    };
+    return getInitialData();
   },
   async mounted() {
     let that = this;
@@ -174,26 +177,26 @@ export default {
         });
       });
     },
-    reset() {
+    async reset() {
       let that = this;
-      chrome.storage.sync.set({ apiKey: "" }, function() {
+      chrome.storage.sync.set({ apiKey: "" }, async function() {
         that.apiKey = "";
         that.apiInput = "";
+
+        Object.assign(that.$data, getInitialData());
+        that.hostName = await that.getHostName();
       });
     },
     async getAliasOptions() {
       let that = this;
 
-      let res = await fetch(
-        API + "/alias/options?hostname=" + that.hostName,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authentication: this.apiKey
-          }
+      let res = await fetch(API + "/alias/options?hostname=" + that.hostName, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authentication: this.apiKey
         }
-      );
+      });
 
       let json = await res.json();
       console.log(json);
