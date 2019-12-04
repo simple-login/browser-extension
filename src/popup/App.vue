@@ -43,34 +43,66 @@
 
     <!-- API Key is set -->
     <div v-else>
-      <button @click="getAlias" class="btn btn-primary btn-block mb-2">
-        Create/Get Alias 👇🏽
-      </button>
-      
-      <input v-model="alias" disabled class="form-control mb-3" placeholder="Alias here" />
+      <div v-if="optionsReady && newAlias == ''">
+        <div v-if="hasRecommendation">
+          {{ recommendation.alias }}
+          <br />
+          recommended, already used on this website
+          {{ recommendation.hostname }}
+          <hr />
+        </div>
 
-      <p v-if="error != ''" class="text-danger">{{error}}</p>
+        <div v-if="canCreateCustom">
+          <input v-model="aliasPrefix" />
+          <br />
+          <div>autofilled by the website domain, feel free to change it</div>
 
-      <button
-        v-if="alias != ''"
-        v-clipboard="() => alias"
-        v-clipboard:success="clipboardSuccessHandler"
-        v-clipboard:error="clipboardErrorHandler"
-        class="btn btn-success btn-block mb-3"
-      >Copy to clipboard</button>
+          <select v-model="aliasSuffix">
+            <option v-for="suffix in custom.suffixes" v-bind:key="suffix">{{ suffix }}</option>
+          </select>
+          <button @click="createCustomAlias">Create custom alias</button>
 
-      <small class="mb-2">
-        If an alias is already created for this website, it will be <em>re-used</em>. Otherwise a <em>new</em> one will be created.
-        <br>
-        If you are using free plan, an alias will be picked randomly from your non-custom aliases.
-      </small>
+          <hr />
+        </div>
+        <div v-else>
+          <p class="text-danger">
+            you have used all 3 custom aliases in free plan, please upgrade to
+            create more
+          </p>
+          <hr />
+        </div>
 
-      <hr/>
-      <a href="https://app.simplelogin.io/dashboard/" target="_blank" class="btn btn-sm btn-link float-left">
-        Manage Aliases
-      </a>
+        <div v-if="canCreateRandom">
+          <button @click="createRandomAlias">Create random alias</button>
+          <hr />
+        </div>
+        <div v-else>
+          <p class="text-danger">
+            you have used all 3 random aliases in free plan, please upgrade to
+            create more
+          </p>
+          <hr />
+        </div>
+
+        <div v-if="existing.length > 0">
+          <div v-for="alias in existing" v-bind:key="alias">{{ alias }}</div>
+        </div>
+      </div>
+
+      <div v-if="newAlias != ''">
+        Alias is created:
+        {{ newAlias }}
+      </div>
+
+      <!-- Footer -->
+      <hr />
+      <a
+        href="https://app.simplelogin.io/dashboard/"
+        target="_blank"
+        class="btn btn-sm btn-link float-left"
+      >Manage Aliases</a>
       <button @click="reset" class="btn btn-sm btn-link float-right">Logout</button>
-      <br>
+      <br />
     </div>
   </div>
 </template>
@@ -79,26 +111,54 @@
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 
+// TODO: change API
+const API = "http://localhost:7777/api";
+
+
 export default {
   data() {
     return {
+      // API key
       apiKey: "",
       apiInput: "",
-      alias: "",
+
+      // hostName obtained from chrome tabs query
       hostName: "",
-      error:""
+
+      // new alias is saved here: a new alias screen will be shown
+      newAlias: "",
+
+      // only show options when GET /alias/options returns
+      optionsReady: false,
+
+      // for recommendation section
+      hasRecommendation: false,
+      recommendation: {},
+
+      // for custom
+      custom: {},
+      aliasPrefix: "",
+      aliasSuffix: "",
+
+      canCreateCustom: false,
+      canCreateRandom: false,
+
+      existing: []
     };
   },
   async mounted() {
     let that = this;
-    chrome.storage.sync.get("apiKey", function(data) {
+    chrome.storage.sync.get("apiKey", async function(data) {
       that.apiKey = data.apiKey || "";
       that.apiInput = that.apiKey || "";
+
+      that.hostName = await that.getHostName();
+
+      if (that.apiKey != "") that.getAliasOptions();
     });
-    this.hostName = await this.getHostName();
   },
   methods: {
-    save() {
+    async save() {
       let that = this;
       if (this.apiInput === "") {
         that.$toasted.show("API Key cannot be empty");
@@ -109,6 +169,8 @@ export default {
         chrome.storage.sync.get("apiKey", function(data) {
           that.$toasted.show("API Key saved successfully");
           that.apiKey = data.apiKey;
+
+          that.getAliasOptions();
         });
       });
     },
@@ -117,36 +179,102 @@ export default {
       chrome.storage.sync.set({ apiKey: "" }, function() {
         that.apiKey = "";
         that.apiInput = "";
-        that.error = "";
-        that.alias = "";
       });
     },
-    async getAlias() {
+    async getAliasOptions() {
       let that = this;
-      
-      let res = await fetch("https://app.simplelogin.io/api/alias/new", {
-        method: "POST",
-        body: JSON.stringify({
-          hostname: this.hostName
-        }),
-        headers: {
-          "Content-Type": "application/json",
-          Authentication: this.apiKey
+
+      let res = await fetch(
+        API + "/alias/options?hostname=" + that.hostName,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authentication: this.apiKey
+          }
         }
-      });
+      );
 
       let json = await res.json();
-      if (res.status >= 200 && res.status <= 299) {
-        that.alias = json.alias;
-      } else {
-        // error
-        if (res.status == 401) { // Wrong api key
-          that.error = "Wrong API Key. Please logout and copy/paste the API Key again"
-        } else { // Unknown error
-          that.error = "Unknown error, very sorry about this! Please logout and redo the setup"
-        }
+      console.log(json);
+
+      if (json.recommendation !== undefined) {
+        that.hasRecommendation = true;
+        that.recommendation = json.recommendation || {};
       }
 
+      if (json.custom !== undefined) {
+        that.custom = json.custom;
+        that.aliasPrefix = that.custom.suggestion;
+        that.aliasSuffix = that.custom.suffixes[0];
+      }
+
+      that.canCreateCustom = json.can_create_custom;
+      that.canCreateRandom = json.can_create_random;
+      that.existing = json.existing;
+
+      that.optionsReady = true;
+    },
+
+    async createCustomAlias() {
+      let that = this;
+
+      let res = await fetch(
+        API + "/alias/custom/new?hostname=" + that.hostName,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            alias_prefix: that.aliasPrefix,
+            alias_suffix: that.aliasSuffix
+          }),
+          headers: {
+            "Content-Type": "application/json",
+            Authentication: this.apiKey
+          }
+        }
+      );
+
+      let json = await res.json();
+      if (res.status == 201) {
+        that.newAlias = json.alias;
+      } else {
+        that.showError(json.error);
+      }
+    },
+
+    async createRandomAlias() {
+      let that = this;
+
+      let res = await fetch(
+        API + "/alias/random/new?hostname=" + that.hostName,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authentication: this.apiKey
+          }
+        }
+      );
+
+      let json = await res.json();
+      if (res.status == 201) {
+        that.newAlias = json.alias;
+      } else {
+        that.showError(json.error);
+      }
+    },
+
+    showError(msg) {
+      this.$toasted.show(msg, {
+        type: "error",
+        duration: null,
+        action: {
+          text: "x",
+          onClick: (e, toastObject) => {
+            toastObject.goAway(0);
+          }
+        }
+      });
     },
 
     // Clipboard
