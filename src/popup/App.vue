@@ -225,13 +225,13 @@ export default {
     async save() {
       let that = this;
       if (this.apiInput === "") {
-        that.$toasted.show("API Key cannot be empty");
+        that.showError("API Key cannot be empty");
         return;
       }
 
       chrome.storage.sync.set({ apiKey: this.apiInput }, function() {
         chrome.storage.sync.get("apiKey", function(data) {
-          that.$toasted.show("API Key saved successfully");
+          that.$toasted.show("API Key set successfully", {type: "success"});
           that.apiKey = data.apiKey;
 
           that.getAliasOptions();
