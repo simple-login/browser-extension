@@ -261,6 +261,7 @@ export default {
     },
     async getAliasOptions() {
       let that = this;
+      that.loading = true;
 
       let res = await fetch(API + "/alias/options?hostname=" + that.hostName, {
         method: "GET",
@@ -271,7 +272,6 @@ export default {
       });
 
       let json = await res.json();
-      console.log(json);
 
       if (json.recommendation !== undefined) {
         that.hasRecommendation = true;
@@ -289,6 +289,8 @@ export default {
       that.existing = json.existing;
 
       that.optionsReady = true;
+
+      that.loading = false;
     },
 
     async createCustomAlias() {
