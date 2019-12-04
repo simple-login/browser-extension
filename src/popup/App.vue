@@ -1,5 +1,5 @@
 <template>
-  <div class="container" style="width: 400px">
+  <div class style="width: 400px">
     <div class="text-center mt-2" v-if="loading">
       <b-spinner type="grow" label="Spinning"></b-spinner>
     </div>
@@ -12,7 +12,7 @@
     </div>
 
     <!-- No API Key set: Setup screen -->
-    <div v-if="apiKey == ''" class="p-2">
+    <div v-if="apiKey == ''" class="p-2 container">
       <h1 class="h5">Welcome to the most powerful email alias solution!</h1>
 
       <p>To get started, please follow these 3 simple steps</p>
@@ -40,31 +40,63 @@
         <em>API Key</em> here 👇🏽
       </div>
 
-      <textarea v-model="apiInput" placeholder="API Key" autofocus class="form-control mt-3 w-100"></textarea>
-      <br />
-      <button @click="save" class="btn btn-primary">Save</button>
+      <input
+        v-model="apiInput"
+        v-on:keyup.enter="save"
+        placeholder="API Key"
+        autofocus
+        class="form-control mt-3 w-100"
+      />
+      
+      <button @click="save" class="btn btn-primary btn-block mt-2">Set API Key</button>
     </div>
 
     <!-- API Key is set -->
     <div v-else>
-      <div v-if="optionsReady && newAlias == ''">
-        <div v-if="hasRecommendation">
-          {{ recommendation.alias }}
+      <div v-if="optionsReady && newAlias == ''" class="container">
+        <div v-if="hasRecommendation" class="text-center">
+          <span class="text-success">{{ recommendation.alias }}</span>
+          <button
+            v-if="recommendation.alias"
+            v-clipboard="() => recommendation.alias"
+            v-clipboard:success="clipboardSuccessHandler"
+            v-clipboard:error="clipboardErrorHandler"
+            class="btn btn-success btn-sm"
+          >Copy</button>
           <br />
-          recommended, already used on this website
-          {{ recommendation.hostname }}
+          <div class="small-text">
+            recommended, already used on
+            <span class="text-primary">{{ recommendation.hostname }}</span>
+          </div>
+
           <hr />
         </div>
 
         <div v-if="canCreateCustom">
-          <input v-model="aliasPrefix" />
-          <br />
-          <div>autofilled by the website domain, feel free to change it</div>
+          <div class="row">
+            <div class="col">
+              <input
+                v-model="aliasPrefix"
+                class="form-control"
+                pattern="[0-9|A-Z|a-z|-]{3,}"
+                title="Only letter, number or dash can be used and alias must have at least 3 characters."
+              />
+            </div>
 
-          <select v-model="aliasSuffix">
-            <option v-for="suffix in custom.suffixes" v-bind:key="suffix">{{ suffix }}</option>
-          </select>
-          <button @click="createCustomAlias" :disabled="loading">Create custom alias</button>
+            <div class="col align-self-center">
+              <select v-model="aliasSuffix" class="form-control">
+                <option v-for="suffix in custom.suffixes" v-bind:key="suffix">{{ suffix }}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="small-text">autofilled by the website domain, feel free to change it</div>
+
+          <button
+            @click="createCustomAlias"
+            :disabled="loading"
+            class="btn btn-primary btn-block"
+          >Create custom alias</button>
 
           <hr />
         </div>
@@ -77,7 +109,12 @@
         </div>
 
         <div v-if="canCreateRandom">
-          <button @click="createRandomAlias" :disabled="loading">Create random alias</button>
+          <button
+            @click="createRandomAlias"
+            :disabled="loading"
+            class="btn btn-info btn-block"
+          >Create random alias</button>
+          <div class="small-text">A totally random alias will be created</div>
           <hr />
         </div>
         <div v-else>
@@ -88,25 +125,43 @@
           <hr />
         </div>
 
-        <div v-if="existing.length > 0">
-          <div v-for="alias in existing" v-bind:key="alias">{{ alias }}</div>
+        <div v-if="existing.length > 0" class="text-center">
+          <p class="font-weight-bold">Or use existing alias</p>
+          <div v-for="alias in existing" v-bind:key="alias">
+            <span class="text-info">{{ alias }}</span>
+            <button
+              v-if="alias"
+              v-clipboard="() => alias"
+              v-clipboard:success="clipboardSuccessHandler"
+              v-clipboard:error="clipboardErrorHandler"
+              class="btn btn-success btn-sm copy-btn"
+            >Copy</button>
+          </div>
         </div>
       </div>
 
-      <div v-if="newAlias != ''">
-        Alias is created:
-        {{ newAlias }}
+      <div v-if="newAlias != ''" class="text-center">
+        <p class="font-weight-bold">Alias is created</p>
+        <span class="text-info">{{ newAlias }}</span>
+        <button
+          v-if="newAlias"
+          v-clipboard="() => newAlias"
+          v-clipboard:success="clipboardSuccessHandler"
+          v-clipboard:error="clipboardErrorHandler"
+          class="btn btn-success btn-sm copy-btn"
+        >Copy</button>
       </div>
 
       <!-- Footer -->
       <hr />
-      <a
-        href="https://app.simplelogin.io/dashboard/"
-        target="_blank"
-        class="btn btn-sm btn-link float-left"
-      >Manage Aliases</a>
-      <button @click="reset" class="btn btn-sm btn-link float-right">Logout</button>
-      <br />
+      <div>
+        <a
+          href="https://app.simplelogin.io/dashboard/"
+          target="_blank"
+          class="btn btn-sm btn-link float-left"
+        >Manage Aliases</a>
+        <button @click="reset" class="btn btn-sm btn-link float-right">Logout</button>
+      </div>
     </div>
   </div>
 </template>
@@ -323,5 +378,15 @@ p {
 em {
   font-style: normal;
   background-color: #ffff00;
+}
+
+.small-text {
+  font-size: 12px;
+  font-weight: lighter;
+}
+
+.copy-btn {
+  font-size: 0.6rem;
+  line-height: 0.75;
 }
 </style>
