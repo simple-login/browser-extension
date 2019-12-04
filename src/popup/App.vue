@@ -152,6 +152,10 @@
           v-clipboard:error="clipboardErrorHandler"
           class="btn btn-success btn-sm copy-btn"
         >Copy</button>
+
+        <br />
+
+        <button @click="backToOptionPage" class="btn btn-secondary mt-3">&lt; Back</button>
       </div>
 
       <!-- Footer -->
@@ -233,7 +237,7 @@ export default {
 
       chrome.storage.sync.set({ apiKey: this.apiInput }, function() {
         chrome.storage.sync.get("apiKey", function(data) {
-          that.$toasted.show("API Key set successfully", {type: "success"});
+          that.$toasted.show("API Key set successfully", { type: "success" });
           that.apiKey = data.apiKey;
 
           that.getAliasOptions();
@@ -249,6 +253,11 @@ export default {
         Object.assign(that.$data, getInitialData());
         that.hostName = await that.getHostName();
       });
+    },
+    async backToOptionPage() {
+      this.newAlias = "";
+      this.optionsReady = false;
+      await this.getAliasOptions();
     },
     async getAliasOptions() {
       let that = this;
