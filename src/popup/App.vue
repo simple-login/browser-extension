@@ -366,7 +366,7 @@ export default {
 
     // Clipboard
     clipboardSuccessHandler({ value, event }) {
-      this.$toasted.show("Copied to clipboard", { type: "success" });
+      this.$toasted.show(value + " copied to clipboard", { type: "success" });
     },
 
     clipboardErrorHandler({ value, event }) {
