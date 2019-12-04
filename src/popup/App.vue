@@ -1,5 +1,9 @@
 <template>
   <div class="container" style="width: 400px">
+    <div class="text-center mt-2" v-if="loading">
+      <b-spinner type="grow" label="Spinning"></b-spinner>
+    </div>
+
     <div class="text-center mt-3">
       <a href="https://www.simplelogin.io" target="_blank">
         <img src="/images/horizontal-logo.svg" />
@@ -60,7 +64,7 @@
           <select v-model="aliasSuffix">
             <option v-for="suffix in custom.suffixes" v-bind:key="suffix">{{ suffix }}</option>
           </select>
-          <button @click="createCustomAlias">Create custom alias</button>
+          <button @click="createCustomAlias" :disabled="loading">Create custom alias</button>
 
           <hr />
         </div>
@@ -73,7 +77,7 @@
         </div>
 
         <div v-if="canCreateRandom">
-          <button @click="createRandomAlias">Create random alias</button>
+          <button @click="createRandomAlias" :disabled="loading">Create random alias</button>
           <hr />
         </div>
         <div v-else>
@@ -116,6 +120,8 @@ const API = "http://localhost:7777/api";
 
 function getInitialData() {
   return {
+    loading: false,
+
     // API key
     apiKey: "",
     apiInput: "",
@@ -221,6 +227,7 @@ export default {
 
     async createCustomAlias() {
       let that = this;
+      that.loading = true;
 
       let res = await fetch(
         API + "/alias/custom/new?hostname=" + that.hostName,
@@ -238,6 +245,7 @@ export default {
       );
 
       let json = await res.json();
+      that.loading = false;
       if (res.status == 201) {
         that.newAlias = json.alias;
       } else {
@@ -247,6 +255,7 @@ export default {
 
     async createRandomAlias() {
       let that = this;
+      that.loading = true;
 
       let res = await fetch(
         API + "/alias/random/new?hostname=" + that.hostName,
@@ -260,6 +269,7 @@ export default {
       );
 
       let json = await res.json();
+      that.loading = false;
       if (res.status == 201) {
         that.newAlias = json.alias;
       } else {
