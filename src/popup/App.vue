@@ -4,10 +4,10 @@
       <a href="https://www.simplelogin.io" target="_blank">
         <img src="/images/horizontal-logo.svg" />
       </a>
-      <hr>
+      <hr />
     </div>
 
-    <!-- No API Key set -->
+    <!-- No API Key set: Setup screen -->
     <div v-if="apiKey == ''" class="p-2">
       <h1 class="h5">Welcome to the most powerful email alias solution!</h1>
 
@@ -16,22 +16,27 @@
       <div>
         <span class="badge badge-primary badge-pill">1</span>
         Create a SimpleLogin account
-        <a href="https://app.simplelogin.io/auth/register" target="_blank">here</a>
+        <a
+          href="https://app.simplelogin.io/auth/register"
+          target="_blank"
+        >here</a>
         if this is not already done.
       </div>
 
       <div>
         <span class="badge badge-primary badge-pill">2</span>
-        Create and copy your <em>API Key</em>
+        Create and copy your
+        <em>API Key</em>
         <a href="https://app.simplelogin.io/dashboard/api_key" target="_blank">here</a>.
       </div>
 
       <div>
         <span class="badge badge-primary badge-pill">3</span>
-        Paste the <em>API Key</em> here 👇🏽
+        Paste the
+        <em>API Key</em> here 👇🏽
       </div>
 
-      <textarea v-model="apiInput" placeholder="API Key" autofocus class="form-control mt-3" style="width: 100%"></textarea>
+      <textarea v-model="apiInput" placeholder="API Key" autofocus class="form-control mt-3 w-100"></textarea>
       <br />
       <button @click="save" class="btn btn-primary">Save</button>
     </div>
@@ -71,8 +76,8 @@
 </template>
 
 <script>
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
+import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap-vue/dist/bootstrap-vue.css";
 
 export default {
   data() {
@@ -175,7 +180,7 @@ p {
 }
 
 em {
-    font-style: normal;
-    background-color: #FFFF00;
+  font-style: normal;
+  background-color: #ffff00;
 }
 </style>
