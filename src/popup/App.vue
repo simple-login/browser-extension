@@ -47,7 +47,7 @@
         autofocus
         class="form-control mt-3 w-100"
       />
-      
+
       <button @click="save" class="btn btn-primary btn-block mt-2">Set API Key</button>
     </div>
 
@@ -74,7 +74,7 @@
 
         <div v-if="canCreateCustom">
           <div class="row">
-            <div class="col">
+            <div class="col" style="padding-right: 0">
               <input
                 v-model="aliasPrefix"
                 class="form-control"
@@ -83,10 +83,12 @@
               />
             </div>
 
-            <div class="col align-self-center">
-              <select v-model="aliasSuffix" class="form-control">
+            <div class="col align-self-center" style="padding-left: 5px">
+              <select v-if="custom.suffixes.length > 1" v-model="aliasSuffix" class="form-control">
                 <option v-for="suffix in custom.suffixes" v-bind:key="suffix">{{ suffix }}</option>
               </select>
+
+              <span v-if="custom.suffixes.length == 1">{{custom.suffixes[0]}}</span>
             </div>
           </div>
 
