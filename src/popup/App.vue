@@ -1,7 +1,7 @@
 <template>
-  <div class style="width: 400px">
+  <div class style="width: 450px">
     <div class="text-center mt-2" v-if="loading">
-      <b-spinner type="grow" label="Spinning"></b-spinner>
+      <b-spinner type="grow" variant="primary" label="Spinning"></b-spinner>
     </div>
 
     <div class="text-center mt-3">
@@ -53,11 +53,8 @@
 
     <!-- API Key is set -->
     <div v-else>
-
       <!-- Alias option page -->
-      <div v-if="!optionsReady && loading" class="container text-center">
-        Please wait ...
-      </div>
+      <div v-if="!optionsReady && loading" class="container text-center">Please wait ...</div>
 
       <div v-if="optionsReady && newAlias == ''" class="container">
         <div v-if="hasRecommendation" class="text-center">
@@ -85,7 +82,7 @@
                 v-model="aliasPrefix"
                 class="form-control"
                 pattern="[0-9|A-Z|a-z|-|_]{3,}"
-                title="Only letter, number or dash can be used and alias must have at least 3 characters."
+                title="Only letter, number, dash (-), underscore (_) can be used in alias prefix and alias prefix must have at least 3 characters."
                 placeholder="alias prefix"
                 autofocus
               />
@@ -103,7 +100,11 @@
           <div
             class="small-text"
             v-if="aliasPrefix"
-          >alias prefix autofilled by the current website address, feel free to change it</div>
+          >Alias prefix autofilled by the current website address, feel free to change it.</div>
+
+          <div
+            class="small-text"
+          >Only letter, number, dash (-), underscore (_) can be used in alias prefix and alias prefix must have at least 3 characters.</div>
 
           <button
             @click="createCustomAlias"
@@ -139,7 +140,7 @@
         </div>
 
         <div v-if="existing.length > 0" class="text-center">
-          <p class="font-weight-bold">Or use existing alias</p>
+          <p class="font-weight-bold">Or use an existing alias</p>
           <div v-for="alias in existing" v-bind:key="alias">
             <span class="text-info">{{ alias }}</span>
             <button
@@ -371,7 +372,10 @@ export default {
 
     // Clipboard
     clipboardSuccessHandler({ value, event }) {
-      this.$toasted.show(value + " copied to clipboard", { type: "success" });
+      this.$toasted.show(value + " copied to clipboard", {
+        type: "success",
+        duration: 2500
+      });
     },
 
     clipboardErrorHandler({ value, event }) {
