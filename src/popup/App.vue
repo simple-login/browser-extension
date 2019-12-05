@@ -75,6 +75,7 @@
           <hr />
         </div>
 
+        <p class="font-weight-bold text-center mb-0">Custom Alias</p>
         <div v-if="canCreateCustom">
           <form @submit.prevent="createCustomAlias">
             <div class="row">
@@ -118,13 +119,18 @@
           <hr />
         </div>
         <div v-else>
-          <p class="text-danger">
-            you have used all 3 custom aliases in free plan, please upgrade to
-            create more
+          <p class="text-danger" style="font-size: 14px">
+            You have created 3
+            <b>custom</b> aliases in free plan, please
+            <a
+              href="https://app.simplelogin.io/dashboard/pricing"
+              target="_blank"
+            >upgrade</a> or reuse the alias.
           </p>
           <hr />
         </div>
 
+        <p class="font-weight-bold text-center mb-0">Random Alias</p>
         <div v-if="canCreateRandom">
           <button
             @click="createRandomAlias"
@@ -135,9 +141,13 @@
           <hr />
         </div>
         <div v-else>
-          <p class="text-danger">
-            you have used all 3 random aliases in free plan, please upgrade to
-            create more
+          <p class="text-danger" style="font-size: 14px">
+            You have created 3
+            <b>free</b> aliases in free plan, please
+            <a
+              href="https://app.simplelogin.io/dashboard/pricing"
+              target="_blank"
+            >upgrade</a> or reuse the alias.
           </p>
           <hr />
         </div>
