@@ -287,6 +287,18 @@ export default {
 
       let json = await res.json();
 
+      if (res.status == 401) {
+        that.showError(
+          "Invalid API Key. Please logout and re-setup the API Key"
+        );
+        that.loading = false;
+        return;
+      } else if (res.status >= 500) {
+        that.showError("Unknown error. We are sorry for this inconvenience!");
+        that.loading = false;
+        return;
+      }
+
       if (json.recommendation !== undefined) {
         that.hasRecommendation = true;
         that.recommendation = json.recommendation || {};
