@@ -165,7 +165,7 @@
           v-clipboard="() => newAlias"
           v-clipboard:success="clipboardSuccessHandler"
           v-clipboard:error="clipboardErrorHandler"
-          class="btn btn-success btn-sm copy-btn"
+          class="btn btn-success btn-sm"
         >Copy</button>
 
         <br />
