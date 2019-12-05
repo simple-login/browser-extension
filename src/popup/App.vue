@@ -76,41 +76,44 @@
         </div>
 
         <div v-if="canCreateCustom">
-          <div class="row">
-            <div class="col" style="padding-right: 0">
-              <input
-                v-model="aliasPrefix"
-                class="form-control"
-                pattern="[0-9|A-Z|a-z|-|_]{1,}"
-                title="Only letter, number, dash (-), underscore (_) can be used in alias prefix."
-                placeholder="alias prefix"
-                autofocus required
-              />
+          <form @submit.prevent="createCustomAlias">
+            <div class="row">
+              <div class="col" style="padding-right: 0">
+                <input
+                  v-model="aliasPrefix"
+                  class="form-control"
+                  pattern="[0-9|A-Z|a-z|-|_]{1,}"
+                  title="Only letter, number, dash (-), underscore (_) can be used in alias prefix."
+                  placeholder="alias prefix"
+                  autofocus
+                  required
+                />
+              </div>
+
+              <div class="col align-self-center" style="padding-left: 5px">
+                <select
+                  v-if="custom.suffixes.length > 1"
+                  v-model="aliasSuffix"
+                  class="form-control"
+                >
+                  <option v-for="suffix in custom.suffixes" v-bind:key="suffix">{{ suffix }}</option>
+                </select>
+
+                <span v-if="custom.suffixes.length == 1">{{custom.suffixes[0]}}</span>
+              </div>
             </div>
 
-            <div class="col align-self-center" style="padding-left: 5px">
-              <select v-if="custom.suffixes.length > 1" v-model="aliasSuffix" class="form-control">
-                <option v-for="suffix in custom.suffixes" v-bind:key="suffix">{{ suffix }}</option>
-              </select>
+            <div
+              class="small-text"
+              v-if="aliasPrefix"
+            >Alias prefix autofilled by the current website address, feel free to change it.</div>
 
-              <span v-if="custom.suffixes.length == 1">{{custom.suffixes[0]}}</span>
-            </div>
-          </div>
+            <div
+              class="small-text"
+            >Only letter, number, dash (-), underscore (_) can be used in alias prefix and alias prefix must have at least 3 characters.</div>
 
-          <div
-            class="small-text"
-            v-if="aliasPrefix"
-          >Alias prefix autofilled by the current website address, feel free to change it.</div>
-
-          <div
-            class="small-text"
-          >Only letter, number, dash (-), underscore (_) can be used in alias prefix and alias prefix must have at least 3 characters.</div>
-
-          <button
-            @click="createCustomAlias"
-            :disabled="loading"
-            class="btn btn-primary btn-block mt-2"
-          >Create custom alias</button>
+            <button :disabled="loading" class="btn btn-primary btn-block mt-2">Create custom alias</button>
+          </form>
 
           <hr />
         </div>
