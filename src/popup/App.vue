@@ -188,8 +188,10 @@
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 
-// TODO: change API
-const API = "http://localhost:7777/api";
+// Local API
+// const API = "http://localhost:7777/api";
+
+const API = "https://app.simplelogin.io/api";
 
 function getInitialData() {
   return {
