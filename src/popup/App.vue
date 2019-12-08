@@ -120,30 +120,7 @@
         </div>
         <div v-else>
           <p class="text-danger" style="font-size: 14px">
-            You have created 3
-            <b>custom</b> aliases in free plan, please
-            <a
-              href="https://app.simplelogin.io/dashboard/pricing"
-              target="_blank"
-            >upgrade</a> or reuse the alias.
-          </p>
-          <hr />
-        </div>
-
-        <p class="font-weight-bold text-center mb-0">Random Alias</p>
-        <div v-if="canCreateRandom">
-          <button
-            @click="createRandomAlias"
-            :disabled="loading"
-            class="btn btn-info btn-block"
-          >Create random alias</button>
-          <div class="small-text">A totally random alias will be created</div>
-          <hr />
-        </div>
-        <div v-else>
-          <p class="text-danger" style="font-size: 14px">
-            You have created 3
-            <b>free</b> aliases in free plan, please
+            You have created 3 email aliases in free plan, please
             <a
               href="https://app.simplelogin.io/dashboard/pricing"
               target="_blank"
@@ -233,7 +210,6 @@ function getInitialData() {
     aliasSuffix: "",
 
     canCreateCustom: false,
-    canCreateRandom: false,
 
     existing: []
   };
@@ -324,7 +300,6 @@ export default {
       }
 
       that.canCreateCustom = json.can_create_custom;
-      that.canCreateRandom = json.can_create_random;
       that.existing = json.existing;
 
       that.optionsReady = true;
@@ -344,30 +319,6 @@ export default {
             alias_prefix: that.aliasPrefix,
             alias_suffix: that.aliasSuffix
           }),
-          headers: {
-            "Content-Type": "application/json",
-            Authentication: this.apiKey
-          }
-        }
-      );
-
-      let json = await res.json();
-      that.loading = false;
-      if (res.status == 201) {
-        that.newAlias = json.alias;
-      } else {
-        that.showError(json.error);
-      }
-    },
-
-    async createRandomAlias() {
-      let that = this;
-      that.loading = true;
-
-      let res = await fetch(
-        API + "/alias/random/new?hostname=" + that.hostName,
-        {
-          method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authentication: this.apiKey
