@@ -68,17 +68,16 @@
           >Copy</button>
           <br />
           <div class="small-text">
-            recommended, already used on
-            <span class="text-primary">{{ recommendation.hostname }}</span>
+            recommended, already used on this website.
           </div>
 
           <hr />
         </div>
 
-        <p class="font-weight-bold text-center mb-0">Custom Alias</p>
+        <p class="font-weight-bold text-center mb-2">Email Alias</p>
         <div v-if="canCreateCustom">
           <form @submit.prevent="createCustomAlias">
-            <div class="row">
+            <div class="row mb-2">
               <div class="col" style="padding-right: 0">
                 <input
                   v-model="aliasPrefix"
@@ -105,15 +104,11 @@
             </div>
 
             <div
-              class="small-text"
+              class="small-text mb-1"
               v-if="aliasPrefix"
-            >Alias prefix autofilled by the current website address, feel free to change it.</div>
+            >Alias is autofilled by the current website name, please feel free to change it.</div>
 
-            <div
-              class="small-text"
-            >Only letter, number, dash (-), underscore (_) can be used in alias prefix and alias prefix must have at least 3 characters.</div>
-
-            <button :disabled="loading" class="btn btn-primary btn-block mt-2">Create custom alias</button>
+            <button :disabled="loading" class="btn btn-primary btn-block mt-2">Create</button>
           </form>
 
           <hr />
