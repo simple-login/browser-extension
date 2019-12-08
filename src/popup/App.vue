@@ -75,7 +75,7 @@
         </div>
 
         <p class="font-weight-bold text-center mb-2">Email Alias</p>
-        <div v-if="canCreateCustom">
+        <div>
           <form @submit.prevent="createCustomAlias">
             <div class="row mb-2">
               <div class="col" style="padding-right: 0">
@@ -108,12 +108,11 @@
               v-if="aliasPrefix"
             >Alias is autofilled by the current website name, please feel free to change it.</div>
 
-            <button :disabled="loading" class="btn btn-primary btn-block mt-2">Create</button>
+            <button :disabled="loading || !canCreateCustom" class="btn btn-primary btn-block mt-2">Create</button>
           </form>
-
-          <hr />
         </div>
-        <div v-else>
+
+        <div v-if="!canCreateCustom">
           <p class="text-danger" style="font-size: 14px">
             You have created 3 email aliases in free plan, please
             <a
@@ -121,8 +120,8 @@
               target="_blank"
             >upgrade</a> or reuse the alias.
           </p>
-          <hr />
         </div>
+        <hr />
 
         <div v-if="existing.length > 0" class="text-center">
           <p class="font-weight-bold">Or use an existing alias</p>
