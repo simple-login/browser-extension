@@ -1,6 +1,6 @@
 {
   "name": "SimpleLogin - protect your email inbox",
-  "description": "Create quickly a random email address (aka alias). All emails sent to an alias will be *forwarded* to your personal email address",
+  "description": "Open-source extension to hide your personal email address",
   "version": null,
   "manifest_version": 2,
   "icons": {
