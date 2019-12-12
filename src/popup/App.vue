@@ -13,13 +13,16 @@
 
     <!-- No API Key set: Setup screen -->
     <div v-if="apiKey == ''" class="p-2 container">
-      <h1 class="h5">Welcome to the most powerful email alias solution!</h1>
+      <h1 class="h5">
+        Welcome to
+        <a href="https://simplelogin.io" target="_blank">SimpleLogin ↗</a>, the most powerful email alias solution!
+      </h1>
 
-      <p>To get started, please follow these 3 simple steps</p>
+      <p>To get started, please follow these 3 simple steps:</p>
 
-      <div>
+      <div class="mb-2">
         <span class="badge badge-primary badge-pill">1</span>
-        Create a SimpleLogin account
+        Create your SimpleLogin account
         <a
           href="https://app.simplelogin.io/auth/register"
           target="_blank"
@@ -27,14 +30,14 @@
         if this is not already done.
       </div>
 
-      <div>
+      <div class="mb-2">
         <span class="badge badge-primary badge-pill">2</span>
         Create and copy your
         <em>API Key</em>
         <a href="https://app.simplelogin.io/dashboard/api_key" target="_blank">here</a>.
       </div>
 
-      <div>
+      <div class="mb-2">
         <span class="badge badge-primary badge-pill">3</span>
         Paste the
         <em>API Key</em> here 👇🏽
@@ -67,9 +70,7 @@
             class="btn btn-success btn-sm"
           >Copy</button>
           <br />
-          <div class="small-text">
-            recommended, already used on this website.
-          </div>
+          <div class="small-text">recommended, already used on this website.</div>
 
           <hr />
         </div>
@@ -108,7 +109,10 @@
               v-if="aliasPrefix"
             >Alias is autofilled by the current website name, please feel free to change it.</div>
 
-            <button :disabled="loading || !canCreateCustom" class="btn btn-primary btn-block mt-2">Create</button>
+            <button
+              :disabled="loading || !canCreateCustom"
+              class="btn btn-primary btn-block mt-2"
+            >Create</button>
           </form>
         </div>
 
