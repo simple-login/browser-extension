@@ -29,6 +29,10 @@ The extension consists of 3 main screens:
 - main screen: displays email alias recommendation, alias creation and existing alias.
 - new alias screen: when a new alias is created, user is redirected to this screen so they can copy it.
 
+And some additional features:
+
+- fill the existing aliases to the destination when user composing emails
+
 ## Contributing Guide
 
 All work on SimpleLogin Chrome/Firefox extension happens directly on GitHub.
