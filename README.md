@@ -1,23 +1,9 @@
 SimpleLogin Chrome/Firefox extension
 ---
-<p>
-<a href="https://chrome.google.com/webstore/detail/simplelogin-protect-your/dphilobhebphkdjbpfohgikllaljmgbn">
-    <img src="https://img.shields.io/chrome-web-store/rating/dphilobhebphkdjbpfohgikllaljmgbn?label=Chrome%20Extension">
-</a>
-
-<a href="https://addons.mozilla.org/en-GB/firefox/addon/simplelogin/">
-<img src="https://img.shields.io/amo/rating/simplelogin?label=Firefox%20Add-On&logo=SimpleLogin">
-</a>
-
-<a href="./LICENSE">
-<img src="https://img.shields.io/github/license/simple-login/app">
-</a>
-
-</p>
 
 SimpleLogin is the **open-source** privacy-first email alias and Single Sign-On (SSO) Identity Provider.
 
-More info on our website at https://simplelogin.io
+https://simplelogin.io
 
 The extension uses VueJS with https://github.com/Kocal/vue-web-extension boilerplate.
 
