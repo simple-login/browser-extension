@@ -75,11 +75,11 @@
           <hr />
         </div>
 
-        <p class="font-weight-bold text-center mb-2">Email Alias</p>
+        <p class="font-weight-bold mb-2">Email Alias</p>
         <div>
           <form @submit.prevent="createCustomAlias">
             <div class="row mb-2">
-              <div class="col" style="padding-right: 0">
+              <div class="col input-group-sm" style="padding-right: 0">
                 <input
                   v-model="aliasPrefix"
                   class="form-control"
@@ -127,18 +127,30 @@
         </div>
         <hr />
 
-        <div v-if="existing.length > 0" class="text-center">
+        <div v-if="existing.length > 0">
           <p class="font-weight-bold">Or use an existing alias</p>
-          <div v-for="alias in existing" v-bind:key="alias">
-            <span class="text-info">{{ alias }}</span>
-            <button
-              v-if="alias"
-              v-clipboard="() => alias"
-              v-clipboard:success="clipboardSuccessHandler"
-              v-clipboard:error="clipboardErrorHandler"
-              class="btn btn-success btn-sm copy-btn"
-            >Copy</button>
-          </div>
+          <table class="table table-sm table-borderless">
+            <colgroup>
+              <col span="1" style="width: 80%;" />
+              <col span="1" style="width: 20%;" />
+            </colgroup>
+            <tbody>
+              <tr v-for="alias in existing" v-bind:key="alias">
+                <td>
+                  <a v-b-tooltip.hover v-bind:title="alias" class="small-text">{{ alias | truncate(50, "...") }}</a>
+                </td>
+                <td>
+                  <button
+                    v-if="alias"
+                    v-clipboard="() => alias"
+                    v-clipboard:success="clipboardSuccessHandler"
+                    v-clipboard:error="clipboardErrorHandler"
+                    class="btn btn-success btn-sm copy-btn"
+                  >Copy</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -375,10 +387,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-p {
-  font-size: 20px;
-}
-
 em {
   font-style: normal;
   background-color: #ffff00;
