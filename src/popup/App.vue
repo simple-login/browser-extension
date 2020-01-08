@@ -85,13 +85,13 @@
                   class="form-control"
                   pattern="[0-9|A-Z|a-z|-|_]{1,}"
                   title="Only letter, number, dash (-), underscore (_) can be used in alias prefix."
-                  placeholder="alias prefix"
+                  placeholder="Alias prefix"
                   autofocus
                   required
                 />
               </div>
 
-              <div class="col align-self-center" style="padding-left: 5px">
+              <div class="col align-self-center input-group-sm" style="padding-left: 5px">
                 <select
                   v-if="custom.suffixes.length > 1"
                   v-model="aliasSuffix"
@@ -118,7 +118,7 @@
 
         <div v-if="!canCreateCustom">
           <p class="text-danger" style="font-size: 14px">
-            You have created 3 email aliases in free plan, please
+            You have reached limit number of email aliases in free plan, please
             <a
               href="https://app.simplelogin.io/dashboard/pricing"
               target="_blank"
@@ -137,7 +137,9 @@
             <tbody>
               <tr v-for="alias in existing" v-bind:key="alias">
                 <td>
-                  <a v-b-tooltip.hover v-bind:title="alias" class="small-text">{{ alias | truncate(50, "...") }}</a>
+                  <a v-clipboard="() => alias"
+                    v-clipboard:success="clipboardSuccessHandler"
+                    v-clipboard:error="clipboardErrorHandler" v-b-tooltip.hover title="Click to Copy" class="small-text cursor">{{ alias | truncate(50, "...") }}</a>
                 </td>
                 <td>
                   <button
@@ -172,12 +174,13 @@
 
       <!-- Footer -->
       <hr />
-      <div>
+      <div class="pt-0">
         <a
           href="https://app.simplelogin.io/dashboard/"
           target="_blank"
           class="btn btn-sm btn-link float-left"
         >Manage Aliases</a>
+        <a v-bind:href="extensionUrl" target="_blank" class="btn btn-sm btn-link">Rate Us</a>
         <button @click="reset" class="btn btn-sm btn-link float-right">Logout</button>
       </div>
     </div>
@@ -189,11 +192,16 @@ import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 
 // Local API
-// const API = "http://localhost:7777/api";
+const API = "http://localhost:7777/api";
 
-const API = "https://app.simplelogin.io/api";
+// const API = "https://app.simplelogin.io/api";
 
 function getInitialData() {
+  const isFirefox = typeof InstallTrigger !== 'undefined',
+      isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime),
+      firefoxExtensionUrl = 'https://addons.mozilla.org/en-GB/firefox/addon/simplelogin/',
+      chromeExtensionUrl = 'https://chrome.google.com/webstore/detail/simplelogin-your-anti-spa/dphilobhebphkdjbpfohgikllaljmgbn';
+  const extensionUrl = isFirefox ? firefoxExtensionUrl : chromeExtensionUrl;
   return {
     loading: false,
 
@@ -221,7 +229,8 @@ function getInitialData() {
 
     canCreateCustom: false,
 
-    existing: []
+    existing: [],
+    extensionUrl: extensionUrl
   };
 }
 
@@ -400,5 +409,8 @@ em {
 .copy-btn {
   font-size: 0.6rem;
   line-height: 0.75;
+}
+.cursor {
+  cursor: pointer;
 }
 </style>
