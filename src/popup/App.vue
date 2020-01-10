@@ -75,23 +75,23 @@
           <hr />
         </div>
 
-        <p class="font-weight-bold text-center mb-2">Email Alias</p>
+        <p class="font-weight-bold mb-2">Email Alias</p>
         <div>
           <form @submit.prevent="createCustomAlias">
             <div class="row mb-2">
-              <div class="col" style="padding-right: 0">
+              <div class="col input-group-sm" style="padding-right: 0">
                 <input
                   v-model="aliasPrefix"
                   class="form-control"
                   pattern="[0-9|A-Z|a-z|-|_]{1,}"
                   title="Only letter, number, dash (-), underscore (_) can be used in alias prefix."
-                  placeholder="alias prefix"
+                  placeholder="Alias prefix"
                   autofocus
                   required
                 />
               </div>
 
-              <div class="col align-self-center" style="padding-left: 5px">
+              <div class="col align-self-center input-group-sm" style="padding-left: 5px">
                 <select
                   v-if="custom.suffixes.length > 1"
                   v-model="aliasSuffix"
@@ -118,7 +118,7 @@
 
         <div v-if="!canCreateCustom">
           <p class="text-danger" style="font-size: 14px">
-            You have created 3 email aliases in free plan, please
+            You have reached limit number of email aliases in free plan, please
             <a
               href="https://app.simplelogin.io/dashboard/pricing"
               target="_blank"
@@ -127,18 +127,32 @@
         </div>
         <hr />
 
-        <div v-if="existing.length > 0" class="text-center">
+        <div v-if="existing.length > 0">
           <p class="font-weight-bold">Or use an existing alias</p>
-          <div v-for="alias in existing" v-bind:key="alias">
-            <span class="text-info">{{ alias }}</span>
-            <button
-              v-if="alias"
-              v-clipboard="() => alias"
-              v-clipboard:success="clipboardSuccessHandler"
-              v-clipboard:error="clipboardErrorHandler"
-              class="btn btn-success btn-sm copy-btn"
-            >Copy</button>
-          </div>
+          <table class="table table-sm table-borderless">
+            <colgroup>
+              <col span="1" style="width: 80%;" />
+              <col span="1" style="width: 20%;" />
+            </colgroup>
+            <tbody>
+              <tr v-for="alias in existing" v-bind:key="alias">
+                <td>
+                  <a v-clipboard="() => alias"
+                    v-clipboard:success="clipboardSuccessHandler"
+                    v-clipboard:error="clipboardErrorHandler" v-b-tooltip.hover title="Click to Copy" class="small-text cursor">{{ alias | truncate(50, "...") }}</a>
+                </td>
+                <td>
+                  <button
+                    v-if="alias"
+                    v-clipboard="() => alias"
+                    v-clipboard:success="clipboardSuccessHandler"
+                    v-clipboard:error="clipboardErrorHandler"
+                    class="btn btn-success btn-sm copy-btn"
+                  >Copy</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -160,12 +174,13 @@
 
       <!-- Footer -->
       <hr />
-      <div>
+      <div class="pt-0">
         <a
           href="https://app.simplelogin.io/dashboard/"
           target="_blank"
           class="btn btn-sm btn-link float-left"
         >Manage Aliases</a>
+        <a v-bind:href="extensionUrl" target="_blank" class="btn btn-sm btn-link">Rate Us</a>
         <button @click="reset" class="btn btn-sm btn-link float-right">Logout</button>
       </div>
     </div>
@@ -182,6 +197,11 @@ import "bootstrap-vue/dist/bootstrap-vue.css";
 const API = "https://app.simplelogin.io/api";
 
 function getInitialData() {
+  const isFirefox = typeof InstallTrigger !== 'undefined',
+      isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime),
+      firefoxExtensionUrl = 'https://addons.mozilla.org/en-GB/firefox/addon/simplelogin/',
+      chromeExtensionUrl = 'https://chrome.google.com/webstore/detail/simplelogin-your-anti-spa/dphilobhebphkdjbpfohgikllaljmgbn';
+  const extensionUrl = isFirefox ? firefoxExtensionUrl : chromeExtensionUrl;
   return {
     loading: false,
 
@@ -209,7 +229,8 @@ function getInitialData() {
 
     canCreateCustom: false,
 
-    existing: []
+    existing: [],
+    extensionUrl: extensionUrl
   };
 }
 
@@ -375,10 +396,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-p {
-  font-size: 20px;
-}
-
 em {
   font-style: normal;
   background-color: #ffff00;
@@ -392,5 +409,8 @@ em {
 .copy-btn {
   font-size: 0.6rem;
   line-height: 0.75;
+}
+.cursor {
+  cursor: pointer;
 }
 </style>

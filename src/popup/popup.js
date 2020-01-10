@@ -19,7 +19,16 @@ Sentry.init({
   integrations: [new Integrations.Vue({ Vue, attachProps: true, logErrors: true })],
 });
 
+var filter = function(text, length, clamp){
+  // Thanks to: https://stackoverflow.com/questions/35070271/vue-js-components-how-to-truncate-the-text-in-the-slot-element-in-a-component
+  clamp = clamp || '...';
+  var node = document.createElement('div');
+  node.innerHTML = text;
+  var content = node.textContent;
+  return content.length > length ? content.slice(0, length) + clamp : content;
+};
 
+Vue.filter('truncate', filter);
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
