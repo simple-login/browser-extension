@@ -192,9 +192,9 @@ import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 
 // Local API
-const API = "http://localhost:7777/api";
+// const API = "http://localhost:7777/api";
 
-// const API = "https://app.simplelogin.io/api";
+const API = "https://app.simplelogin.io/api";
 
 function getInitialData() {
   const isFirefox = typeof InstallTrigger !== 'undefined',
