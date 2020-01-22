@@ -197,10 +197,13 @@ import "bootstrap-vue/dist/bootstrap-vue.css";
 const API = "https://app.simplelogin.io/api";
 
 function getInitialData() {
-  const isFirefox = typeof InstallTrigger !== 'undefined',
-      isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime),
-      firefoxExtensionUrl = 'https://addons.mozilla.org/en-GB/firefox/addon/simplelogin/',
-      chromeExtensionUrl = 'https://chrome.google.com/webstore/detail/simplelogin-your-anti-spa/dphilobhebphkdjbpfohgikllaljmgbn';
+  const isFirefox = typeof InstallTrigger !== "undefined",
+    isChrome =
+      !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime),
+    firefoxExtensionUrl =
+      "https://addons.mozilla.org/en-GB/firefox/addon/simplelogin/",
+    chromeExtensionUrl =
+      "https://chrome.google.com/webstore/detail/simplelogin-your-anti-spa/dphilobhebphkdjbpfohgikllaljmgbn";
   const extensionUrl = isFirefox ? firefoxExtensionUrl : chromeExtensionUrl;
   return {
     loading: false,
