@@ -1,5 +1,29 @@
 <template>
   <div class style="width: 450px">
+    <modal name="setting-modal" :adaptive="true" width="80%" height="auto">
+      <div slot="top-right">
+        <button @click="$modal.hide('setting-modal')">❌</button>
+      </div>
+
+      <div class="p-3">
+        <div
+          class="mb-2"
+        >If you self-host SimpleLogin, you can change the API URL to your server address.</div>
+        <div class="mb-2">The default API URL is https://app.simplelogin.io</div>
+
+        <div style="margin: auto">
+          <input
+            v-model="apiUrl"
+            v-on:keyup.enter="saveApiUrl"
+            placeholder="https://app.simplelogin.io"
+            autofocus
+            class="form-control mt-3 w-100"
+          />
+          <button @click="saveApiUrl" class="btn btn-primary btn-block mt-2">Set API URL</button>
+        </div>
+      </div>
+    </modal>
+
     <div class="text-center mt-2" v-if="loading">
       <b-spinner type="grow" variant="primary" label="Spinning"></b-spinner>
     </div>
@@ -52,6 +76,11 @@
       />
 
       <button @click="save" class="btn btn-primary btn-block mt-2">Set API Key</button>
+
+      <button
+        @click="gotoSetting"
+        class="mt-2 mb-2 btn btn-sm btn-outline-info float-right"
+      >Settings</button>
     </div>
 
     <!-- API Key is set -->
@@ -137,9 +166,14 @@
             <tbody>
               <tr v-for="alias in existing" v-bind:key="alias">
                 <td>
-                  <a v-clipboard="() => alias"
+                  <a
+                    v-clipboard="() => alias"
                     v-clipboard:success="clipboardSuccessHandler"
-                    v-clipboard:error="clipboardErrorHandler" v-b-tooltip.hover title="Click to Copy" class="small-text cursor">{{ alias | truncate(50, "...") }}</a>
+                    v-clipboard:error="clipboardErrorHandler"
+                    v-b-tooltip.hover
+                    title="Click to Copy"
+                    class="small-text cursor"
+                  >{{ alias | truncate(50, "...") }}</a>
                 </td>
                 <td>
                   <button
@@ -191,11 +225,6 @@
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 
-// Local API
-// const API = "http://localhost:7777/api";
-
-const API = "https://app.simplelogin.io/api";
-
 function getInitialData() {
   const isFirefox = typeof InstallTrigger !== "undefined",
     isChrome =
@@ -207,6 +236,7 @@ function getInitialData() {
   const extensionUrl = isFirefox ? firefoxExtensionUrl : chromeExtensionUrl;
   return {
     loading: false,
+    apiUrl: "https://app.simplelogin.io",
 
     // API key
     apiKey: "",
@@ -251,6 +281,10 @@ export default {
 
       if (that.apiKey != "") that.getAliasOptions();
     });
+
+    chrome.storage.sync.get("apiUrl", function(data) {
+      that.apiUrl = data.apiUrl || "https://app.simplelogin.io";
+    });
   },
   methods: {
     async save() {
@@ -277,6 +311,9 @@ export default {
 
         Object.assign(that.$data, getInitialData());
         that.hostName = await that.getHostName();
+        chrome.storage.sync.get("apiUrl", function(data) {
+          that.apiUrl = data.apiUrl || "https://app.simplelogin.io";
+        });
       });
     },
     async backToOptionPage() {
@@ -288,13 +325,16 @@ export default {
       let that = this;
       that.loading = true;
 
-      let res = await fetch(API + "/alias/options?hostname=" + that.hostName, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authentication: this.apiKey
+      let res = await fetch(
+        that.apiUrl + "/api/alias/options?hostname=" + that.hostName,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authentication: this.apiKey
+          }
         }
-      });
+      );
 
       let json = await res.json();
 
@@ -334,7 +374,7 @@ export default {
       that.loading = true;
 
       let res = await fetch(
-        API + "/alias/custom/new?hostname=" + that.hostName,
+        that.apiUrl + "/api/alias/custom/new?hostname=" + that.hostName,
         {
           method: "POST",
           body: JSON.stringify({
@@ -367,6 +407,21 @@ export default {
             toastObject.goAway(0);
           }
         }
+      });
+    },
+
+    gotoSetting() {
+      this.$modal.show("setting-modal");
+    },
+
+    async saveApiUrl() {
+      let that = this;
+      chrome.storage.sync.set({ apiUrl: that.apiUrl }, async function() {
+        chrome.storage.sync.get("apiUrl", function(data) {
+          that.$toasted.show("API URL saved successfully", { type: "success" });
+          that.$modal.hide("setting-modal");
+          that.apiUrl = data.apiUrl;
+        });
       });
     },
 
