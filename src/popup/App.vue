@@ -121,13 +121,9 @@
               </div>
 
               <div class="col align-self-center input-group-sm" style="padding-left: 5px">
-                <select
-                  v-model="aliasSuffix"
-                  class="form-control"
-                >
+                <select v-model="aliasSuffix" class="form-control">
                   <option v-for="suffix in aliasSuffixes" v-bind:key="suffix">{{ suffix }}</option>
                 </select>
-
               </div>
             </div>
 
@@ -136,10 +132,7 @@
               v-if="aliasPrefix"
             >Alias is autofilled by the current website name, please feel free to change it.</div>
 
-            <button
-              :disabled="loading || !canCreate"
-              class="btn btn-primary btn-block mt-2"
-            >Create</button>
+            <button :disabled="loading || !canCreate" class="btn btn-primary btn-block mt-2">Create</button>
           </form>
         </div>
 
