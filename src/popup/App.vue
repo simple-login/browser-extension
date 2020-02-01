@@ -122,14 +122,12 @@
 
               <div class="col align-self-center input-group-sm" style="padding-left: 5px">
                 <select
-                  v-if="custom.suffixes.length > 1"
                   v-model="aliasSuffix"
                   class="form-control"
                 >
-                  <option v-for="suffix in custom.suffixes" v-bind:key="suffix">{{ suffix }}</option>
+                  <option v-for="suffix in aliasSuffixes" v-bind:key="suffix">{{ suffix }}</option>
                 </select>
 
-                <span v-if="custom.suffixes.length == 1">{{custom.suffixes[0]}}</span>
               </div>
             </div>
 
@@ -139,13 +137,13 @@
             >Alias is autofilled by the current website name, please feel free to change it.</div>
 
             <button
-              :disabled="loading || !canCreateCustom"
+              :disabled="loading || !canCreate"
               class="btn btn-primary btn-block mt-2"
             >Create</button>
           </form>
         </div>
 
-        <div v-if="!canCreateCustom">
+        <div v-if="!canCreate">
           <p class="text-danger" style="font-size: 14px">
             You have reached limit number of email aliases in free plan, please
             <a
@@ -255,14 +253,13 @@ function getInitialData() {
     hasRecommendation: false,
     recommendation: {},
 
-    // for custom
-    custom: {},
+    // alias info
     aliasPrefix: "",
     aliasSuffix: "",
-
-    canCreateCustom: false,
-
+    aliasSuffixes: [],
+    canCreate: false,
     existing: [],
+
     extensionUrl: extensionUrl
   };
 }
@@ -326,7 +323,7 @@ export default {
       that.loading = true;
 
       let res = await fetch(
-        that.apiUrl + "/api/alias/options?hostname=" + that.hostName,
+        that.apiUrl + "/api/v2/alias/options?hostname=" + that.hostName,
         {
           method: "GET",
           headers: {
@@ -355,13 +352,10 @@ export default {
         that.recommendation = json.recommendation || {};
       }
 
-      if (json.custom !== undefined) {
-        that.custom = json.custom;
-        that.aliasPrefix = that.custom.suggestion;
-        that.aliasSuffix = that.custom.suffixes[0];
-      }
-
-      that.canCreateCustom = json.can_create_custom;
+      that.aliasSuffixes = json.suffixes;
+      that.aliasSuffix = that.aliasSuffixes[0];
+      that.aliasPrefix = json.prefix_suggestion;
+      that.canCreate = json.can_create;
       that.existing = json.existing;
 
       that.optionsReady = true;
