@@ -132,7 +132,24 @@
               v-if="aliasPrefix"
             >Alias is autofilled by the current website name, please feel free to change it.</div>
 
-            <button :disabled="loading || !canCreate" class="btn btn-primary btn-block mt-2">Create</button>
+            <button
+              :disabled="loading || !canCreate"
+              class="btn btn-primary btn-block mt-2"
+            >Create Alias</button>
+          </form>
+        </div>
+
+        <div>
+          <hr />
+          <form @submit.prevent="createRandomAlias">
+            <button
+              :disabled="loading || !canCreate"
+              class="btn btn-success btn-block mt-2"
+            >Create Random Alias</button>
+            <div
+              class="small-text mb-1 text-center"
+              v-if="aliasPrefix"
+            >Generate a totally random alias.</div>
           </form>
         </div>
 
@@ -142,7 +159,7 @@
             <a
               href="https://app.simplelogin.io/dashboard/pricing"
               target="_blank"
-            >upgrade</a> or reuse the alias.
+            >upgrade</a> or reuse one of the existing aliases.
           </p>
         </div>
         <hr />
@@ -368,6 +385,30 @@ export default {
             alias_prefix: that.aliasPrefix,
             alias_suffix: that.aliasSuffix
           }),
+          headers: {
+            "Content-Type": "application/json",
+            Authentication: this.apiKey
+          }
+        }
+      );
+
+      let json = await res.json();
+      that.loading = false;
+      if (res.status == 201) {
+        that.newAlias = json.alias;
+      } else {
+        that.showError(json.error);
+      }
+    },
+
+    async createRandomAlias() {
+      let that = this;
+      that.loading = true;
+
+      let res = await fetch(
+        that.apiUrl + "/api/alias/random/new?hostname=" + that.hostName,
+        {
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authentication: this.apiKey
