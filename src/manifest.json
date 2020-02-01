@@ -1,6 +1,6 @@
 {
   "name": "SimpleLogin | Your anti-spam superhero 🦸‍♂️",
-  "description": "Open source solution to protect your email inbox",
+  "description": "Open source email alias solution",
   "version": null,
   "manifest_version": 2,
   "icons": {
