@@ -112,7 +112,7 @@
                 <input
                   v-model="aliasPrefix"
                   class="form-control"
-                  pattern="[0-9|A-Z|a-z|-|_]{1,}"
+                  pattern="[0-9a-z-_]{1,}"
                   title="Only letter, number, dash (-), underscore (_) can be used in alias prefix."
                   placeholder="Alias prefix"
                   autofocus
