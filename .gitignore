@@ -2,3 +2,4 @@
 /*.log
 /dist
 /dist-zip
+.DS_Store

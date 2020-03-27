@@ -30,7 +30,7 @@
 
     <div class="text-center mt-3">
       <a href="https://www.simplelogin.io" target="_blank">
-        <img src="/images/horizontal-logo.svg" />
+        <img src="/images/horizontal-logo.svg" class="mx-auto" style="max-width: 200px" />
       </a>
       <hr />
     </div>
