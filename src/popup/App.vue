@@ -281,6 +281,16 @@
         <button @click="backToOptionPage" class="btn btn-secondary mt-3">
           &lt; Back
         </button>
+
+        <div
+          class="mt-5 mx-auto alert alert-success p-3"
+          v-if="showVoteScreen"
+          style="max-width: 60%"
+        >
+          If you are happy with SimpleLogin, don't hesitate to support us by
+          <a :href="extensionUrl" target="_blank">voting</a>
+          the extension on the store. Thanks!
+        </div>
       </div>
 
       <!-- Footer -->
@@ -618,6 +628,11 @@ export default {
         console.log(error);
       }
     }
+  },
+  computed: {
+    showVoteScreen() {
+      return getRandomInt(10) % 2 == 0;
+    }
   }
 };
 
@@ -650,6 +665,10 @@ function mergeAliases(currentAliases, newAliases) {
   }
 
   return ret;
+}
+
+function getRandomInt(max) {
+  return Math.floor(Math.random() * Math.floor(max));
 }
 </script>
 
