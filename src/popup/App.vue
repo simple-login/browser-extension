@@ -188,39 +188,78 @@
         <hr />
 
         <div v-if="existing.length > 0">
-          <p class="font-weight-bold">Or use an existing alias</p>
-          <table class="table table-sm table-borderless">
-            <colgroup>
-              <col span="1" style="width: 80%;" />
-              <col span="1" style="width: 20%;" />
-            </colgroup>
-            <tbody>
-              <tr v-for="alias in existing" v-bind:key="alias">
-                <td>
-                  <a
-                    v-clipboard="() => alias"
-                    v-clipboard:success="clipboardSuccessHandler"
-                    v-clipboard:error="clipboardErrorHandler"
-                    v-b-tooltip.hover
-                    title="Click to Copy"
-                    class="small-text cursor"
-                    >{{ alias | truncate(50, "...") }}</a
-                  >
-                </td>
-                <td>
-                  <button
-                    v-if="alias"
-                    v-clipboard="() => alias"
-                    v-clipboard:success="clipboardSuccessHandler"
-                    v-clipboard:error="clipboardErrorHandler"
-                    class="btn btn-success btn-sm copy-btn"
-                  >
-                    Copy
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="mx-auto font-weight-bold text-center">
+            Or use an existing alias
+          </div>
+
+          <div class="mx-auto" style="max-width: 60%">
+            <input
+              v-model="aliasQuery"
+              v-on:keyup.enter="loadAlias"
+              class="form-control form-control-sm"
+              placeholder="Search"
+            />
+
+            <div class="small-text mt-1">
+              Type enter to search.
+              <button
+                v-if="aliasQuery"
+                @click="resetSearch"
+                class="float-right"
+                style="color: blue; border: none; padding: 0, background: none"
+              >
+                Reset
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <div v-for="alias in existing" v-bind:key="alias.id">
+              <div class="p-2 my-2 border-top">
+                <div class="d-flex">
+                  <div class="flex-grow-1 mr-2">
+                    <a
+                      v-clipboard="() => alias.email"
+                      v-clipboard:success="clipboardSuccessHandler"
+                      v-clipboard:error="clipboardErrorHandler"
+                      v-b-tooltip.hover
+                      title="Click to Copy"
+                      class="cursor"
+                      >{{ alias.email | truncate(50, "...") }}</a
+                    >
+                  </div>
+                  <div>
+                    <button
+                      v-if="alias"
+                      v-clipboard="() => alias.email"
+                      v-clipboard:success="clipboardSuccessHandler"
+                      v-clipboard:error="clipboardErrorHandler"
+                      class="btn btn-success btn-sm copy-btn"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                </div>
+
+                <div
+                  v-if="alias.note"
+                  class="font-weight-light"
+                  style="font-size: 12px"
+                >
+                  {{ alias.note }}
+                </div>
+
+                <div class="font-weight-lighter" style="font-size: 11px">
+                  {{ alias.nb_forward }} forwards, {{ alias.nb_reply }} replies,
+                  {{ alias.nb_block }} blocks.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div v-if="loadMoreAlias" class="text-secondary mx-auto text-center">
+          Loading aliases ...
         </div>
       </div>
 
@@ -308,7 +347,11 @@ function getInitialData() {
     aliasSuffix: "",
     aliasSuffixes: [],
     canCreate: false,
+
     existing: [],
+
+    aliasQuery: "",
+    loadMoreAlias: false,
 
     extensionUrl: extensionUrl
   };
@@ -366,14 +409,15 @@ export default {
     async backToOptionPage() {
       this.newAlias = "";
       this.optionsReady = false;
-      await this.getAliasOptions();
+      this.getAliasOptions();
     },
+
     async getAliasOptions() {
       let that = this;
       that.loading = true;
 
       let res = await fetch(
-        that.apiUrl + "/api/v2/alias/options?hostname=" + that.hostName,
+        that.apiUrl + "/api/v3/alias/options?hostname=" + that.hostName,
         {
           method: "GET",
           headers: {
@@ -406,11 +450,68 @@ export default {
       that.aliasSuffix = that.aliasSuffixes[0];
       that.aliasPrefix = json.prefix_suggestion;
       that.canCreate = json.can_create;
-      that.existing = json.existing;
 
       that.optionsReady = true;
-
       that.loading = false;
+
+      that.loadAlias();
+    },
+
+    async resetSearch() {
+      this.aliasQuery = "";
+      this.loadAlias();
+    },
+
+    async loadAlias() {
+      let that = this;
+      that.existing = [];
+      that.loadMoreAlias = true;
+
+      let currentPage = 0;
+      that.existing = await that.getAliases(currentPage, that.aliasQuery);
+      that.loadMoreAlias = false;
+
+      let allAliasesAreLoaded = false;
+
+      window.onscroll = async function() {
+        if (allAliasesAreLoaded)
+          // nothing to do
+          return;
+
+        let bottomOfWindow =
+          document.documentElement.scrollTop + window.innerHeight ===
+          document.documentElement.offsetHeight;
+
+        if (bottomOfWindow) {
+          console.log("reach button, load more alias");
+          currentPage += 1;
+
+          that.loadMoreAlias = true;
+          let newAliases = await that.getAliases(currentPage, that.aliasQuery);
+          that.loadMoreAlias = false;
+
+          allAliasesAreLoaded = newAliases.length === 0;
+          that.existing = mergeAliases(that.existing, newAliases);
+        }
+      };
+    },
+
+    async getAliases(page, query) {
+      let that = this;
+
+      let res = await fetch(that.apiUrl + `/api/aliases?page_id=${page}`, {
+        method: "POST",
+        body: JSON.stringify({
+          query: query
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          Authentication: this.apiKey
+        }
+      });
+
+      let json = await res.json();
+      return json.aliases;
     },
 
     async createCustomAlias() {
@@ -519,6 +620,37 @@ export default {
     }
   }
 };
+
+// merge newAliases into currentAliases. If conflict, keep the new one
+function mergeAliases(currentAliases, newAliases) {
+  // dict of aliasId and alias to speed up research
+  let newAliasesDict = {};
+  for (var i = 0; i < newAliases.length; i++) {
+    let alias = newAliases[i];
+    newAliasesDict[alias.id] = alias;
+  }
+
+  let ret = [];
+
+  // keep track of added aliases
+  let alreadyAddedId = {};
+  for (var i = 0; i < currentAliases.length; i++) {
+    let alias = currentAliases[i];
+    if (newAliasesDict[alias.id]) ret.push(newAliasesDict[alias.id]);
+    else ret.push(alias);
+
+    alreadyAddedId[alias.id] = true;
+  }
+
+  for (var i = 0; i < newAliases.length; i++) {
+    let alias = newAliases[i];
+    if (!alreadyAddedId[alias.id]) {
+      ret.push(alias);
+    }
+  }
+
+  return ret;
+}
 </script>
 
 <style lang="scss" scoped>
