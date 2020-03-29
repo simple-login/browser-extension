@@ -38,7 +38,7 @@
         <img
           src="/images/horizontal-logo.svg"
           class="mx-auto"
-          style="max-width: 200px"
+          style="max-width: 100px"
         />
       </a>
       <hr />
