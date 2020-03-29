@@ -6,10 +6,13 @@
       </div>
 
       <div class="p-3">
-        <div
-          class="mb-2"
-        >If you self-host SimpleLogin, you can change the API URL to your server address.</div>
-        <div class="mb-2">The default API URL is https://app.simplelogin.io</div>
+        <div class="mb-2">
+          If you self-host SimpleLogin, you can change the API URL to your
+          server address.
+        </div>
+        <div class="mb-2">
+          The default API URL is https://app.simplelogin.io
+        </div>
 
         <div style="margin: auto">
           <input
@@ -19,7 +22,9 @@
             autofocus
             class="form-control mt-3 w-100"
           />
-          <button @click="saveApiUrl" class="btn btn-primary btn-block mt-2">Set API URL</button>
+          <button @click="saveApiUrl" class="btn btn-primary btn-block mt-2">
+            Set API URL
+          </button>
         </div>
       </div>
     </modal>
@@ -30,7 +35,11 @@
 
     <div class="text-center mt-3">
       <a href="https://www.simplelogin.io" target="_blank">
-        <img src="/images/horizontal-logo.svg" class="mx-auto" style="max-width: 200px" />
+        <img
+          src="/images/horizontal-logo.svg"
+          class="mx-auto"
+          style="max-width: 200px"
+        />
       </a>
       <hr />
     </div>
@@ -39,7 +48,8 @@
     <div v-if="apiKey == ''" class="p-2 container">
       <h1 class="h5">
         Welcome to
-        <a href="https://simplelogin.io" target="_blank">SimpleLogin ↗</a>, the most powerful email alias solution!
+        <a href="https://simplelogin.io" target="_blank">SimpleLogin ↗</a>, the
+        most powerful email alias solution!
       </h1>
 
       <p>To get started, please follow these 3 simple steps:</p>
@@ -47,10 +57,7 @@
       <div class="mb-2">
         <span class="badge badge-primary badge-pill">1</span>
         Create your SimpleLogin account
-        <a
-          href="https://app.simplelogin.io/auth/register"
-          target="_blank"
-        >here</a>
+        <a :href="apiUrl + '/auth/register'" target="_blank">here</a>
         if this is not already done.
       </div>
 
@@ -58,7 +65,7 @@
         <span class="badge badge-primary badge-pill">2</span>
         Create and copy your
         <em>API Key</em>
-        <a href="https://app.simplelogin.io/dashboard/api_key" target="_blank">here</a>.
+        <a :href="apiUrl + '/dashboard/api_key'" target="_blank">here</a>.
       </div>
 
       <div class="mb-2">
@@ -75,18 +82,24 @@
         class="form-control mt-3 w-100"
       />
 
-      <button @click="save" class="btn btn-primary btn-block mt-2">Set API Key</button>
+      <button @click="save" class="btn btn-primary btn-block mt-2">
+        Set API Key
+      </button>
 
       <button
         @click="gotoSetting"
         class="mt-2 mb-2 btn btn-sm btn-outline-info float-right"
-      >Settings</button>
+      >
+        Settings
+      </button>
     </div>
 
     <!-- API Key is set -->
     <div v-else>
       <!-- Alias option page -->
-      <div v-if="!optionsReady && loading" class="container text-center">Please wait ...</div>
+      <div v-if="!optionsReady && loading" class="container text-center">
+        Please wait ...
+      </div>
 
       <div v-if="optionsReady && newAlias == ''" class="container">
         <div v-if="hasRecommendation" class="text-center">
@@ -97,9 +110,13 @@
             v-clipboard:success="clipboardSuccessHandler"
             v-clipboard:error="clipboardErrorHandler"
             class="btn btn-success btn-sm"
-          >Copy</button>
+          >
+            Copy
+          </button>
           <br />
-          <div class="small-text">recommended, already used on this website.</div>
+          <div class="small-text">
+            recommended, already used on this website.
+          </div>
 
           <hr />
         </div>
@@ -120,22 +137,29 @@
                 />
               </div>
 
-              <div class="col align-self-center input-group-sm" style="padding-left: 5px">
+              <div
+                class="col align-self-center input-group-sm"
+                style="padding-left: 5px"
+              >
                 <select v-model="aliasSuffix" class="form-control">
-                  <option v-for="suffix in aliasSuffixes" v-bind:key="suffix">{{ suffix }}</option>
+                  <option v-for="suffix in aliasSuffixes" v-bind:key="suffix">
+                    {{ suffix }}
+                  </option>
                 </select>
               </div>
             </div>
 
-            <div
-              class="small-text mb-1"
-              v-if="aliasPrefix"
-            >Alias is autofilled by the current website name, please feel free to change it.</div>
+            <div class="small-text mb-1" v-if="aliasPrefix">
+              Alias is autofilled by the current website name, please feel free
+              to change it.
+            </div>
 
             <button
               :disabled="loading || !canCreate"
               class="btn btn-primary btn-block mt-2"
-            >Create Alias</button>
+            >
+              Create Alias
+            </button>
           </form>
         </div>
 
@@ -145,21 +169,20 @@
             <button
               :disabled="loading || !canCreate"
               class="btn btn-success btn-block mt-2"
-            >Create Random Alias</button>
-            <div
-              class="small-text mb-1 text-center"
-              v-if="aliasPrefix"
-            >Generate a totally random alias.</div>
+            >
+              Create Random Alias
+            </button>
+            <div class="small-text mb-1 text-center" v-if="aliasPrefix">
+              Generate a totally random alias.
+            </div>
           </form>
         </div>
 
         <div v-if="!canCreate">
           <p class="text-danger" style="font-size: 14px">
             You have reached limit number of email aliases in free plan, please
-            <a
-              href="https://app.simplelogin.io/dashboard/pricing"
-              target="_blank"
-            >upgrade</a> or reuse one of the existing aliases.
+            <a :href="apiUrl + '/dashboard/pricing'" target="_blank">upgrade</a>
+            or reuse one of the existing aliases.
           </p>
         </div>
         <hr />
@@ -181,7 +204,8 @@
                     v-b-tooltip.hover
                     title="Click to Copy"
                     class="small-text cursor"
-                  >{{ alias | truncate(50, "...") }}</a>
+                    >{{ alias | truncate(50, "...") }}</a
+                  >
                 </td>
                 <td>
                   <button
@@ -190,7 +214,9 @@
                     v-clipboard:success="clipboardSuccessHandler"
                     v-clipboard:error="clipboardErrorHandler"
                     class="btn btn-success btn-sm copy-btn"
-                  >Copy</button>
+                  >
+                    Copy
+                  </button>
                 </td>
               </tr>
             </tbody>
@@ -207,23 +233,35 @@
           v-clipboard:success="clipboardSuccessHandler"
           v-clipboard:error="clipboardErrorHandler"
           class="btn btn-success btn-sm"
-        >Copy</button>
+        >
+          Copy
+        </button>
 
         <br />
 
-        <button @click="backToOptionPage" class="btn btn-secondary mt-3">&lt; Back</button>
+        <button @click="backToOptionPage" class="btn btn-secondary mt-3">
+          &lt; Back
+        </button>
       </div>
 
       <!-- Footer -->
       <hr />
       <div class="pt-0">
         <a
-          href="https://app.simplelogin.io/dashboard/"
+          :href="apiUrl + '/dashboard/'"
           target="_blank"
           class="btn btn-sm btn-link float-left"
-        >Manage Aliases</a>
-        <a v-bind:href="extensionUrl" target="_blank" class="btn btn-sm btn-link">Rate Us</a>
-        <button @click="reset" class="btn btn-sm btn-link float-right">Logout</button>
+          >Manage Aliases</a
+        >
+        <a
+          v-bind:href="extensionUrl"
+          target="_blank"
+          class="btn btn-sm btn-link"
+          >Rate Us</a
+        >
+        <button @click="reset" class="btn btn-sm btn-link float-right">
+          Logout
+        </button>
       </div>
     </div>
   </div>
@@ -232,6 +270,8 @@
 <script>
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
+
+const DEFAULT_API = "https://app.simplelogin.io";
 
 function getInitialData() {
   const isFirefox = typeof InstallTrigger !== "undefined",
@@ -244,7 +284,7 @@ function getInitialData() {
   const extensionUrl = isFirefox ? firefoxExtensionUrl : chromeExtensionUrl;
   return {
     loading: false,
-    apiUrl: "https://app.simplelogin.io",
+    apiUrl: DEFAULT_API,
 
     // API key
     apiKey: "",
@@ -290,7 +330,7 @@ export default {
     });
 
     chrome.storage.sync.get("apiUrl", function(data) {
-      that.apiUrl = data.apiUrl || "https://app.simplelogin.io";
+      that.apiUrl = data.apiUrl || DEFAULT_API;
     });
   },
   methods: {
@@ -319,7 +359,7 @@ export default {
         Object.assign(that.$data, getInitialData());
         that.hostName = await that.getHostName();
         chrome.storage.sync.get("apiUrl", function(data) {
-          that.apiUrl = data.apiUrl || "https://app.simplelogin.io";
+          that.apiUrl = data.apiUrl || DEFAULT_API;
         });
       });
     },
