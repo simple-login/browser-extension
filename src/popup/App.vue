@@ -283,13 +283,27 @@
         </button>
 
         <div
-          class="mt-5 mx-auto alert alert-success p-3"
+          class="mt-5 mx-auto bg-light p-3"
           v-if="showVoteScreen"
-          style="max-width: 60%"
+          style="max-width: 80%"
         >
-          If you are happy with SimpleLogin, don't hesitate to support us by
-          <a :href="extensionUrl" target="_blank">voting</a>
-          the extension on the store. Thanks!
+          If you are happy with SimpleLogin, please support us by rating the
+          extension on the store. Thanks!
+
+          <br />
+
+          <a :href="extensionUrl" target="_blank" class="btn btn-primary mt-3">
+            Rate Us</a
+          >
+
+          <br />
+
+          <button
+            @click="doNotAskRateAgain"
+            class="btn btn-sm btn-link text-secondary mt-3"
+          >
+            Do not ask again
+          </button>
         </div>
       </div>
 
@@ -302,12 +316,7 @@
           class="btn btn-sm btn-link float-left"
           >Manage Aliases</a
         >
-        <a
-          v-bind:href="extensionUrl"
-          target="_blank"
-          class="btn btn-sm btn-link"
-          >Rate Us</a
-        >
+
         <button @click="reset" class="btn btn-sm btn-link float-right">
           Logout
         </button>
@@ -363,7 +372,10 @@ function getInitialData() {
     aliasQuery: "",
     loadMoreAlias: false,
 
-    extensionUrl: extensionUrl
+    extensionUrl: extensionUrl,
+
+    notAskingRate: false,
+    showVoteScreen: false
   };
 }
 
@@ -385,6 +397,10 @@ export default {
     chrome.storage.sync.get("apiUrl", function(data) {
       that.apiUrl = data.apiUrl || DEFAULT_API;
     });
+
+    chrome.storage.sync.get("notAskingRate", function(data) {
+      that.notAskingRate = data.notAskingRate || false;
+    });
   },
   methods: {
     async save() {
@@ -405,16 +421,20 @@ export default {
     },
     async reset() {
       let that = this;
-      chrome.storage.sync.set({ apiKey: "" }, async function() {
-        that.apiKey = "";
-        that.apiInput = "";
+      chrome.storage.sync.set(
+        { apiKey: "", notAskingRate: false },
+        async function() {
+          that.apiKey = "";
+          that.apiInput = "";
+          that.notAskingRate = false;
 
-        Object.assign(that.$data, getInitialData());
-        that.hostName = await that.getHostName();
-        chrome.storage.sync.get("apiUrl", function(data) {
-          that.apiUrl = data.apiUrl || DEFAULT_API;
-        });
-      });
+          Object.assign(that.$data, getInitialData());
+          that.hostName = await that.getHostName();
+          chrome.storage.sync.get("apiUrl", function(data) {
+            that.apiUrl = data.apiUrl || DEFAULT_API;
+          });
+        }
+      );
     },
     async backToOptionPage() {
       this.newAlias = "";
@@ -547,6 +567,7 @@ export default {
       that.loading = false;
       if (res.status == 201) {
         that.newAlias = json.alias;
+        that.recomputeShowVoteScreen();
       } else {
         that.showError(json.error);
       }
@@ -571,6 +592,7 @@ export default {
       that.loading = false;
       if (res.status == 201) {
         that.newAlias = json.alias;
+        that.recomputeShowVoteScreen();
       } else {
         that.showError(json.error);
       }
@@ -604,6 +626,20 @@ export default {
       });
     },
 
+    async doNotAskRateAgain() {
+      let that = this;
+
+      chrome.storage.sync.set({ notAskingRate: true }, function() {
+        chrome.storage.sync.get("notAskingRate", function(data) {
+          that.$toasted.show("Your preference has been saved", {
+            type: "success"
+          });
+          that.notAskingRate = true;
+          that.recomputeShowVoteScreen();
+        });
+      });
+    },
+
     // Clipboard
     clipboardSuccessHandler({ value, event }) {
       this.$toasted.show(value + " copied to clipboard", {
@@ -627,13 +663,14 @@ export default {
       } catch (error) {
         console.log(error);
       }
+    },
+
+    recomputeShowVoteScreen() {
+      if (this.notAskingRate) this.showVoteScreen = false;
+      else this.showVoteScreen = getRandomInt(10) % 2 == 0;
     }
   },
-  computed: {
-    showVoteScreen() {
-      return getRandomInt(10) % 2 == 0;
-    }
-  }
+  computed: {}
 };
 
 // merge newAliases into currentAliases. If conflict, keep the new one
