@@ -37,11 +37,16 @@
             class="mx-auto"
             style="max-width: 100px"
           />
-
         </a>
       </div>
       <div class="col text-center">
-        <b-spinner v-if="loading" class="text-center" type="grow" variant="primary" label="Spinning"></b-spinner>
+        <b-spinner
+          v-if="loading"
+          class="text-center"
+          type="grow"
+          variant="primary"
+          label="Spinning"
+        ></b-spinner>
       </div>
 
       <div class="col mr-2">
