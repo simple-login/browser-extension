@@ -609,7 +609,7 @@ export default {
     showError(msg) {
       this.$toasted.show(msg, {
         type: "error",
-        duration: null,
+        duration: 3000,
         action: {
           text: "x",
           onClick: (e, toastObject) => {
