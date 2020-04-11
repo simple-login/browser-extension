@@ -29,19 +29,29 @@
       </div>
     </modal>
 
-    <div class="text-center mt-2" v-if="loading">
-      <b-spinner type="grow" variant="primary" label="Spinning"></b-spinner>
-    </div>
+    <div class="row mt-2 pb-2" style="border-bottom: 1px #eee solid">
+      <div class="col ml-3">
+        <a href="https://www.simplelogin.io" target="_blank">
+          <img
+            src="/images/horizontal-logo.svg"
+            class="mx-auto"
+            style="max-width: 100px"
+          />
 
-    <div class="text-center mt-3">
-      <a href="https://www.simplelogin.io" target="_blank">
-        <img
-          src="/images/horizontal-logo.svg"
-          class="mx-auto"
-          style="max-width: 100px"
-        />
-      </a>
-      <hr />
+        </a>
+      </div>
+      <div class="col text-center">
+        <b-spinner v-if="loading" class="text-center" type="grow" variant="primary" label="Spinning"></b-spinner>
+      </div>
+
+      <div class="col mr-2">
+        <a
+          :href="apiUrl + '/dashboard/'"
+          target="_blank"
+          class="btn btn-sm btn-outline-success float-right"
+          >Dashboard ↗</a
+        >
+      </div>
     </div>
 
     <!-- No API Key set: Setup screen -->
@@ -93,14 +103,16 @@
         Settings
       </button>
     </div>
+    <!-- END No API Key set: Setup screen -->
 
     <!-- API Key is set -->
-    <div v-else>
+    <div v-else class="mt-3">
       <!-- Alias option page -->
       <div v-if="!optionsReady && loading" class="container text-center">
         Please wait ...
       </div>
 
+      <!-- Main Page -->
       <div v-if="optionsReady && newAlias == ''" class="container">
         <div v-if="hasRecommendation" class="text-center">
           <span class="text-success">{{ recommendation.alias }}</span>
@@ -262,7 +274,9 @@
           Loading aliases ...
         </div>
       </div>
+      <!-- END Main Page -->
 
+      <!-- New Alias Page -->
       <div v-if="newAlias != ''" class="text-center">
         <p class="font-weight-bold">Alias is created</p>
         <span class="text-info">{{ newAlias }}</span>
@@ -306,17 +320,11 @@
           </button>
         </div>
       </div>
+      <!-- END New Alias Page -->
 
       <!-- Footer -->
       <hr />
       <div class="pt-0">
-        <a
-          :href="apiUrl + '/dashboard/'"
-          target="_blank"
-          class="btn btn-sm btn-link float-left"
-          >Manage Aliases</a
-        >
-
         <button @click="reset" class="btn btn-sm btn-link float-right">
           Logout
         </button>
