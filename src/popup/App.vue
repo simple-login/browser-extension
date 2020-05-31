@@ -158,9 +158,9 @@
                 class="col align-self-center input-group-sm"
                 style="padding-left: 5px"
               >
-                <select v-model="aliasSuffix" class="form-control">
-                  <option v-for="suffix in aliasSuffixes" v-bind:key="suffix">
-                    {{ suffix }}
+                <select v-model="signedSuffix" class="form-control">
+                  <option v-for="suffix in aliasSuffixes" v-bind:key="suffix[0]" :value="suffix[1]">
+                    {{ suffix[0] }}
                   </option>
                 </select>
               </div>
@@ -376,7 +376,7 @@ function getInitialData() {
 
     // alias info
     aliasPrefix: "",
-    aliasSuffix: "",
+    signedSuffix: "",
     aliasSuffixes: [],
     canCreate: false,
 
@@ -460,7 +460,7 @@ export default {
       that.loading = true;
 
       let res = await fetch(
-        that.apiUrl + "/api/v3/alias/options?hostname=" + that.hostName,
+        that.apiUrl + "/api/v4/alias/options?hostname=" + that.hostName,
         {
           method: "GET",
           headers: {
@@ -490,7 +490,7 @@ export default {
       }
 
       that.aliasSuffixes = json.suffixes;
-      that.aliasSuffix = that.aliasSuffixes[0];
+      that.signedSuffix = that.aliasSuffixes[0][1];
       that.aliasPrefix = json.prefix_suggestion;
       that.canCreate = json.can_create;
 
@@ -562,12 +562,12 @@ export default {
       that.loading = true;
 
       let res = await fetch(
-        that.apiUrl + "/api/alias/custom/new?hostname=" + that.hostName,
+        that.apiUrl + "/api/v2/alias/custom/new?hostname=" + that.hostName,
         {
           method: "POST",
           body: JSON.stringify({
             alias_prefix: that.aliasPrefix,
-            alias_suffix: that.aliasSuffix
+            signed_suffix: that.signedSuffix
           }),
           headers: {
             "Content-Type": "application/json",
