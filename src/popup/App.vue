@@ -442,18 +442,24 @@ export default {
             duration: 2500,
           });
 
-          chrome.storage.sync.set({ apiKey: this.apiInput }, function() {
-            chrome.storage.sync.get("apiKey", function(data) {
-              that.apiKey = data.apiKey;
-
-              that.getAliasOptions();
-            });
-          });
+          that.setApiKey(that.apiInput);
         })
         .catch((err) => {
           that.showError("Incorrect API Key.");
         });
     },
+
+    async setApiKey(apiKey) {
+      const that = this;
+      chrome.storage.sync.set({ apiKey: apiKey }, function() {
+        chrome.storage.sync.get("apiKey", function(data) {
+          that.apiKey = data.apiKey;
+
+          that.getAliasOptions();
+        });
+      });
+    },
+
     async reset() {
       let that = this;
       chrome.storage.sync.set(
