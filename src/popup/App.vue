@@ -1,5 +1,6 @@
 <template>
   <div class style="width: 450px">
+    <!-- Setting modal -->
     <modal name="setting-modal" :adaptive="true" width="80%" height="auto">
       <div slot="top-right">
         <button @click="$modal.hide('setting-modal')">❌</button>
@@ -159,7 +160,11 @@
                 style="padding-left: 5px"
               >
                 <select v-model="signedSuffix" class="form-control">
-                  <option v-for="suffix in aliasSuffixes" v-bind:key="suffix[0]" :value="suffix[1]">
+                  <option
+                    v-for="suffix in aliasSuffixes"
+                    v-bind:key="suffix[0]"
+                    :value="suffix[1]"
+                  >
                     {{ suffix[0] }}
                   </option>
                 </select>
@@ -388,7 +393,7 @@ function getInitialData() {
     extensionUrl: extensionUrl,
 
     notAskingRate: false,
-    showVoteScreen: false
+    showVoteScreen: false,
   };
 }
 
@@ -465,8 +470,8 @@ export default {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authentication: this.apiKey
-          }
+            Authentication: this.apiKey,
+          },
         }
       );
 
@@ -545,12 +550,12 @@ export default {
       let res = await fetch(that.apiUrl + `/api/aliases?page_id=${page}`, {
         method: "POST",
         body: JSON.stringify({
-          query: query
+          query: query,
         }),
         headers: {
           "Content-Type": "application/json",
-          Authentication: this.apiKey
-        }
+          Authentication: this.apiKey,
+        },
       });
 
       let json = await res.json();
@@ -567,12 +572,12 @@ export default {
           method: "POST",
           body: JSON.stringify({
             alias_prefix: that.aliasPrefix,
-            signed_suffix: that.signedSuffix
+            signed_suffix: that.signedSuffix,
           }),
           headers: {
             "Content-Type": "application/json",
-            Authentication: this.apiKey
-          }
+            Authentication: this.apiKey,
+          },
         }
       );
 
@@ -596,8 +601,8 @@ export default {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authentication: this.apiKey
-          }
+            Authentication: this.apiKey,
+          },
         }
       );
 
@@ -619,8 +624,8 @@ export default {
           text: "x",
           onClick: (e, toastObject) => {
             toastObject.goAway(0);
-          }
-        }
+          },
+        },
       });
     },
 
@@ -645,7 +650,7 @@ export default {
       chrome.storage.sync.set({ notAskingRate: true }, function() {
         chrome.storage.sync.get("notAskingRate", function(data) {
           that.$toasted.show("Your preference has been saved", {
-            type: "success"
+            type: "success",
           });
           that.notAskingRate = true;
           that.recomputeShowVoteScreen();
@@ -657,7 +662,7 @@ export default {
     clipboardSuccessHandler({ value, event }) {
       this.$toasted.show(value + " copied to clipboard", {
         type: "success",
-        duration: 2500
+        duration: 2500,
       });
     },
 
@@ -669,7 +674,7 @@ export default {
       try {
         var result = await this.$browser.tabs.query({
           active: true,
-          currentWindow: true
+          currentWindow: true,
         });
         var url = new URL(result[0].url);
         return url.hostname;
@@ -681,9 +686,9 @@ export default {
     recomputeShowVoteScreen() {
       if (this.notAskingRate) this.showVoteScreen = false;
       else this.showVoteScreen = getRandomInt(10) % 2 == 0;
-    }
   },
-  computed: {}
+  },
+  computed: {},
 };
 
 // merge newAliases into currentAliases. If conflict, keep the new one
