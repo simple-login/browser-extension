@@ -50,7 +50,7 @@
         ></b-spinner>
       </div>
 
-      <div class="col mr-2">
+      <div v-if="apiKey !== ''" class="col mr-2">
         <a
           :href="apiUrl + '/dashboard/'"
           target="_blank"
