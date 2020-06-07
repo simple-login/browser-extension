@@ -228,7 +228,7 @@
                 v-if="aliasQuery"
                 @click="resetSearch"
                 class="float-right"
-                style="color: blue; border: none; padding: 0, background: none"
+                style="color: blue; border: none; padding: 0; background: none"
               >
                 Reset
               </button>
