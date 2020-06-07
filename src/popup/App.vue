@@ -346,6 +346,7 @@
 <script>
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
+import axios from "axios";
 
 const DEFAULT_API = "https://app.simplelogin.io";
 
@@ -428,14 +429,30 @@ export default {
         return;
       }
 
-      chrome.storage.sync.set({ apiKey: this.apiInput }, function() {
-        chrome.storage.sync.get("apiKey", function(data) {
-          that.$toasted.show("API Key set successfully", { type: "success" });
-          that.apiKey = data.apiKey;
+      // check api key
+      axios
+        .get(that.apiUrl + "/api/user_info", {
+          headers: { Authentication: that.apiInput },
+        })
+        .then((res) => {
+          const userName = res.data.name || res.data.email;
 
-          that.getAliasOptions();
+          this.$toasted.show(`Hi ${userName}!`, {
+            type: "success",
+            duration: 2500,
+          });
+
+          chrome.storage.sync.set({ apiKey: this.apiInput }, function() {
+            chrome.storage.sync.get("apiKey", function(data) {
+              that.apiKey = data.apiKey;
+
+              that.getAliasOptions();
+            });
+          });
+        })
+        .catch((err) => {
+          that.showError("Incorrect API Key.");
         });
-      });
     },
     async reset() {
       let that = this;
@@ -686,7 +703,7 @@ export default {
     recomputeShowVoteScreen() {
       if (this.notAskingRate) this.showVoteScreen = false;
       else this.showVoteScreen = getRandomInt(10) % 2 == 0;
-  },
+    },
   },
   computed: {},
 };
