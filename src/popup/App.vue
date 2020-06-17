@@ -736,6 +736,9 @@ em {
 .copy-btn {
   font-size: 0.6rem;
   line-height: 0.75;
+  position: absolute;
+  right: 0;
+  transform: translateX(-50%);
 }
 .cursor {
   cursor: pointer;
