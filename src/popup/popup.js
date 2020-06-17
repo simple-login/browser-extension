@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import App from './App'
+import App from './app/MainApp'
 import Clipboard from 'v-clipboard'
 import Toasted from 'vue-toasted';
 import BootstrapVue from 'bootstrap-vue'

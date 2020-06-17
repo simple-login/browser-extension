@@ -1,0 +1,19 @@
+em {
+  font-style: normal;
+  background-color: #ffff00;
+}
+
+.small-text {
+  font-size: 12px;
+  font-weight: lighter;
+}
+
+.copy-btn {
+  font-size: 0.6rem;
+  line-height: 0.75;
+  position: absolute;
+  transform: translateX(-100%);
+}
+.cursor {
+  cursor: pointer;
+}
