@@ -1,5 +1,36 @@
 <template>
   <div class style="width: 450px">
+    <!-- App bar -->
+    <div class="row mt-2 pb-2" style="border-bottom: 1px #eee solid">
+      <div class="col ml-3">
+        <a href="https://www.simplelogin.io" target="_blank">
+          <img
+            src="/images/horizontal-logo.svg"
+            class="mx-auto"
+            style="max-width: 100px"
+          />
+        </a>
+      </div>
+      <div class="col text-center">
+        <b-spinner
+          v-if="loading"
+          class="text-center"
+          type="grow"
+          variant="primary"
+          label="Spinning"
+        ></b-spinner>
+      </div>
+
+      <div class="col mr-2">
+        <a
+          :href="apiUrl + '/dashboard/'"
+          target="_blank"
+          class="btn btn-sm btn-outline-success float-right"
+          >Dashboard ↗</a
+        >
+      </div>
+    </div>
+
     <!-- No API Key set: Setup screen -->
     <setup-wizard v-if="!apiKey"></setup-wizard>
 
