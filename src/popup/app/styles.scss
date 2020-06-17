@@ -17,3 +17,18 @@ em {
 .cursor {
   cursor: pointer;
 }
+
+.list-item-email {
+  overflow-x: hidden;
+  margin-right: 40px !important;
+  position: relative;
+}
+
+.list-item-email-fade {
+  right: 0;
+  width: 30px;
+  height: 100%;
+  background: linear-gradient(to right, transparent, white);
+  top: 0;
+  position: absolute;
+}
