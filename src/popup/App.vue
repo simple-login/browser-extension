@@ -747,9 +747,13 @@ em {
 }
 
 .list-item-email {
-  overflow-x: hidden;
   margin-right: 40px !important;
   position: relative;
+  overflow: hidden;
+}
+
+.list-item-email > a {
+  white-space: nowrap;
 }
 
 .list-item-email-fade {
