@@ -239,7 +239,7 @@
             <div v-for="alias in existing" v-bind:key="alias.id">
               <div class="p-2 my-2 border-top">
                 <div class="d-flex">
-                  <div class="flex-grow-1 mr-2">
+                  <div class="flex-grow-1 mr-2 list-item-email">
                     <a
                       v-clipboard="() => alias.email"
                       v-clipboard:success="clipboardSuccessHandler"
@@ -247,8 +247,10 @@
                       v-b-tooltip.hover
                       title="Click to Copy"
                       class="cursor"
-                      >{{ alias.email | truncate(50, "...") }}</a
                     >
+                      {{ alias.email }}
+                    </a>
+                    <div class="list-item-email-fade" />
                   </div>
                   <div>
                     <button
@@ -764,8 +766,30 @@ em {
 .copy-btn {
   font-size: 0.6rem;
   line-height: 0.75;
+  position: absolute;
+  right: 0;
+  transform: translateX(-50%);
 }
 .cursor {
   cursor: pointer;
+}
+
+.list-item-email {
+  margin-right: 40px !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.list-item-email > a {
+  white-space: nowrap;
+}
+
+.list-item-email-fade {
+  right: 0;
+  width: 30px;
+  height: 100%;
+  background: linear-gradient(to right, transparent, white);
+  top: 0;
+  position: absolute;
 }
 </style>
