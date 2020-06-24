@@ -1,5 +1,5 @@
 <template>
-  <div class style="width: 450px">
+  <div class style="width: 450px;">
     <!-- Setting modal -->
     <modal name="setting-modal" :adaptive="true" width="80%" height="auto">
       <div slot="top-right">
@@ -15,7 +15,7 @@
           The default API URL is https://app.simplelogin.io
         </div>
 
-        <div style="margin: auto">
+        <div style="margin: auto;">
           <input
             v-model="apiUrl"
             v-on:keyup.enter="saveApiUrl"
@@ -30,13 +30,13 @@
       </div>
     </modal>
 
-    <div class="row mt-2 pb-2" style="border-bottom: 1px #eee solid">
+    <div class="row mt-2 pb-2" style="border-bottom: 1px #eee solid;">
       <div class="col ml-3">
         <a href="https://www.simplelogin.io" target="_blank">
           <img
             src="/images/horizontal-logo.svg"
             class="mx-auto"
-            style="max-width: 100px"
+            style="max-width: 100px;"
           />
         </a>
       </div>
@@ -143,7 +143,7 @@
         <div>
           <form @submit.prevent="createCustomAlias">
             <div class="row mb-2">
-              <div class="col input-group-sm" style="padding-right: 0">
+              <div class="col input-group-sm" style="padding-right: 0;">
                 <input
                   v-model="aliasPrefix"
                   class="form-control"
@@ -157,7 +157,7 @@
 
               <div
                 class="col align-self-center input-group-sm"
-                style="padding-left: 5px"
+                style="padding-left: 5px;"
               >
                 <select v-model="signedSuffix" class="form-control">
                   <option
@@ -201,7 +201,7 @@
         </div>
 
         <div v-if="!canCreate">
-          <p class="text-danger" style="font-size: 14px">
+          <p class="text-danger" style="font-size: 14px;">
             You have reached limit number of email aliases in free plan, please
             <a :href="apiUrl + '/dashboard/pricing'" target="_blank">upgrade</a>
             or reuse one of the existing aliases.
@@ -214,7 +214,7 @@
             Or use an existing alias
           </div>
 
-          <div class="mx-auto" style="max-width: 60%">
+          <div class="mx-auto" style="max-width: 60%;">
             <input
               v-model="aliasQuery"
               v-on:keyup.enter="loadAlias"
@@ -228,7 +228,7 @@
                 v-if="aliasQuery"
                 @click="resetSearch"
                 class="float-right"
-                style="color: blue; border: none; padding: 0; background: none"
+                style="color: blue; border: none; padding: 0; background: none;"
               >
                 Reset
               </button>
@@ -268,12 +268,12 @@
                 <div
                   v-if="alias.note"
                   class="font-weight-light"
-                  style="font-size: 12px"
+                  style="font-size: 12px;"
                 >
                   {{ alias.note }}
                 </div>
 
-                <div class="font-weight-lighter" style="font-size: 11px">
+                <div class="font-weight-lighter" style="font-size: 11px;">
                   {{ alias.nb_forward }} forwards, {{ alias.nb_reply }} replies,
                   {{ alias.nb_block }} blocks.
                 </div>
@@ -311,7 +311,7 @@
         <div
           class="mt-5 mx-auto bg-light p-3"
           v-if="showVoteScreen"
-          style="max-width: 80%"
+          style="max-width: 80%;"
         >
           If you are happy with SimpleLogin, please support us by rating the
           extension on the store. Thanks!
@@ -406,7 +406,7 @@ export default {
   },
   async mounted() {
     let that = this;
-    chrome.storage.sync.get("apiKey", async function(data) {
+    chrome.storage.sync.get("apiKey", async function (data) {
       that.apiKey = data.apiKey || "";
       that.apiInput = that.apiKey || "";
 
@@ -415,11 +415,11 @@ export default {
       if (that.apiKey != "") that.getAliasOptions();
     });
 
-    chrome.storage.sync.get("apiUrl", function(data) {
+    chrome.storage.sync.get("apiUrl", function (data) {
       that.apiUrl = data.apiUrl || DEFAULT_API;
     });
 
-    chrome.storage.sync.get("notAskingRate", function(data) {
+    chrome.storage.sync.get("notAskingRate", function (data) {
       that.notAskingRate = data.notAskingRate || false;
     });
   },
@@ -453,8 +453,8 @@ export default {
 
     async setApiKey(apiKey) {
       const that = this;
-      chrome.storage.sync.set({ apiKey: apiKey }, function() {
-        chrome.storage.sync.get("apiKey", function(data) {
+      chrome.storage.sync.set({ apiKey: apiKey }, function () {
+        chrome.storage.sync.get("apiKey", function (data) {
           that.apiKey = data.apiKey;
 
           that.getAliasOptions();
@@ -466,14 +466,14 @@ export default {
       let that = this;
       chrome.storage.sync.set(
         { apiKey: "", notAskingRate: false },
-        async function() {
+        async function () {
           that.apiKey = "";
           that.apiInput = "";
           that.notAskingRate = false;
 
           Object.assign(that.$data, getInitialData());
           that.hostName = await that.getHostName();
-          chrome.storage.sync.get("apiUrl", function(data) {
+          chrome.storage.sync.get("apiUrl", function (data) {
             that.apiUrl = data.apiUrl || DEFAULT_API;
           });
         }
@@ -546,7 +546,7 @@ export default {
 
       let allAliasesAreLoaded = false;
 
-      window.onscroll = async function() {
+      window.onscroll = async function () {
         if (allAliasesAreLoaded)
           // nothing to do
           return;
@@ -676,8 +676,8 @@ export default {
 
     async saveApiUrl() {
       let that = this;
-      chrome.storage.sync.set({ apiUrl: that.apiUrl }, async function() {
-        chrome.storage.sync.get("apiUrl", function(data) {
+      chrome.storage.sync.set({ apiUrl: that.apiUrl }, async function () {
+        chrome.storage.sync.get("apiUrl", function (data) {
           that.$toasted.show("API URL saved successfully", { type: "success" });
           that.$modal.hide("setting-modal");
           that.apiUrl = data.apiUrl;
@@ -688,8 +688,8 @@ export default {
     async doNotAskRateAgain() {
       let that = this;
 
-      chrome.storage.sync.set({ notAskingRate: true }, function() {
-        chrome.storage.sync.get("notAskingRate", function(data) {
+      chrome.storage.sync.set({ notAskingRate: true }, function () {
+        chrome.storage.sync.get("notAskingRate", function (data) {
           that.$toasted.show("Your preference has been saved", {
             type: "success",
           });

@@ -42,3 +42,5 @@ To run the extension locally, please follow these steps:
 On Firefox, it can be done via `web-ext` tool from within the `/dist` folder: `cd dist/ && web-ext run`
 
 To release, build the production version and zip it via `npm run build && npm run build-zip`
+
+The code is formatted using `prettier`, make sure to run it before creating the commit :).
