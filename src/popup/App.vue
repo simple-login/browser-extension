@@ -591,54 +591,72 @@ export default {
       let that = this;
       that.loading = true;
 
-      let res = await fetch(
-        that.apiUrl + "/api/v2/alias/custom/new?hostname=" + that.hostName,
-        {
-          method: "POST",
-          body: JSON.stringify({
-            alias_prefix: that.aliasPrefix,
-            signed_suffix: that.signedSuffix,
-          }),
-          headers: {
-            "Content-Type": "application/json",
-            Authentication: this.apiKey,
-          },
-        }
-      );
-
-      let json = await res.json();
-      that.loading = false;
-      if (res.status == 201) {
-        that.newAlias = json.alias;
-        that.recomputeShowVoteScreen();
-      } else {
-        that.showError(json.error);
-      }
+      axios
+        .post(
+          that.apiUrl + "/api/v2/alias/custom/new?hostname=" + that.hostName,
+          { alias_prefix: that.aliasPrefix, signed_suffix: that.signedSuffix },
+          {
+            headers: { Authentication: this.apiKey },
+          }
+        )
+        .then((res) => {
+          if (res.status == 201) {
+            that.newAlias = res.data.alias;
+            that.recomputeShowVoteScreen();
+          } else {
+            that.showError(res.data.error);
+          }
+        })
+        .catch((err) => {
+          // rate limit reached
+          if (err.request.status == 429) {
+            that.showError(
+              "Rate limit exceeded - please wait 60s before creating new alias"
+            );
+          } else if (err.request.status == 409) {
+            that.showError("Alias already chosen, please select another one");
+          } else {
+            that.showError("Unknown error");
+          }
+        })
+        .then(() => {
+          that.loading = false;
+        });
     },
 
     async createRandomAlias() {
       let that = this;
       that.loading = true;
 
-      let res = await fetch(
-        that.apiUrl + "/api/alias/random/new?hostname=" + that.hostName,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authentication: this.apiKey,
-          },
-        }
-      );
-
-      let json = await res.json();
-      that.loading = false;
-      if (res.status == 201) {
-        that.newAlias = json.alias;
-        that.recomputeShowVoteScreen();
-      } else {
-        that.showError(json.error);
-      }
+      axios
+        .post(
+          that.apiUrl + "/api/alias/random/new?hostname=" + that.hostName,
+          {},
+          {
+            headers: { Authentication: this.apiKey },
+          }
+        )
+        .then((res) => {
+          if (res.status == 201) {
+            that.newAlias = res.data.alias;
+            that.recomputeShowVoteScreen();
+          } else {
+            that.showError(res.data.error);
+          }
+        })
+        .catch((err) => {
+          // rate limit reached
+          if (err.request.status == 429) {
+            that.showError(
+              "Rate limit exceeded - please wait 60s before creating new alias"
+            );
+          } else {
+            that.showError("Unknown error");
+          }
+        })
+        .then(() => {
+          that.loading = false;
+        });
     },
 
     showError(msg) {
