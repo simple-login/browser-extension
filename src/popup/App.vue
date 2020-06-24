@@ -169,6 +169,17 @@
           Login
         </button>
       </form>
+
+      <div class="text-center">
+        <a
+          href="https://app.simplelogin.io/auth/register"
+          target="_blank"
+          class="mt-2 btn btn-outline-success btn-block"
+        >
+          Sign Up ↗
+        </a>
+      </div>
+
       <div class="text-center">
         <button @click="showApiKeySetup" class="mt-2 btn btn-link text-center">
           Sign in with API Key
