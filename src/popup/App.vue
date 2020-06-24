@@ -588,74 +588,72 @@ export default {
     },
 
     async createCustomAlias() {
-      let that = this;
-      that.loading = true;
+      this.loading = true;
 
       axios
         .post(
-          that.apiUrl + "/api/v2/alias/custom/new?hostname=" + that.hostName,
-          { alias_prefix: that.aliasPrefix, signed_suffix: that.signedSuffix },
+          this.apiUrl + "/api/v2/alias/custom/new?hostname=" + this.hostName,
+          { alias_prefix: this.aliasPrefix, signed_suffix: this.signedSuffix },
           {
             headers: { Authentication: this.apiKey },
           }
         )
         .then((res) => {
-          if (res.status == 201) {
-            that.newAlias = res.data.alias;
-            that.recomputeShowVoteScreen();
+          if (res.status === 201) {
+            this.newAlias = res.data.alias;
+            this.recomputeShowVoteScreen();
           } else {
-            that.showError(res.data.error);
+            this.showError(res.data.error);
           }
         })
         .catch((err) => {
           // rate limit reached
-          if (err.request.status == 429) {
-            that.showError(
+          if (err.request.status === 429) {
+            this.showError(
               "Rate limit exceeded - please wait 60s before creating new alias"
             );
-          } else if (err.request.status == 409) {
-            that.showError("Alias already chosen, please select another one");
+          } else if (err.request.status === 409) {
+            this.showError("Alias already chosen, please select another one");
           } else {
-            that.showError("Unknown error");
+            this.showError("Unknown error");
           }
         })
         .then(() => {
-          that.loading = false;
+          this.loading = false;
         });
     },
 
     async createRandomAlias() {
-      let that = this;
-      that.loading = true;
+      this.loading = true;
 
       axios
         .post(
-          that.apiUrl + "/api/alias/random/new?hostname=" + that.hostName,
+          this.apiUrl + "/api/alias/random/new?hostname=" + this.hostName,
           {},
           {
             headers: { Authentication: this.apiKey },
           }
         )
         .then((res) => {
-          if (res.status == 201) {
-            that.newAlias = res.data.alias;
-            that.recomputeShowVoteScreen();
+          if (res.status === 201) {
+            this.newAlias = res.data.alias;
+            this.recomputeShowVoteScreen();
           } else {
-            that.showError(res.data.error);
+            this.showError(res.data.error);
           }
         })
         .catch((err) => {
           // rate limit reached
-          if (err.request.status == 429) {
-            that.showError(
+          if (err.request.status === 429) {
+            this.showError(
               "Rate limit exceeded - please wait 60s before creating new alias"
             );
           } else {
-            that.showError("Unknown error");
+            this.showError("Unknown error");
           }
         })
         .then(() => {
-          that.loading = false;
+          this.loading = false;
         });
     },
 
