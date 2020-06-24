@@ -27,6 +27,37 @@
     </modal>
     <!-- END Setting modal -->
 
+    <!-- MFA model-->
+    <modal name="mfa-modal" :adaptive="true" width="60%" height="auto">
+      <div class="p-3">
+        <div class="mb-2">
+          Your account is protected with Two Factor Authentication. <br />
+        </div>
+
+        <div>
+          <b>Token</b>
+          <p>
+            Please enter the 2FA code from your 2FA authenticator
+          </p>
+        </div>
+
+        <div style="margin: auto;">
+          <input
+            v-model="mfaCode"
+            v-on:keyup.enter="submitMfaCode"
+            placeholder="123456"
+            autofocus
+            class="form-control mt-3 w-100"
+          />
+          <button @click="submitMfaCode" class="btn btn-primary btn-block mt-2">
+            Submit
+          </button>
+        </div>
+      </div>
+    </modal>
+    <!-- END MFA model-->
+
+    <!-- Header: icon, spinner, dashboard link -->
     <div class="row mt-2 pb-2" style="border-bottom: 1px #eee solid;">
       <div class="col ml-3">
         <a href="https://www.simplelogin.io" target="_blank">
@@ -47,6 +78,15 @@
         ></b-spinner>
       </div>
 
+      <div v-if="apiKey === ''" class="col mr-2">
+        <button
+          @click="gotoSetting"
+          class="btn btn-sm btn-outline-success float-right"
+        >
+          Settings
+        </button>
+      </div>
+
       <div v-if="apiKey !== ''" class="col mr-2">
         <a
           :href="apiUrl + '/dashboard/'"
@@ -56,60 +96,89 @@
         >
       </div>
     </div>
+    <!-- END  Header: icon, spinner, dashboard link -->
 
-    <!-- No API Key set: Setup screen -->
-    <div v-if="apiKey == ''" class="p-2 container">
-      <h1 class="h5">
+    <!-- API Key Setup screen -->
+    <modal name="api-key-modal" :adaptive="true" width="80%" height="auto">
+      <div v-if="apiKey === ''" class="p-2 container">
+        <p>To get started, please follow these 3 simple steps:</p>
+
+        <div class="mb-2">
+          <span class="badge badge-primary badge-pill">1</span>
+          Create your SimpleLogin account
+          <a :href="apiUrl + '/auth/register'" target="_blank">here</a>
+          if this is not already done.
+        </div>
+
+        <div class="mb-2">
+          <span class="badge badge-primary badge-pill">2</span>
+          Create and copy your
+          <em>API Key</em>
+          <a :href="apiUrl + '/dashboard/api_key'" target="_blank">here</a>.
+        </div>
+
+        <div class="mb-2">
+          <span class="badge badge-primary badge-pill">3</span>
+          Paste the
+          <em>API Key</em> here 👇🏽
+        </div>
+
+        <input
+          v-model="apiInput"
+          v-on:keyup.enter="save"
+          placeholder="API Key"
+          autofocus
+          class="form-control mt-3 w-100"
+        />
+
+        <button @click="save" class="btn btn-primary btn-block mt-2">
+          Set API Key
+        </button>
+      </div>
+    </modal>
+    <!-- END API Key Setup screen -->
+
+    <!-- Login/register screen -->
+    <div v-if="apiKey == ''" class="p-6 container" style="min-height: 350px;">
+      <h1 class="h5 mb-3">
         Welcome to
         <a href="https://simplelogin.io" target="_blank">SimpleLogin ↗</a>, the
         most powerful email alias solution!
       </h1>
 
-      <p>To get started, please follow these 3 simple steps:</p>
+      <form @submit.prevent="login">
+        <div class="form-group">
+          <label>Email</label>
 
-      <div class="mb-2">
-        <span class="badge badge-primary badge-pill">1</span>
-        Create your SimpleLogin account
-        <a :href="apiUrl + '/auth/register'" target="_blank">here</a>
-        if this is not already done.
+          <input
+            v-model="email"
+            class="form-control"
+            type="email"
+            placeholder="Email"
+            autofocus
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Password</label>
+          <input v-model="password" type="password" class="form-control" />
+        </div>
+
+        <button class="btn btn-primary btn-block mt-2">
+          Login
+        </button>
+      </form>
+      <div class="text-center">
+        <button @click="showApiKeySetup" class="mt-2 btn btn-link text-center">
+          Sign in with API Key
+        </button>
       </div>
-
-      <div class="mb-2">
-        <span class="badge badge-primary badge-pill">2</span>
-        Create and copy your
-        <em>API Key</em>
-        <a :href="apiUrl + '/dashboard/api_key'" target="_blank">here</a>.
-      </div>
-
-      <div class="mb-2">
-        <span class="badge badge-primary badge-pill">3</span>
-        Paste the
-        <em>API Key</em> here 👇🏽
-      </div>
-
-      <input
-        v-model="apiInput"
-        v-on:keyup.enter="save"
-        placeholder="API Key"
-        autofocus
-        class="form-control mt-3 w-100"
-      />
-
-      <button @click="save" class="btn btn-primary btn-block mt-2">
-        Set API Key
-      </button>
-
-      <button
-        @click="gotoSetting"
-        class="mt-2 mb-2 btn btn-sm btn-outline-info float-right"
-      >
-        Settings
-      </button>
     </div>
-    <!-- END No API Key set: Setup screen -->
+    <!-- END Login/register screen -->
 
     <!-- API Key is set -->
-    <div v-else class="mt-3">
+    <div v-if="apiKey !== ''" class="mt-3">
       <!-- Alias option page -->
       <div v-if="!optionsReady && loading" class="container text-center">
         Please wait ...
@@ -362,9 +431,14 @@ function getInitialData() {
     loading: false,
     apiUrl: DEFAULT_API,
 
+    email: "",
+    password: "",
+
     // API key
     apiKey: "",
     apiInput: "",
+    mfaKey: "",
+    mfaCode: "",
 
     // hostName obtained from chrome tabs query
     hostName: "",
@@ -482,6 +556,68 @@ export default {
       this.getAliasOptions();
     },
 
+    getDeviceName() {
+      const isFirefox = typeof InstallTrigger !== "undefined";
+      return isFirefox ? "Firefox" : "Chrome";
+    },
+
+    async login() {
+      axios
+        .post(this.apiUrl + "/api/auth/login", {
+          email: this.email,
+          password: this.password,
+          device: this.getDeviceName(),
+        })
+        .then((res) => {
+          if (res.data.api_key) {
+            const userName = res.data.name || res.data.email;
+
+            this.$toasted.show(`Hi ${userName}!`, {
+              type: "success",
+              duration: 2500,
+            });
+
+            this.setApiKey(res.data.api_key);
+          } else if (res.data.mfa_enabled) {
+            this.mfaKey = res.data.mfa_key;
+            this.$modal.show("mfa-modal");
+          }
+        })
+        .catch((err) => {
+          // FIDO
+          if (err.response.status === 403) {
+            this.showError(
+              "WebAuthn/FIDO is not supported on browser extension yet, please use API Key to login"
+            );
+          } else {
+            this.showError("Email or Password incorrect");
+          }
+        });
+    },
+
+    async submitMfaCode() {
+      axios
+        .post(this.apiUrl + "/api/auth/mfa", {
+          mfa_token: this.mfaCode,
+          mfa_key: this.mfaKey,
+          device: this.getDeviceName(),
+        })
+        .then((res) => {
+          this.$modal.hide("mfa-modal");
+
+          const userName = res.data.name || res.data.email;
+          this.$toasted.show(`Hi ${userName}!`, {
+            type: "success",
+            duration: 2500,
+          });
+
+          this.setApiKey(res.data.api_key);
+        })
+        .catch((err) => {
+          this.showError("Incorrect MFA Code");
+        });
+    },
+
     async getAliasOptions() {
       let that = this;
       that.loading = true;
@@ -524,12 +660,12 @@ export default {
       that.optionsReady = true;
       that.loading = false;
 
-      that.loadAlias();
+      await that.loadAlias();
     },
 
     async resetSearch() {
       this.aliasQuery = "";
-      this.loadAlias();
+      await this.loadAlias();
     },
 
     async loadAlias() {
@@ -669,6 +805,10 @@ export default {
 
     gotoSetting() {
       this.$modal.show("setting-modal");
+    },
+
+    showApiKeySetup() {
+      this.$modal.show("api-key-modal");
     },
 
     async saveApiUrl() {
