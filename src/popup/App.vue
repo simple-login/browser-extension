@@ -1,5 +1,5 @@
 <template>
-  <div class style="width: 450px;">
+  <div class style="width: 470px;">
     <!-- Setting modal -->
     <modal name="setting-modal" :adaptive="true" width="80%" height="auto">
       <div slot="top-right">
