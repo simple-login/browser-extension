@@ -2,10 +2,6 @@
   <div class style="width: 470px;">
     <!-- Setting modal -->
     <modal name="setting-modal" :adaptive="true" width="80%" height="auto">
-      <div slot="top-right">
-        <button @click="$modal.hide('setting-modal')">❌</button>
-      </div>
-
       <div class="p-3">
         <div class="mb-2">
           If you self-host SimpleLogin, you can change the API URL to your
@@ -29,6 +25,7 @@
         </div>
       </div>
     </modal>
+    <!-- END Setting modal -->
 
     <div class="row mt-2 pb-2" style="border-bottom: 1px #eee solid;">
       <div class="col ml-3">
