@@ -154,7 +154,6 @@
             v-model="email"
             class="form-control"
             type="email"
-            placeholder="Email"
             autofocus
             required
           />
