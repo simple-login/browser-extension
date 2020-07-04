@@ -487,14 +487,6 @@ export default {
   },
   async mounted() {
     let that = this;
-    chrome.storage.sync.get("apiKey", async function (data) {
-      that.apiKey = data.apiKey || "";
-      that.apiInput = that.apiKey || "";
-
-      that.hostName = await that.getHostName();
-
-      if (that.apiKey != "") that.getAliasOptions();
-    });
 
     chrome.storage.sync.get("apiUrl", function (data) {
       that.apiUrl = data.apiUrl || DEFAULT_API;
@@ -502,6 +494,31 @@ export default {
 
     chrome.storage.sync.get("notAskingRate", function (data) {
       that.notAskingRate = data.notAskingRate || false;
+    });
+
+    that.hostName = await that.getHostName();
+
+    chrome.storage.sync.get("apiKey", async function (data) {
+      if (!data.apiKey) {
+        // try to get api key when user is already logged in
+        axios
+          .post(that.apiUrl + "/api/api_key", {
+            device: that.getDeviceName(),
+          })
+          .then((res) => {
+            that.apiKey = res.data.api_key || "";
+            that.apiInput = that.apiKey || "";
+            if (that.apiKey != "") that.getAliasOptions();
+          })
+          .catch((err) => {
+            // user is probably not logged in
+            // ignore error
+          });
+      } else {
+        that.apiKey = data.apiKey || "";
+        that.apiInput = that.apiKey || "";
+        if (that.apiKey != "") that.getAliasOptions();
+      }
     });
   },
   methods: {
