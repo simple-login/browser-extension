@@ -7,7 +7,13 @@
     "48": "icons/icon_48.png",
     "128": "icons/icon_128.png"
   },
-  "permissions": ["activeTab", "storage"],
+  "permissions": [
+    "activeTab",
+    "storage",
+    "cookies",
+    "http://localhost:*/*",
+    "https://*.simplelogin.io/*"
+  ],
   "browser_action": {
     "default_title": "simplelogin-extension",
     "default_popup": "popup/popup.html"
