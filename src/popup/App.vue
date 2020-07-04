@@ -562,6 +562,8 @@ export default {
 
     async reset() {
       let that = this;
+      axios.get(that.apiUrl + "/api/logout");
+
       chrome.storage.sync.set(
         { apiKey: "", notAskingRate: false },
         async function () {
@@ -950,6 +952,7 @@ em {
   right: 0;
   transform: translateX(-50%);
 }
+
 .cursor {
   cursor: pointer;
 }
