@@ -171,7 +171,7 @@
 
       <div class="text-center">
         <a
-          href="https://app.simplelogin.io/auth/register"
+          :href="apiUrl + '/auth/register?next=%2Fdashboard%2Fsetup_done'"
           target="_blank"
           class="mt-2 btn btn-outline-success btn-block"
         >
