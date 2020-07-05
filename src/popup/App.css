@@ -1,0 +1,49 @@
+body {
+  margin: 0 0;
+}
+
+.app {
+  width: 470px;
+  height: 600px;
+}
+
+em {
+  font-style: normal;
+  background-color: #ffff00;
+}
+
+.small-text {
+  font-size: 12px;
+  font-weight: lighter;
+}
+
+.copy-btn {
+  font-size: 0.6rem;
+  line-height: 0.75;
+  position: absolute;
+  right: 0;
+  transform: translateX(-50%);
+}
+
+.cursor {
+  cursor: pointer;
+}
+
+.list-item-email {
+  margin-right: 40px !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.list-item-email > a {
+  white-space: nowrap;
+}
+
+.list-item-email-fade {
+  right: 0;
+  width: 30px;
+  height: 100%;
+  background: linear-gradient(to right, transparent, white);
+  top: 0;
+  position: absolute;
+}
