@@ -14,7 +14,7 @@ class SLStorage {
 
   static get(key) {
     return new Promise(resolve => {
-      chrome.storage.sync.set(key, function (data) {
+      chrome.storage.sync.get(key, function (data) {
         resolve(data[key] || '');
       });
     });
