@@ -11,7 +11,8 @@ class EventManager {
   static addListener(eventName, callback) {
     if (!listeners[eventName]) {
       listeners[eventName] = [];
-    } else if (listeners[eventName].indexOf(callback) === -1) {
+    }
+    if (listeners[eventName].indexOf(callback) === -1) {
       // make sure the callback function is added only once
       listeners[eventName].push(callback);
     }
