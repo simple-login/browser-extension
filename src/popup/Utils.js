@@ -26,12 +26,13 @@ class Utils {
 
   static getExtensionURL() {
     const isFirefox = typeof InstallTrigger !== "undefined",
-    isChrome =
-      !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime),
-    firefoxExtensionUrl =
-      "https://addons.mozilla.org/en-GB/firefox/addon/simplelogin/",
-    chromeExtensionUrl =
-      "https://chrome.google.com/webstore/detail/simplelogin-your-anti-spa/dphilobhebphkdjbpfohgikllaljmgbn";
+      isChrome =
+        !!window.chrome &&
+        (!!window.chrome.webstore || !!window.chrome.runtime),
+      firefoxExtensionUrl =
+        "https://addons.mozilla.org/en-GB/firefox/addon/simplelogin/",
+      chromeExtensionUrl =
+        "https://chrome.google.com/webstore/detail/simplelogin-your-anti-spa/dphilobhebphkdjbpfohgikllaljmgbn";
     return isFirefox ? firefoxExtensionUrl : chromeExtensionUrl;
   }
 }

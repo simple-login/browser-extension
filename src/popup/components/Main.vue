@@ -190,23 +190,23 @@ import axios from "axios";
 export default {
   data() {
     return {
-      apiUrl: '',
-      apiKey: '',
+      apiUrl: "",
+      apiKey: "",
       loading: true,
-      
+
       // variables for creating alias
-      hostName: '', // hostName obtained from chrome tabs query
+      hostName: "", // hostName obtained from chrome tabs query
       canCreate: false,
       aliasSuffixes: [],
-      aliasPrefix: '',
-      signedSuffix: '',
+      aliasPrefix: "",
+      signedSuffix: "",
       recommendation: {
         show: false,
-        alias: '',
+        alias: "",
       },
 
       // variables for searching alias
-      searchString: '',
+      searchString: "",
       aliasArray: [], // array of existing alias
       hasLoadMoreAlias: false,
     };
@@ -223,7 +223,6 @@ export default {
     EventManager.broadcast(EventManager.EVENT.APP_LOADED);
   },
   methods: {
-
     async getAliasOptions() {
       this.loading = true;
 
@@ -241,11 +240,17 @@ export default {
       let json = await res.json();
 
       if (res.status == 401) {
-        EventManager.broadcast(EventManager.EVENT.SHOW_ERROR, "Invalid API Key. Please logout and re-setup the API Key");
+        EventManager.broadcast(
+          EventManager.EVENT.SHOW_ERROR,
+          "Invalid API Key. Please logout and re-setup the API Key"
+        );
         this.logout();
         return;
       } else if (res.status >= 500) {
-        EventManager.broadcast(EventManager.EVENT.SHOW_ERROR, "Unknown error. We are sorry for this inconvenience!");
+        EventManager.broadcast(
+          EventManager.EVENT.SHOW_ERROR,
+          "Unknown error. We are sorry for this inconvenience!"
+        );
         this.loading = false;
         return;
       }
@@ -291,7 +296,10 @@ export default {
           currentPage += 1;
 
           that.hasLoadMoreAlias = true;
-          let newAliases = await that.getAliases(currentPage, that.searchString);
+          let newAliases = await that.getAliases(
+            currentPage,
+            that.searchString
+          );
           that.hasLoadMoreAlias = false;
 
           allAliasesAreLoaded = newAliases.length === 0;
@@ -324,7 +332,7 @@ export default {
     async createCustomAlias() {
       if (this.loading) return;
       this.loading = true;
-      
+
       axios
         .post(
           this.apiUrl + "/api/v2/alias/custom/new?hostname=" + this.hostName,
@@ -335,22 +343,32 @@ export default {
         )
         .then((res) => {
           if (res.status === 201) {
-            SLStorage.setTemporary('newAlias', res.data.alias);
+            SLStorage.setTemporary("newAlias", res.data.alias);
             Navigation.navigateTo(Navigation.PATH.NEW_ALIAS_RESULT);
           } else {
-            EventManager.broadcast(EventManager.EVENT.SHOW_ERROR, res.data.error);
+            EventManager.broadcast(
+              EventManager.EVENT.SHOW_ERROR,
+              res.data.error
+            );
           }
         })
         .catch((err) => {
           // rate limit reached
           if (err.request.status === 429) {
-            EventManager.broadcast(EventManager.EVENT.SHOW_ERROR, 
+            EventManager.broadcast(
+              EventManager.EVENT.SHOW_ERROR,
               "Rate limit exceeded - please wait 60s before creating new alias"
             );
           } else if (err.request.status === 409) {
-            EventManager.broadcast(EventManager.EVENT.SHOW_ERROR, "Alias already chosen, please select another one");
+            EventManager.broadcast(
+              EventManager.EVENT.SHOW_ERROR,
+              "Alias already chosen, please select another one"
+            );
           } else {
-            EventManager.broadcast(EventManager.EVENT.SHOW_ERROR, "Unknown error");
+            EventManager.broadcast(
+              EventManager.EVENT.SHOW_ERROR,
+              "Unknown error"
+            );
           }
         })
         .then(() => {
@@ -372,20 +390,27 @@ export default {
         )
         .then((res) => {
           if (res.status === 201) {
-            SLStorage.setTemporary('newAlias', res.data.alias);
+            SLStorage.setTemporary("newAlias", res.data.alias);
             Navigation.navigateTo(Navigation.PATH.NEW_ALIAS_RESULT);
           } else {
-            EventManager.broadcast(EventManager.EVENT.SHOW_ERROR,res.data.error);
+            EventManager.broadcast(
+              EventManager.EVENT.SHOW_ERROR,
+              res.data.error
+            );
           }
         })
         .catch((err) => {
           // rate limit reached
           if (err.request.status === 429) {
-            EventManager.broadcast(EventManager.EVENT.SHOW_ERROR,
+            EventManager.broadcast(
+              EventManager.EVENT.SHOW_ERROR,
               "Rate limit exceeded - please wait 60s before creating new alias"
             );
           } else {
-            EventManager.broadcast(EventManager.EVENT.SHOW_ERROR,"Unknown error");
+            EventManager.broadcast(
+              EventManager.EVENT.SHOW_ERROR,
+              "Unknown error"
+            );
           }
         })
         .then(() => {
@@ -395,7 +420,10 @@ export default {
 
     // Clipboard
     clipboardSuccessHandler({ value, event }) {
-      EventManager.broadcast(EventManager.EVENT.SHOW_MESSAGE, value + " copied to clipboard");
+      EventManager.broadcast(
+        EventManager.EVENT.SHOW_MESSAGE,
+        value + " copied to clipboard"
+      );
     },
 
     clipboardErrorHandler({ value, event }) {
@@ -403,7 +431,9 @@ export default {
     },
 
     async logout() {
-      await axios.get(this.apiUrl + "/api/logout").catch(() => {/* do nothing */});
+      await axios.get(this.apiUrl + "/api/logout").catch(() => {
+        /* do nothing */
+      });
       await SLStorage.remove(SLStorage.SETTINGS.API_KEY);
       EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
       Navigation.navigateTo(Navigation.PATH.LOGIN);

@@ -11,8 +11,8 @@
 import SLStorage from "../SLStorage";
 import EventManager from "../EventManager";
 import Navigation from "../Navigation";
-import Utils from '../Utils';
-import axios from 'axios';
+import Utils from "../Utils";
+import axios from "axios";
 
 export default {
   name: "sl-loading",
@@ -25,7 +25,7 @@ export default {
   async mounted() {
     this.apiKey = await SLStorage.get(SLStorage.SETTINGS.API_KEY);
 
-    if (this.apiKey !== '') {
+    if (this.apiKey !== "") {
       Navigation.navigateTo(Navigation.PATH.MAIN);
     } else {
       // try to get api key when user is already logged in

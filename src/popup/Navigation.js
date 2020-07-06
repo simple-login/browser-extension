@@ -1,4 +1,4 @@
-import EventManager from './EventManager';
+import EventManager from "./EventManager";
 
 var router = null;
 
@@ -23,7 +23,7 @@ class Navigation {
     return [
       {
         path: Navigation.PATH.ROOT,
-        component: { template: '<div class="content"></div>'},
+        component: { template: '<div class="content"></div>' },
       },
       {
         path: Navigation.PATH.LOGIN,
@@ -55,7 +55,10 @@ class Navigation {
   static navigateTo(path) {
     router.push(path);
 
-    EventManager.broadcast(EventManager.EVENT.ROUTE_CHANGED, Navigation.getPreviousPath(path));
+    EventManager.broadcast(
+      EventManager.EVENT.ROUTE_CHANGED,
+      Navigation.getPreviousPath(path)
+    );
   }
 
   static getPreviousPath(path) {

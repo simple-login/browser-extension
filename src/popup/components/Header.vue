@@ -2,16 +2,16 @@
   <div class="header">
     <div class="row mt-2 pb-2" style="border-bottom: 1px #eee solid;">
       <div class="col ml-3">
-        <div v-on:click="navigateBack()" v-bind:class="{ 'back': !!previousPath }">
+        <div
+          v-on:click="navigateBack()"
+          v-bind:class="{ back: !!previousPath }"
+        >
           <img
             v-if="previousPath"
             src="/images/back-button.svg"
-            style="height: 20px"
+            style="height: 20px;"
           />
-          <img
-            src="/images/horizontal-logo.svg"
-            style="height: 18px"
-          />
+          <img src="/images/horizontal-logo.svg" style="height: 18px;" />
         </div>
       </div>
 
@@ -60,9 +60,12 @@ export default {
       this.apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
     });
 
-    EventManager.addListener(EventManager.EVENT.ROUTE_CHANGED, (previousPath) => {
-      this.previousPath = previousPath;
-    });
+    EventManager.addListener(
+      EventManager.EVENT.ROUTE_CHANGED,
+      (previousPath) => {
+        this.previousPath = previousPath;
+      }
+    );
   },
   methods: {
     goToSelfHostSetting: function () {

@@ -42,7 +42,7 @@
 import axios from "axios";
 import SLStorage from "../SLStorage";
 import EventManager from "../EventManager";
-import Navigation from '../Navigation';
+import Navigation from "../Navigation";
 
 export default {
   data() {
@@ -78,7 +78,7 @@ export default {
             EventManager.EVENT.SHOW_MESSAGE,
             `Hi ${userName}!`
           );
-          
+
           Navigation.navigateTo(Navigation.PATH.MAIN);
         })
         .catch((err) => {

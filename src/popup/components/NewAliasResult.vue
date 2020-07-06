@@ -52,12 +52,12 @@
 import SLStorage from "../SLStorage";
 import Navigation from "../Navigation";
 import EventManager from "../EventManager";
-import Utils from '../Utils';
+import Utils from "../Utils";
 
 export default {
   data() {
     return {
-      newAlias: SLStorage.getTemporary('newAlias'),
+      newAlias: SLStorage.getTemporary("newAlias"),
       showVoteScreen: false,
       extensionUrl: Utils.getExtensionURL(),
     };
@@ -73,7 +73,10 @@ export default {
   methods: {
     // Clipboard
     clipboardSuccessHandler({ value, event }) {
-      EventManager.broadcast(EventManager.EVENT.SHOW_MESSAGE, value + " copied to clipboard");
+      EventManager.broadcast(
+        EventManager.EVENT.SHOW_MESSAGE,
+        value + " copied to clipboard"
+      );
     },
 
     clipboardErrorHandler({ value, event }) {
