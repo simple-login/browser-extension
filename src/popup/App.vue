@@ -1,5 +1,6 @@
 <template>
   <div class="app">
+    <sl-splash></sl-splash>
     <sl-header></sl-header>
     <router-view></router-view>
   </div>
@@ -13,6 +14,7 @@ import "bootstrap-vue/dist/bootstrap-vue.css";
 import Navigation from "./Navigation";
 import EventManager from "./EventManager";
 
+import SplashScreen from "./components/SplashScreen";
 import Header from "./components/Header";
 import Login from "./components/Login";
 import SelfHostSetting from "./components/SelfHostSetting";
@@ -20,6 +22,7 @@ import ApiKeySetting from "./components/ApiKeySetting";
 
 const components = {
   'sl-header': Header,
+  'sl-splash': SplashScreen,
   Login,
   SelfHostSetting,
   ApiKeySetting,

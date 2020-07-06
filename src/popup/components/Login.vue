@@ -100,6 +100,8 @@ export default {
   },
   async mounted() {
     this.apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
+
+    EventManager.broadcast(EventManager.EVENT.APP_LOADED);
   },
   methods: {
     async login() {

@@ -10,7 +10,7 @@ class Navigation {
 
   static getRoutes(components) {
     return [
-      { path: Navigation.PATH.ROOT, component: components.Login },
+      { path: Navigation.PATH.ROOT, component: components.SplashScreen },
       { path: Navigation.PATH.LOGIN, component: components.Login },
       { path: Navigation.PATH.API_KEY_SETTING, component: components.ApiKeySetting },
       { path: Navigation.PATH.SELF_HOST_SETTING, component: components.SelfHostSetting },

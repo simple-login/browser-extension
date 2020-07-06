@@ -2,6 +2,7 @@ const listeners = {};
 
 class EventManager {
   static EVENT = {
+    APP_LOADED: 'app_loaded',
     LOADING_OVERLAY: 'loading_overlay',
     SHOW_MESSAGE: 'show_message',
     SHOW_ERROR: 'show_error',

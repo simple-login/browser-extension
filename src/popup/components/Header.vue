@@ -25,8 +25,9 @@
           :href="apiUrl + '/dashboard/'"
           target="_blank"
           class="btn btn-sm btn-outline-success float-right"
-          >Dashboard ↗</a
         >
+          Dashboard ↗
+        </a>
       </div>
     </div>
   </div>

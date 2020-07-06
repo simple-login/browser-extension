@@ -7,6 +7,51 @@ body {
   height: 600px;
 }
 
+.header {
+  height: 45px;
+  width: 460px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+}
+
+.content {
+  padding-top: 55px;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  height: 100vh;
+  width: 100vw;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.overlay-content {
+  position: fixed;
+  z-index: 21;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.splash .logo {
+  width: 200px;
+}
+
+.splash .loading {
+  width: 30px;
+  padding-top: 20px;
+}
+
+.splash.overlay {
+  background-color: white;
+}
+
 em {
   font-style: normal;
   background-color: #ffff00;
