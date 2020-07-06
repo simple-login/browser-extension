@@ -7,6 +7,7 @@ class EventManager {
     SHOW_MESSAGE: "show_message",
     SHOW_ERROR: "show_error",
     SETTINGS_CHANGED: "settings_changed",
+    ROUTE_CHANGED: "route_changed",
   };
 
   static addListener(eventName, callback) {

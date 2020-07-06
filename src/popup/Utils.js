@@ -1,3 +1,5 @@
+const browser = require("webextension-polyfill");
+
 class Utils {
   static getRandomIntBetween(min, max) {
     return Math.floor(min + Math.random() * Math.floor(max));
@@ -5,7 +7,7 @@ class Utils {
 
   static async getHostName() {
     try {
-      var result = await this.$browser.tabs.query({
+      var result = await browser.tabs.query({
         active: true,
         currentWindow: true,
       });

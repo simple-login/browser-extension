@@ -16,6 +16,10 @@ body {
   z-index: 10;
 }
 
+.header .back {
+  cursor: pointer;
+}
+
 .content {
   padding-top: 55px;
 }

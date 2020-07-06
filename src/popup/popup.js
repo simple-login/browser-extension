@@ -25,6 +25,9 @@ Sentry.init({
   ],
 });
 
+// reset hash before mouting Vue app
+window.location.hash = '';
+
 /* eslint-disable no-new */
 new Vue({
   el: "#app",

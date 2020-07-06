@@ -2,18 +2,22 @@
   <div class="header">
     <div class="row mt-2 pb-2" style="border-bottom: 1px #eee solid;">
       <div class="col ml-3">
-        <a href="https://www.simplelogin.io" target="_blank">
+        <div v-on:click="navigateBack()" v-bind:class="{ 'back': !!previousPath }">
+          <img
+            v-if="previousPath"
+            src="/images/back-button.svg"
+            style="height: 20px"
+          />
           <img
             src="/images/horizontal-logo.svg"
-            class="mx-auto"
-            style="max-width: 100px;"
+            style="height: 18px"
           />
-        </a>
+        </div>
       </div>
 
       <div v-if="apiKey === ''" class="col mr-2">
         <button
-          @click="gotoSetting"
+          @click="goToSelfHostSetting"
           class="btn btn-sm btn-outline-success float-right"
         >
           Settings
@@ -44,6 +48,7 @@ export default {
     return {
       apiKey: "",
       apiUrl: "",
+      previousPath: null,
     };
   },
   async mounted() {
@@ -54,10 +59,20 @@ export default {
       this.apiKey = await SLStorage.get(SLStorage.SETTINGS.API_KEY);
       this.apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
     });
+
+    EventManager.addListener(EventManager.EVENT.ROUTE_CHANGED, (previousPath) => {
+      this.previousPath = previousPath;
+    });
   },
   methods: {
-    gotoSetting: function () {
+    goToSelfHostSetting: function () {
       Navigation.navigateTo(Navigation.PATH.SELF_HOST_SETTING);
+    },
+
+    navigateBack: function () {
+      if (this.previousPath) {
+        Navigation.navigateTo(this.previousPath);
+      }
     },
   },
   computed: {},
