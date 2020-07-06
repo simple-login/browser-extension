@@ -277,7 +277,6 @@ export default {
 
       let currentPage = 0;
       this.aliasArray = await this.getAliases(currentPage, this.searchString);
-      this.hasLoadMoreAlias = false;
 
       let allAliasesAreLoaded = false;
 
@@ -288,11 +287,10 @@ export default {
           return;
 
         let bottomOfWindow =
-          document.documentElement.scrollTop + window.innerHeight ===
-          document.documentElement.offsetHeight;
+          document.documentElement.scrollTop + window.innerHeight >
+          document.documentElement.offsetHeight - 200;
 
         if (bottomOfWindow) {
-          console.log("reach button, load more alias");
           currentPage += 1;
 
           that.hasLoadMoreAlias = true;
