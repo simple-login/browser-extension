@@ -2,8 +2,8 @@
   <div class="content">
     <div class="p-3">
       <div class="mb-2">
-        If you self-host SimpleLogin, you can change the API URL to your
-        server address.
+        If you self-host SimpleLogin, you can change the API URL to your server
+        address.
       </div>
       <div class="mb-2">
         The default API URL is https://app.simplelogin.io
@@ -32,7 +32,7 @@ import EventManager from "../EventManager";
 export default {
   data() {
     return {
-      apiUrl: '',
+      apiUrl: "",
     };
   },
   async mounted() {

@@ -1,28 +1,28 @@
 <template>
   <div class="app">
-    <sl-splash></sl-splash>
+    <sl-loading></sl-loading>
     <sl-header></sl-header>
     <router-view></router-view>
   </div>
 </template>
 
 <script>
-import VueRouter from 'vue-router';
+import VueRouter from "vue-router";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 import Navigation from "./Navigation";
 import EventManager from "./EventManager";
 
-import SplashScreen from "./components/SplashScreen";
+import LoadingOverlay from "./components/LoadingOverlay";
 import Header from "./components/Header";
 import Login from "./components/Login";
 import SelfHostSetting from "./components/SelfHostSetting";
 import ApiKeySetting from "./components/ApiKeySetting";
 
 const components = {
-  'sl-header': Header,
-  'sl-splash': SplashScreen,
+  "sl-header": Header,
+  "sl-loading": LoadingOverlay,
   Login,
   SelfHostSetting,
   ApiKeySetting,
@@ -59,5 +59,5 @@ export default {
       });
     });
   },
-}
+};
 </script>

@@ -46,8 +46,8 @@ import EventManager from "../EventManager";
 export default {
   data() {
     return {
-      apiKey: '',
-      apiUrl: '',
+      apiKey: "",
+      apiUrl: "",
     };
   },
   async mounted() {
@@ -89,4 +89,3 @@ export default {
   computed: {},
 };
 </script>
-

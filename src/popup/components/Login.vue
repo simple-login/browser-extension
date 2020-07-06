@@ -91,10 +91,10 @@ import Navigation from "../Navigation";
 export default {
   data() {
     return {
-      email: '',
-      password: '',
-      mfaKey: '',
-      mfaCode: '',
+      email: "",
+      password: "",
+      mfaKey: "",
+      mfaCode: "",
       isShowMfa: false,
     };
   },
@@ -164,15 +164,14 @@ export default {
             EventManager.EVENT.SHOW_ERROR,
             "Incorrect MFA Code"
           );
-          this.mfaCode = '';
+          this.mfaCode = "";
         });
     },
 
     showApiKeySetup: function () {
       Navigation.navigateTo(Navigation.PATH.API_KEY_SETTING);
-    }
+    },
   },
   computed: {},
 };
 </script>
-

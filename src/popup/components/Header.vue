@@ -39,24 +39,21 @@ import EventManager from "../EventManager";
 import Navigation from "../Navigation";
 
 export default {
-  name: 'sl-header',
+  name: "sl-header",
   data() {
     return {
-      apiKey: '',
-      apiUrl: '',
+      apiKey: "",
+      apiUrl: "",
     };
   },
   async mounted() {
     this.apiKey = await SLStorage.get(SLStorage.SETTINGS.API_KEY);
     this.apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
 
-    EventManager.addListener(
-      EventManager.EVENT.SETTINGS_CHANGED,
-      async () => {
-        this.apiKey = await SLStorage.get(SLStorage.SETTINGS.API_KEY);
-        this.apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
-      }
-    );
+    EventManager.addListener(EventManager.EVENT.SETTINGS_CHANGED, async () => {
+      this.apiKey = await SLStorage.get(SLStorage.SETTINGS.API_KEY);
+      this.apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
+    });
   },
   methods: {
     gotoSetting: function () {
@@ -66,4 +63,3 @@ export default {
   computed: {},
 };
 </script>
-

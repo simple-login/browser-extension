@@ -1,4 +1,3 @@
-
 class Utils {
   static getRandomIntBetween(min, max) {
     return Math.floor(min + Math.random() * Math.floor(max));
