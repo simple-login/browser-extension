@@ -11,6 +11,8 @@
 import SLStorage from "../SLStorage";
 import EventManager from "../EventManager";
 import Navigation from "../Navigation";
+import Utils from '../Utils';
+import axios from 'axios';
 
 export default {
   name: "sl-loading",
@@ -23,10 +25,30 @@ export default {
   async mounted() {
     this.apiKey = await SLStorage.get(SLStorage.SETTINGS.API_KEY);
 
-    if (this.apiKey) {
-      //Navigation.navigateTo(Navigation.PATH.MAIN);
+    if (this.apiKey !== '') {
+      Navigation.navigateTo(Navigation.PATH.MAIN);
     } else {
-      Navigation.navigateTo(Navigation.PATH.LOGIN);
+      // try to get api key when user is already logged in
+      var apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
+      axios
+        .post(apiUrl + "/api/api_key", {
+          device: Utils.getDeviceName(),
+        })
+        .then(async (res) => {
+          this.apiKey = res.data.api_key || "";
+          if (this.apiKey) {
+            await SLStorage.set(SLStorage.SETTINGS.API_KEY, this.apiKey);
+            EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
+
+            Navigation.navigateTo(Navigation.PATH.MAIN);
+          } else {
+            Navigation.navigateTo(Navigation.PATH.LOGIN);
+          }
+        })
+        .catch((err) => {
+          // user is probably not logged in
+          Navigation.navigateTo(Navigation.PATH.LOGIN);
+        });
     }
 
     EventManager.addListener(EventManager.EVENT.APP_LOADED, () => {

@@ -1,7 +1,10 @@
+const TEMP = {};
+
 class SLStorage {
   static SETTINGS = {
     API_URL: "apiUrl",
     API_KEY: "apiKey",
+    NOT_ASKING_RATE: "notAskingRate",
   };
 
   static set(key, value) {
@@ -22,6 +25,14 @@ class SLStorage {
 
   static remove(key) {
     return SLStorage.set(key, "");
+  }
+
+  static setTemporary(key, value) {
+    TEMP[key] = value;
+  }
+
+  static getTemporary(key) {
+    return TEMP[key];
   }
 }
 

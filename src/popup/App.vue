@@ -19,6 +19,8 @@ import Header from "./components/Header";
 import Login from "./components/Login";
 import SelfHostSetting from "./components/SelfHostSetting";
 import ApiKeySetting from "./components/ApiKeySetting";
+import Main from "./components/Main";
+import NewAliasResult from "./components/NewAliasResult";
 
 const components = {
   "sl-header": Header,
@@ -26,6 +28,8 @@ const components = {
   Login,
   SelfHostSetting,
   ApiKeySetting,
+  Main,
+  NewAliasResult,
 };
 
 const routes = Navigation.getRoutes(components);

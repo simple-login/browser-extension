@@ -5,6 +5,7 @@ var router = null;
 const PATH = {
   ROOT: "/",
   MAIN: "/main",
+  NEW_ALIAS_RESULT: "/new-alias-result",
   LOGIN: "/login",
   API_KEY_SETTING: "/api-key-setting",
   SELF_HOST_SETTING: "/self-host-setting",
@@ -22,7 +23,7 @@ class Navigation {
     return [
       {
         path: Navigation.PATH.ROOT,
-        component: components.SplashScreen,
+        component: { template: '<div class="content"></div>'},
       },
       {
         path: Navigation.PATH.LOGIN,
@@ -39,6 +40,10 @@ class Navigation {
       {
         path: Navigation.PATH.MAIN,
         component: components.Main,
+      },
+      {
+        path: Navigation.PATH.NEW_ALIAS_RESULT,
+        component: components.NewAliasResult,
       },
     ];
   }
