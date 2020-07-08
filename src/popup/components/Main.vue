@@ -228,7 +228,7 @@ export default {
 
       let json = await res.json();
 
-      if (res.status == 401) {
+      if (res.status === 401) {
         Utils.showError(
           this,
           "Invalid API Key. Please logout and re-setup the API Key"

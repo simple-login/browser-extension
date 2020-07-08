@@ -36,7 +36,7 @@ export default {
       Navigation.navigateTo(Navigation.PATH.MAIN, true);
     } else {
       // try to get api key when user is already logged in
-      var apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
+      const apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
       axios
         .post(apiUrl + "/api/api_key", {
           device: Utils.getDeviceName(),
