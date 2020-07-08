@@ -1,2 +1,1 @@
-global.browser = require('webextension-polyfill')
-
+global.browser = require("webextension-polyfill");

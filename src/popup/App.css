@@ -1,0 +1,128 @@
+body {
+  margin: 0 0;
+  width: 470px;
+  box-sizing: content-box !important;
+}
+
+.header {
+  height: 45px;
+  width: 460px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+}
+
+.header .back {
+  cursor: pointer;
+}
+
+.content {
+  padding-top: 60px;
+  padding-bottom: 10px;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  height: 100vh;
+  width: 100vw;
+  min-height: 350px;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.overlay-content {
+  position: fixed;
+  z-index: 21;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.app {
+  box-sizing: content-box !important;
+}
+
+.app .content {
+  box-sizing: border-box;
+}
+
+.splash .logo {
+  width: 200px;
+}
+
+.splash .loading {
+  width: 30px;
+  padding-top: 20px;
+}
+
+.splash.overlay {
+  background-color: white;
+}
+
+em {
+  font-style: normal;
+  background-color: #ffff00;
+}
+
+.small-text {
+  font-size: 12px;
+  font-weight: lighter;
+}
+
+.copy-btn {
+  font-size: 0.6rem;
+  line-height: 0.75;
+  position: absolute;
+  right: 0;
+  transform: translateX(-50%);
+}
+
+.cursor {
+  cursor: pointer;
+}
+
+.list-item-email {
+  margin-right: 50px !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.list-item-email > a {
+  white-space: nowrap;
+}
+
+.list-item-email-fade {
+  right: 0;
+  width: 30px;
+  height: 100%;
+  background: linear-gradient(to right, transparent, white);
+  top: 0;
+  position: absolute;
+}
+
+.settings-button {
+  height: 20px;
+  margin-top: 5px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.app-header-menu {
+  left: auto !important;
+  float: right !important;
+  right: 10px;
+  margin-top: 5px !important;
+}
+
+/* toaster show below header */
+.toasted-container {
+  margin-top: 45px;
+}
+
+.toasted.toasted-primary > .action.ripple {
+  color: white !important;
+}
