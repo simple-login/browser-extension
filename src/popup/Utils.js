@@ -7,11 +7,11 @@ class Utils {
 
   static async getHostName() {
     try {
-      var result = await browser.tabs.query({
+      const result = await browser.tabs.query({
         active: true,
         currentWindow: true,
       });
-      var url = new URL(result[0].url);
+      const url = new URL(result[0].url);
       return url.hostname;
     } catch (error) {
       console.log(error);
@@ -26,9 +26,6 @@ class Utils {
 
   static getExtensionURL() {
     const isFirefox = typeof InstallTrigger !== "undefined",
-      isChrome =
-        !!window.chrome &&
-        (!!window.chrome.webstore || !!window.chrome.runtime),
       firefoxExtensionUrl =
         "https://addons.mozilla.org/en-GB/firefox/addon/simplelogin/",
       chromeExtensionUrl =

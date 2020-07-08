@@ -49,7 +49,6 @@ export default {
 
       Utils.showSuccess(this, "API URL saved successfully");
     },
-  },
-  computed: {},
+  }
 };
 </script>

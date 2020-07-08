@@ -67,7 +67,7 @@ export default {
     let notAskingRate = await SLStorage.get(SLStorage.SETTINGS.NOT_ASKING_RATE);
     if (!!notAskingRate) this.showVoteScreen = false;
     // TODO showVoteScreen 1 day after user installed plugin
-    else this.showVoteScreen = Utils.getRandomIntBetween(0, 10) % 2 == 0;
+    else this.showVoteScreen = Utils.getRandomIntBetween(0, 10) % 2 === 0;
   },
   methods: {
     // Clipboard

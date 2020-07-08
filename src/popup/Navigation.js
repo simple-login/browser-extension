@@ -1,6 +1,6 @@
 import EventManager from "./EventManager";
 
-var router = null;
+let router = null;
 
 const PATH = {
   ROOT: "/",
