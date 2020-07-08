@@ -43,6 +43,7 @@ import axios from "axios";
 import SLStorage from "../SLStorage";
 import EventManager from "../EventManager";
 import Navigation from "../Navigation";
+import Utils from "../Utils";
 
 export default {
   data() {
@@ -52,6 +53,7 @@ export default {
     };
   },
   async mounted() {
+    EventManager.broadcast(EventManager.EVENT.APP_LOADED);
     this.apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
   },
   methods: {
@@ -73,6 +75,7 @@ export default {
 
           Utils.showSuccess(this, `Hi ${userName}!`);
 
+          this.$router.go(-1); // remove api-key-setting from history stack
           Navigation.navigateTo(Navigation.PATH.MAIN);
         })
         .catch((err) => {

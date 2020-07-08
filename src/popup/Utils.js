@@ -47,7 +47,7 @@ class Utils {
 
   static showError(context, message) {
     if (context.$toasted) {
-      this.$toasted.show(message, {
+      context.$toasted.show(message, {
         type: "error",
         duration: 3000,
         action: {

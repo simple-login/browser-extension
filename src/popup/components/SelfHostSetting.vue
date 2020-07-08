@@ -26,6 +26,7 @@
 </template>
 
 <script>
+import Utils from "../Utils";
 import SLStorage from "../SLStorage";
 import EventManager from "../EventManager";
 

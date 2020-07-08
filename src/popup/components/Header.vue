@@ -4,10 +4,10 @@
       <div class="col ml-3">
         <div
           v-on:click="navigateBack()"
-          v-bind:class="{ back: !!previousPath }"
+          v-bind:class="{ back: canBack }"
         >
           <img
-            v-if="previousPath"
+            v-if="canBack"
             src="/images/back-button.svg"
             style="height: 20px;"
           />
@@ -48,7 +48,7 @@ export default {
     return {
       apiKey: "",
       apiUrl: "",
-      previousPath: null,
+      canBack: false,
     };
   },
   async mounted() {
@@ -59,22 +59,20 @@ export default {
       this.apiKey = await SLStorage.get(SLStorage.SETTINGS.API_KEY);
       this.apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
     });
-
-    EventManager.addListener(
-      EventManager.EVENT.ROUTE_CHANGED,
-      (previousPath) => {
-        this.previousPath = previousPath;
-      }
-    );
+  },
+  watch:{
+    $route(to, from) {
+      this.canBack = this.$router.history.index > 0;
+    }
   },
   methods: {
     goToSelfHostSetting: function () {
-      Navigation.navigateTo(Navigation.PATH.SELF_HOST_SETTING);
+      Navigation.navigateTo(Navigation.PATH.SELF_HOST_SETTING, true);
     },
 
     navigateBack: function () {
-      if (this.previousPath) {
-        Navigation.navigateTo(this.previousPath);
+      if (this.canBack) {
+        this.$router.go(-1);
       }
     },
   },

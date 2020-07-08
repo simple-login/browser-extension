@@ -40,14 +40,14 @@ export default {
             await SLStorage.set(SLStorage.SETTINGS.API_KEY, this.apiKey);
             EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
 
-            Navigation.navigateTo(Navigation.PATH.MAIN);
+            Navigation.navigateTo(Navigation.PATH.MAIN, true);
           } else {
-            Navigation.navigateTo(Navigation.PATH.LOGIN);
+            Navigation.navigateTo(Navigation.PATH.LOGIN, true);
           }
         })
         .catch((err) => {
           // user is probably not logged in
-          Navigation.navigateTo(Navigation.PATH.LOGIN);
+          Navigation.navigateTo(Navigation.PATH.LOGIN, true);
         });
     }
 

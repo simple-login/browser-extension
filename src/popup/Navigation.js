@@ -11,11 +11,6 @@ const PATH = {
   SELF_HOST_SETTING: "/self-host-setting",
 };
 
-const BACK_TO = {
-  [PATH.API_KEY_SETTING]: PATH.LOGIN,
-  [PATH.SELF_HOST_SETTING]: PATH.LOGIN,
-};
-
 class Navigation {
   static PATH = PATH;
 
@@ -48,17 +43,16 @@ class Navigation {
     router = $router;
   }
 
-  static navigateTo(path) {
-    router.push(path);
+  static navigateTo(path, canGoBack) {
+    if (canGoBack) {
+      router.push(path);
+    } else {
+      router.replace(path);
+    }
 
-    EventManager.broadcast(
-      EventManager.EVENT.ROUTE_CHANGED,
-      Navigation.getPreviousPath(path)
-    );
-  }
-
-  static getPreviousPath(path) {
-    return BACK_TO[path];
+    setTimeout(() => EventManager.broadcast(
+      EventManager.EVENT.ROUTE_CHANGED
+    ), 10);
   }
 }
 

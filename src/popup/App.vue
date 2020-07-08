@@ -35,6 +35,7 @@ const components = {
 const routes = Navigation.getRoutes(components);
 
 const router = new VueRouter({
+  mode: "abstract",
   routes,
 });
 
@@ -43,25 +44,6 @@ export default {
   components,
   mounted() {
     Navigation.setRouter(this.$router);
-    EventManager.addListener(EventManager.EVENT.SHOW_MESSAGE, (message) => {
-      this.$toasted.show(message, {
-        type: "success",
-        duration: 2500,
-      });
-    });
-
-    EventManager.addListener(EventManager.EVENT.SHOW_ERROR, (message) => {
-      this.$toasted.show(message, {
-        type: "error",
-        duration: 3000,
-        action: {
-          text: "x",
-          onClick: (e, toastObject) => {
-            toastObject.goAway(0);
-          },
-        },
-      });
-    });
   },
 };
 </script>

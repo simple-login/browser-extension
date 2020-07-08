@@ -161,7 +161,7 @@ export default {
     },
 
     showApiKeySetup: function () {
-      Navigation.navigateTo(Navigation.PATH.API_KEY_SETTING);
+      Navigation.navigateTo(Navigation.PATH.API_KEY_SETTING, true);
     },
   },
   computed: {},
