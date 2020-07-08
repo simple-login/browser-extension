@@ -42,7 +42,11 @@
               class="col align-self-center input-group-sm"
               style="padding-left: 5px;"
             >
-              <select v-model="signedSuffix" class="form-control" :disabled="loading || !canCreate">
+              <select
+                v-model="signedSuffix"
+                class="form-control"
+                :disabled="loading || !canCreate"
+              >
                 <option
                   v-for="suffix in aliasSuffixes"
                   v-bind:key="suffix[0]"
@@ -166,7 +170,10 @@
       </div>
 
       <div v-if="hasLoadMoreAlias" class="text-secondary mx-auto text-center">
-        <img src="/images/loading-three-dots.svg" style="width: 80px; margin: 20px;" />
+        <img
+          src="/images/loading-three-dots.svg"
+          style="width: 80px; margin: 20px;"
+        />
       </div>
     </div>
     <!-- END Main Page -->
@@ -332,7 +339,10 @@ export default {
         )
         .then((res) => {
           if (res.status === 201) {
-            let path = Navigation.PATH.NEW_ALIAS_RESULT.replace(':email', encodeURIComponent(res.data.alias));
+            let path = Navigation.PATH.NEW_ALIAS_RESULT.replace(
+              ":email",
+              encodeURIComponent(res.data.alias)
+            );
             Navigation.navigateTo(path, true);
           } else {
             Utils.showError(this, res.data.error);
@@ -373,7 +383,10 @@ export default {
         )
         .then((res) => {
           if (res.status === 201) {
-            let path = Navigation.PATH.NEW_ALIAS_RESULT.replace(':email', encodeURIComponent(res.data.alias));
+            let path = Navigation.PATH.NEW_ALIAS_RESULT.replace(
+              ":email",
+              encodeURIComponent(res.data.alias)
+            );
             Navigation.navigateTo(path, true);
           } else {
             Utils.showError(this, res.data.error);

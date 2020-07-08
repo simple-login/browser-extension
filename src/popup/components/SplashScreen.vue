@@ -1,5 +1,5 @@
 <template>
-  <div v-if="show" style="height: 400px">
+  <div v-if="show" style="height: 400px;">
     <div class="splash overlay">
       <div class="overlay-content">
         <img class="logo" src="/images/horizontal-logo.svg" /><br />
@@ -26,7 +26,7 @@ export default {
   },
   async mounted() {
     this.apiKey = await SLStorage.get(SLStorage.SETTINGS.API_KEY);
-    
+
     // only show after waiting for more than 500ms
     this.timeoutId = setTimeout(() => {
       this.show = true;

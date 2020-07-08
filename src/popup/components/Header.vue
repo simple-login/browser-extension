@@ -2,10 +2,7 @@
   <div class="header">
     <div class="row mt-2 pb-2" style="border-bottom: 1px #eee solid;">
       <div class="col ml-3">
-        <div
-          v-on:click="navigateBack()"
-          v-bind:class="{ back: canBack }"
-        >
+        <div v-on:click="navigateBack()" v-bind:class="{ back: canBack }">
           <img
             v-if="canBack"
             src="/images/back-button.svg"
@@ -25,7 +22,11 @@
       </div>
 
       <div v-if="apiKey !== ''" class="col mr-2">
-        <img src="/images/settings-button.svg" class="settings-button float-right" @click="toggleDropdownMenu" />
+        <img
+          src="/images/settings-button.svg"
+          class="settings-button float-right"
+          @click="toggleDropdownMenu"
+        />
         <a
           :href="apiUrl + '/dashboard/'"
           target="_blank"
@@ -34,7 +35,10 @@
           Dashboard ↗
         </a>
 
-        <div class="dropdown-menu app-header-menu" v-bind:class="{ show: showDropdownMenu }">
+        <div
+          class="dropdown-menu app-header-menu"
+          v-bind:class="{ show: showDropdownMenu }"
+        >
           <a class="dropdown-item" @click="handleLogout">Logout</a>
         </div>
       </div>
@@ -67,11 +71,11 @@ export default {
       this.apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
     });
   },
-  watch:{
+  watch: {
     $route(to, from) {
       this.canBack = Navigation.canGoBack();
       this.showDropdownMenu = false;
-    }
+    },
   },
   methods: {
     goToSelfHostSetting: function () {
