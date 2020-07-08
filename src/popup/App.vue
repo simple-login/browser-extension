@@ -1,6 +1,6 @@
 <template>
   <div class="app">
-    <sl-loading></sl-loading>
+    <sl-splash></sl-splash>
     <sl-header></sl-header>
     <router-view></router-view>
   </div>
@@ -14,7 +14,7 @@ import "bootstrap-vue/dist/bootstrap-vue.css";
 import Navigation from "./Navigation";
 import EventManager from "./EventManager";
 
-import LoadingOverlay from "./components/LoadingOverlay";
+import SplashScreen from "./components/SplashScreen";
 import Header from "./components/Header";
 import Login from "./components/Login";
 import SelfHostSetting from "./components/SelfHostSetting";
@@ -24,7 +24,7 @@ import NewAliasResult from "./components/NewAliasResult";
 
 const components = {
   "sl-header": Header,
-  "sl-loading": LoadingOverlay,
+  "sl-splash": SplashScreen,
   Login,
   SelfHostSetting,
   ApiKeySetting,

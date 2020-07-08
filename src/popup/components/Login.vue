@@ -105,7 +105,6 @@ export default {
   },
   methods: {
     async login() {
-      EventManager.broadcast(EventManager.EVENT.LOADING_OVERLAY, true);
       axios
         .post(this.apiUrl + "/api/auth/login", {
           email: this.email,
@@ -125,7 +124,6 @@ export default {
 
             Navigation.navigateTo(Navigation.PATH.MAIN);
           } else if (res.data.mfa_enabled) {
-            EventManager.broadcast(EventManager.EVENT.LOADING_OVERLAY, false);
             this.mfaKey = res.data.mfa_key;
             this.isShowMfa = true;
           }
@@ -143,13 +141,10 @@ export default {
               "Email or Password incorrect"
             );
           }
-
-          EventManager.broadcast(EventManager.EVENT.LOADING_OVERLAY, false);
         });
     },
 
     async submitMfaCode() {
-      EventManager.broadcast(EventManager.EVENT.LOADING_OVERLAY, true);
       axios
         .post(this.apiUrl + "/api/auth/mfa", {
           mfa_token: this.mfaCode,
@@ -174,7 +169,6 @@ export default {
             "Incorrect MFA Code"
           );
           this.mfaCode = "";
-          EventManager.broadcast(EventManager.EVENT.LOADING_OVERLAY, false);
         });
     },
 

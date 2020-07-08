@@ -63,8 +63,6 @@ export default {
     };
   },
   async mounted() {
-    EventManager.broadcast(EventManager.EVENT.LOADING_OVERLAY, false);
-
     let notAskingRate = await SLStorage.get(SLStorage.SETTINGS.NOT_ASKING_RATE);
     if (!!notAskingRate) this.showVoteScreen = false;
     // TODO showVoteScreen 1 day after user installed plugin
@@ -84,7 +82,6 @@ export default {
     },
 
     backToMainPage() {
-      EventManager.broadcast(EventManager.EVENT.LOADING_OVERLAY, true);
       Navigation.navigateTo(Navigation.PATH.MAIN);
     },
 

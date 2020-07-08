@@ -216,8 +216,6 @@ export default {
     this.apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
     this.apiKey = await SLStorage.get(SLStorage.SETTINGS.API_KEY);
 
-    EventManager.broadcast(EventManager.EVENT.LOADING_OVERLAY, true);
-
     await this.getAliasOptions();
 
     EventManager.broadcast(EventManager.EVENT.APP_LOADED);

@@ -54,10 +54,6 @@ export default {
     EventManager.addListener(EventManager.EVENT.APP_LOADED, () => {
       this.isShow = false;
     });
-
-    EventManager.addListener(EventManager.EVENT.LOADING_OVERLAY, (show) => {
-      this.isShow = show;
-    });
   },
   methods: {},
   computed: {},
