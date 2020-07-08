@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.0] - 2020-07-08
+- Big refactoring to make the code more modulable
+- Add some UI touches & fixes: log out button on top, navigation button, etc.
+
 ## [1.7.0] - 2020-07-04
 You can now login with email/password!
 
