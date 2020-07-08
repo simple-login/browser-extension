@@ -117,3 +117,12 @@ em {
   right: 10px;
   margin-top: 5px !important;
 }
+
+/* toaster show below header */
+.toasted-container {
+  margin-top: 45px;
+}
+
+.toasted.toasted-primary > .action.ripple {
+  color: white !important;
+}
