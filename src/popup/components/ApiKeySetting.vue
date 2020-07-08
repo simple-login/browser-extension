@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <div class="p-2 container">
+    <div class="p-3 container">
       <p>To get started, please follow these 3 simple steps:</p>
 
       <div class="mb-2">

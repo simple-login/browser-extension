@@ -18,7 +18,8 @@ body {
 }
 
 .content {
-  padding-top: 55px;
+  padding-top: 60px;
+  padding-bottom: 10px;
 }
 
 .overlay {
