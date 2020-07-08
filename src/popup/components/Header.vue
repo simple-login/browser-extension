@@ -70,6 +70,7 @@ export default {
   watch:{
     $route(to, from) {
       this.canBack = this.$router.history.index > 0;
+      this.showDropdownMenu = false;
     }
   },
   methods: {
