@@ -1,6 +1,7 @@
 body {
   margin: 0 0;
   width: 470px;
+  box-sizing: content-box !important;
 }
 
 .header {
@@ -27,7 +28,7 @@ body {
   z-index: 20;
   height: 100vh;
   width: 100vw;
-  min-height: 400px;
+  min-height: 350px;
   background-color: rgba(255, 255, 255, 0.8);
 }
 
@@ -40,8 +41,12 @@ body {
   text-align: center;
 }
 
+.app {
+  box-sizing: content-box !important;
+}
+
 .app .content {
-  min-height: 600px;
+  box-sizing: border-box;
 }
 
 .splash .logo {
