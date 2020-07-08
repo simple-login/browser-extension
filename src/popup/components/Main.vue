@@ -238,15 +238,15 @@ export default {
       let json = await res.json();
 
       if (res.status == 401) {
-        EventManager.broadcast(
-          EventManager.EVENT.SHOW_ERROR,
+        Utils.showError(
+          this,
           "Invalid API Key. Please logout and re-setup the API Key"
         );
         this.logout();
         return;
       } else if (res.status >= 500) {
-        EventManager.broadcast(
-          EventManager.EVENT.SHOW_ERROR,
+        Utils.showError(
+          this,
           "Unknown error. We are sorry for this inconvenience!"
         );
         this.loading = false;
@@ -342,29 +342,23 @@ export default {
             SLStorage.setTemporary("newAlias", res.data.alias);
             Navigation.navigateTo(Navigation.PATH.NEW_ALIAS_RESULT);
           } else {
-            EventManager.broadcast(
-              EventManager.EVENT.SHOW_ERROR,
-              res.data.error
-            );
+            Utils.showError(this, res.data.error);
           }
         })
         .catch((err) => {
           // rate limit reached
           if (err.request.status === 429) {
-            EventManager.broadcast(
-              EventManager.EVENT.SHOW_ERROR,
+            Utils.showError(
+              this,
               "Rate limit exceeded - please wait 60s before creating new alias"
             );
           } else if (err.request.status === 409) {
-            EventManager.broadcast(
-              EventManager.EVENT.SHOW_ERROR,
+            Utils.showError(
+              this,
               "Alias already chosen, please select another one"
             );
           } else {
-            EventManager.broadcast(
-              EventManager.EVENT.SHOW_ERROR,
-              "Unknown error"
-            );
+            Utils.showError(this, "Unknown error");
           }
         })
         .then(() => {
@@ -389,24 +383,18 @@ export default {
             SLStorage.setTemporary("newAlias", res.data.alias);
             Navigation.navigateTo(Navigation.PATH.NEW_ALIAS_RESULT);
           } else {
-            EventManager.broadcast(
-              EventManager.EVENT.SHOW_ERROR,
-              res.data.error
-            );
+            Utils.showError(this, res.data.error);
           }
         })
         .catch((err) => {
           // rate limit reached
           if (err.request.status === 429) {
-            EventManager.broadcast(
-              EventManager.EVENT.SHOW_ERROR,
+            Utils.showError(
+              this,
               "Rate limit exceeded - please wait 60s before creating new alias"
             );
           } else {
-            EventManager.broadcast(
-              EventManager.EVENT.SHOW_ERROR,
-              "Unknown error"
-            );
+            Utils.showError(this, "Unknown error");
           }
         })
         .then(() => {
@@ -416,10 +404,7 @@ export default {
 
     // Clipboard
     clipboardSuccessHandler({ value, event }) {
-      EventManager.broadcast(
-        EventManager.EVENT.SHOW_MESSAGE,
-        value + " copied to clipboard"
-      );
+      Utils.showSuccess(this, value + " copied to clipboard");
     },
 
     clipboardErrorHandler({ value, event }) {

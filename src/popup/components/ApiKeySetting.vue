@@ -57,10 +57,7 @@ export default {
   methods: {
     async saveApiKey() {
       if (this.apiKey === "") {
-        EventManager.broadcast(
-          EventManager.EVENT.SHOW_ERROR,
-          "API Key cannot be empty"
-        );
+        Utils.showError(this, "API Key cannot be empty");
         return;
       }
 
@@ -74,18 +71,12 @@ export default {
           await SLStorage.set(SLStorage.SETTINGS.API_KEY, this.apiKey);
           EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
 
-          EventManager.broadcast(
-            EventManager.EVENT.SHOW_MESSAGE,
-            `Hi ${userName}!`
-          );
+          Utils.showSuccess(this, `Hi ${userName}!`);
 
           Navigation.navigateTo(Navigation.PATH.MAIN);
         })
         .catch((err) => {
-          EventManager.broadcast(
-            EventManager.EVENT.SHOW_ERROR,
-            "Incorrect API Key."
-          );
+          Utils.showError(this, "Incorrect API Key.");
         });
     },
   },

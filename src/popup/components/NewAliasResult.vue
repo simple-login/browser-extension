@@ -71,10 +71,7 @@ export default {
   methods: {
     // Clipboard
     clipboardSuccessHandler({ value, event }) {
-      EventManager.broadcast(
-        EventManager.EVENT.SHOW_MESSAGE,
-        value + " copied to clipboard"
-      );
+      Utils.showSuccess(this, value + " copied to clipboard");
     },
 
     clipboardErrorHandler({ value, event }) {

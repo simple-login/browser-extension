@@ -35,6 +35,30 @@ class Utils {
         "https://chrome.google.com/webstore/detail/simplelogin-your-anti-spa/dphilobhebphkdjbpfohgikllaljmgbn";
     return isFirefox ? firefoxExtensionUrl : chromeExtensionUrl;
   }
+
+  static showSuccess(context, message) {
+    if (context.$toasted) {
+      context.$toasted.show(message, {
+        type: "success",
+        duration: 2500,
+      });
+    }
+  }
+
+  static showError(context, message) {
+    if (context.$toasted) {
+      this.$toasted.show(message, {
+        type: "error",
+        duration: 3000,
+        action: {
+          text: "×",
+          onClick: (e, toastObject) => {
+            toastObject.goAway(0);
+          },
+        },
+      });
+    }
+  }
 }
 
 export default Utils;

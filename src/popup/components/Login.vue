@@ -117,10 +117,7 @@ export default {
             await SLStorage.set(SLStorage.SETTINGS.API_KEY, res.data.api_key);
             EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
 
-            EventManager.broadcast(
-              EventManager.EVENT.SHOW_MESSAGE,
-              `Hi ${userName}!`
-            );
+            Utils.showSuccess(this, `Hi ${userName}!`);
 
             Navigation.navigateTo(Navigation.PATH.MAIN);
           } else if (res.data.mfa_enabled) {
@@ -131,15 +128,12 @@ export default {
         .catch((err) => {
           // FIDO
           if (err.response.status === 403) {
-            EventManager.broadcast(
-              EventManager.EVENT.SHOW_ERROR,
+            Utils.showError(
+              this,
               "WebAuthn/FIDO is not supported on browser extension yet, please use API Key to login"
             );
           } else {
-            EventManager.broadcast(
-              EventManager.EVENT.SHOW_ERROR,
-              "Email or Password incorrect"
-            );
+            Utils.showError(this, "Email or Password incorrect");
           }
         });
     },
@@ -156,18 +150,12 @@ export default {
           await SLStorage.set(SLStorage.SETTINGS.API_KEY, res.data.api_key);
           EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
 
-          EventManager.broadcast(
-            EventManager.EVENT.SHOW_MESSAGE,
-            `Hi ${userName}!`
-          );
+          Utils.showSuccess(this, `Hi ${userName}!`);
 
           Navigation.navigateTo(Navigation.PATH.MAIN);
         })
         .catch((err) => {
-          EventManager.broadcast(
-            EventManager.EVENT.SHOW_ERROR,
-            "Incorrect MFA Code"
-          );
+          Utils.showError(this, "Incorrect MFA Code");
           this.mfaCode = "";
         });
     },

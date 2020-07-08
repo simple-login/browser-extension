@@ -8,8 +8,8 @@ class SLStorage {
   };
 
   static DEFAULT_SETTINGS = {
-    [SLStorage.SETTINGS.API_URL]: 'https://app.simplelogin.io',
-    [SLStorage.SETTINGS.API_KEY]: '',
+    [SLStorage.SETTINGS.API_URL]: "https://app.simplelogin.io",
+    [SLStorage.SETTINGS.API_KEY]: "",
     [SLStorage.SETTINGS.NOT_ASKING_RATE]: false,
   };
 
