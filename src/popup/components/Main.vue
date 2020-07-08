@@ -333,8 +333,8 @@ export default {
         )
         .then((res) => {
           if (res.status === 201) {
-            SLStorage.setTemporary("newAlias", res.data.alias);
-            Navigation.navigateTo(Navigation.PATH.NEW_ALIAS_RESULT);
+            let path = Navigation.PATH.NEW_ALIAS_RESULT.replace(':email', encodeURIComponent(res.data.alias));
+            Navigation.navigateTo(path, true);
           } else {
             Utils.showError(this, res.data.error);
           }
@@ -374,8 +374,8 @@ export default {
         )
         .then((res) => {
           if (res.status === 201) {
-            SLStorage.setTemporary("newAlias", res.data.alias);
-            Navigation.navigateTo(Navigation.PATH.NEW_ALIAS_RESULT);
+            let path = Navigation.PATH.NEW_ALIAS_RESULT.replace(':email', encodeURIComponent(res.data.alias));
+            Navigation.navigateTo(path, true);
           } else {
             Utils.showError(this, res.data.error);
           }

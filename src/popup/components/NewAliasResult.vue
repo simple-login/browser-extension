@@ -57,12 +57,13 @@ import Utils from "../Utils";
 export default {
   data() {
     return {
-      newAlias: SLStorage.getTemporary("newAlias"),
+      newAlias: "",
       showVoteScreen: false,
       extensionUrl: Utils.getExtensionURL(),
     };
   },
   async mounted() {
+    this.newAlias = this.$route.params.email;
     let notAskingRate = await SLStorage.get(SLStorage.SETTINGS.NOT_ASKING_RATE);
     if (!!notAskingRate) this.showVoteScreen = false;
     // TODO showVoteScreen 1 day after user installed plugin
@@ -79,7 +80,7 @@ export default {
     },
 
     backToMainPage() {
-      Navigation.navigateTo(Navigation.PATH.MAIN);
+      this.$router.go(-1);
     },
 
     doNotAskRateAgain() {

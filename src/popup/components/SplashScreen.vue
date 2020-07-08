@@ -26,7 +26,7 @@ export default {
     this.apiKey = await SLStorage.get(SLStorage.SETTINGS.API_KEY);
 
     if (this.apiKey !== "") {
-      Navigation.navigateTo(Navigation.PATH.MAIN);
+      Navigation.navigateTo(Navigation.PATH.MAIN, true);
     } else {
       // try to get api key when user is already logged in
       var apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
