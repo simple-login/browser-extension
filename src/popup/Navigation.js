@@ -22,10 +22,6 @@ class Navigation {
   static getRoutes(components) {
     return [
       {
-        path: Navigation.PATH.ROOT,
-        component: { template: '<div class="content"></div>' },
-      },
-      {
         path: Navigation.PATH.LOGIN,
         component: components.Login,
       },
