@@ -1,6 +1,5 @@
 <template>
   <div class="app">
-    <sl-splash></sl-splash>
     <sl-header></sl-header>
     <router-view></router-view>
   </div>
@@ -24,7 +23,7 @@ import NewAliasResult from "./components/NewAliasResult";
 
 const components = {
   "sl-header": Header,
-  "sl-splash": SplashScreen,
+  SplashScreen,
   Login,
   SelfHostSetting,
   ApiKeySetting,
@@ -44,6 +43,7 @@ export default {
   components,
   mounted() {
     Navigation.setRouter(this.$router);
+    Navigation.navigateTo(Navigation.PATH.ROOT);
   },
 };
 </script>

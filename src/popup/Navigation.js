@@ -17,6 +17,10 @@ class Navigation {
   static getRoutes(components) {
     return [
       {
+        path: Navigation.PATH.ROOT,
+        component: components.SplashScreen,
+      },
+      {
         path: Navigation.PATH.LOGIN,
         component: components.Login,
       },

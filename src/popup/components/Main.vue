@@ -32,6 +32,7 @@
                 pattern="[0-9a-z-_]{1,}"
                 title="Only letter, number, dash (-), underscore (_) can be used in alias prefix."
                 placeholder="Alias prefix"
+                :disabled="loading || !canCreate"
                 autofocus
                 required
               />
@@ -41,7 +42,7 @@
               class="col align-self-center input-group-sm"
               style="padding-left: 5px;"
             >
-              <select v-model="signedSuffix" class="form-control">
+              <select v-model="signedSuffix" class="form-control" :disabled="loading || !canCreate">
                 <option
                   v-for="suffix in aliasSuffixes"
                   v-bind:key="suffix[0]"
@@ -200,7 +201,7 @@ export default {
       // variables for searching alias
       searchString: "",
       aliasArray: [], // array of existing alias
-      hasLoadMoreAlias: false,
+      hasLoadMoreAlias: true,
     };
   },
   async mounted() {
@@ -209,8 +210,6 @@ export default {
     this.apiKey = await SLStorage.get(SLStorage.SETTINGS.API_KEY);
 
     await this.getAliasOptions();
-
-    EventManager.broadcast(EventManager.EVENT.APP_LOADED);
   },
   methods: {
     async getAliasOptions() {

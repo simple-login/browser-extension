@@ -1,8 +1,10 @@
 <template>
-  <div v-if="isShow" class="splash overlay">
-    <div class="overlay-content">
-      <img class="logo" src="/images/horizontal-logo.svg" /><br />
-      <img class="loading" src="/images/loading.svg" />
+  <div v-if="show" style="height: 400px">
+    <div class="splash overlay">
+      <div class="overlay-content">
+        <img class="logo" src="/images/horizontal-logo.svg" /><br />
+        <img class="loading" src="/images/loading.svg" />
+      </div>
     </div>
   </div>
 </template>
@@ -19,11 +21,16 @@ export default {
   data() {
     return {
       apiKey: "",
-      isShow: true,
+      show: false,
     };
   },
   async mounted() {
     this.apiKey = await SLStorage.get(SLStorage.SETTINGS.API_KEY);
+    
+    // only show after waiting for more than 500ms
+    this.timeoutId = setTimeout(() => {
+      this.show = true;
+    }, 500);
 
     if (this.apiKey !== "") {
       Navigation.navigateTo(Navigation.PATH.MAIN, true);
@@ -50,10 +57,9 @@ export default {
           Navigation.navigateTo(Navigation.PATH.LOGIN, true);
         });
     }
-
-    EventManager.addListener(EventManager.EVENT.APP_LOADED, () => {
-      this.isShow = false;
-    });
+  },
+  beforeDestroy() {
+    clearTimeout(this.timeoutId);
   },
   methods: {},
   computed: {},

@@ -53,7 +53,6 @@ export default {
     };
   },
   async mounted() {
-    EventManager.broadcast(EventManager.EVENT.APP_LOADED);
     this.apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
   },
   methods: {
