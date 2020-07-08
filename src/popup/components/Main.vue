@@ -165,7 +165,7 @@
       </div>
 
       <div v-if="hasLoadMoreAlias" class="text-secondary mx-auto text-center">
-        Loading aliases ...
+        <img src="/images/loading-three-dots.svg" style="width: 80px; margin: 20px;" />
       </div>
     </div>
     <!-- END Main Page -->
@@ -188,7 +188,7 @@ export default {
 
       // variables for creating alias
       hostName: "", // hostName obtained from chrome tabs query
-      canCreate: false,
+      canCreate: true,
       aliasSuffixes: [],
       aliasPrefix: "",
       signedSuffix: "",
