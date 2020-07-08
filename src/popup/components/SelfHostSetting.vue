@@ -40,7 +40,7 @@ export default {
   },
   methods: {
     async saveApiUrl() {
-      await SLStorage.set(SLStorage.SETTINGS.API_URL, this.apiUrl);
+      await SLStorage.set(SLStorage.SETTINGS.API_URL, this.apiUrl !== '' ? this.apiUrl : null);
       EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
 
       EventManager.broadcast(
