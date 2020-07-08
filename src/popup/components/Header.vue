@@ -69,7 +69,7 @@ export default {
   },
   watch:{
     $route(to, from) {
-      this.canBack = this.$router.history.index > 0;
+      this.canBack = Navigation.canGoBack();
       this.showDropdownMenu = false;
     }
   },
@@ -80,7 +80,7 @@ export default {
 
     navigateBack: function () {
       if (this.canBack) {
-        this.$router.go(-1);
+        Navigation.navigateBack();
       }
     },
 

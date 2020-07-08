@@ -74,7 +74,7 @@ export default {
 
           Utils.showSuccess(this, `Hi ${userName}!`);
 
-          this.$router.go(-1); // remove api-key-setting from history stack
+          Navigation.clearHistory();
           Navigation.navigateTo(Navigation.PATH.MAIN);
         })
         .catch((err) => {

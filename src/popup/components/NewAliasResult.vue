@@ -80,7 +80,7 @@ export default {
     },
 
     backToMainPage() {
-      this.$router.go(-1);
+      Navigation.navigateBack();
     },
 
     doNotAskRateAgain() {

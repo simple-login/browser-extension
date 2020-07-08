@@ -54,6 +54,18 @@ class Navigation {
       router.replace(path);
     }
   }
+
+  static canGoBack() {
+    return router.history.index > 0;
+  }
+
+  static navigateBack() {
+    router.go(-1);
+  }
+
+  static clearHistory() {
+    router.history.index = -1;
+  }
 }
 
 export default Navigation;
