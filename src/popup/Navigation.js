@@ -49,10 +49,6 @@ class Navigation {
     } else {
       router.replace(path);
     }
-
-    setTimeout(() => EventManager.broadcast(
-      EventManager.EVENT.ROUTE_CHANGED
-    ), 10);
   }
 }
 
