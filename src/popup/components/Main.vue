@@ -169,14 +169,6 @@
       </div>
     </div>
     <!-- END Main Page -->
-
-    <!-- Footer -->
-    <hr />
-    <div class="pt-0">
-      <button @click="logout" class="btn btn-sm btn-link float-right">
-        Logout
-      </button>
-    </div>
   </div>
 </template>
 
@@ -242,7 +234,9 @@ export default {
           this,
           "Invalid API Key. Please logout and re-setup the API Key"
         );
-        this.logout();
+        await SLStorage.remove(SLStorage.SETTINGS.API_KEY);
+        EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
+        Navigation.navigateTo(Navigation.PATH.LOGIN);
         return;
       } else if (res.status >= 500) {
         Utils.showError(
@@ -409,15 +403,6 @@ export default {
 
     clipboardErrorHandler({ value, event }) {
       console.error("error", value);
-    },
-
-    async logout() {
-      await axios.get(this.apiUrl + "/api/logout").catch(() => {
-        /* do nothing */
-      });
-      await SLStorage.remove(SLStorage.SETTINGS.API_KEY);
-      EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
-      Navigation.navigateTo(Navigation.PATH.LOGIN);
     },
   },
   computed: {},

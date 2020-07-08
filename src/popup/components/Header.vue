@@ -25,6 +25,7 @@
       </div>
 
       <div v-if="apiKey !== ''" class="col mr-2">
+        <img src="/images/settings-button.svg" class="settings-button float-right" @click="toggleDropdownMenu" />
         <a
           :href="apiUrl + '/dashboard/'"
           target="_blank"
@@ -32,12 +33,17 @@
         >
           Dashboard ↗
         </a>
+
+        <div class="dropdown-menu app-header-menu" v-bind:class="{ show: showDropdownMenu }">
+          <a class="dropdown-item" @click="handleLogout">Logout</a>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import axios from "axios";
 import SLStorage from "../SLStorage";
 import EventManager from "../EventManager";
 import Navigation from "../Navigation";
@@ -49,6 +55,7 @@ export default {
       apiKey: "",
       apiUrl: "",
       canBack: false,
+      showDropdownMenu: false,
     };
   },
   async mounted() {
@@ -74,6 +81,19 @@ export default {
       if (this.canBack) {
         this.$router.go(-1);
       }
+    },
+
+    toggleDropdownMenu: function () {
+      this.showDropdownMenu = !this.showDropdownMenu;
+    },
+
+    handleLogout: async function () {
+      await axios.get(this.apiUrl + "/api/logout").catch(() => {
+        /* do nothing */
+      });
+      await SLStorage.remove(SLStorage.SETTINGS.API_KEY);
+      EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
+      Navigation.navigateTo(Navigation.PATH.LOGIN);
     },
   },
   computed: {},
