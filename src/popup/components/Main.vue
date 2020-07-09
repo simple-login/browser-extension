@@ -5,17 +5,18 @@
     <!-- Main Page -->
     <div class="container">
       <div v-if="recommendation.show" class="text-center">
-        <span class="text-success">{{ recommendation.alias }}</span>
-        <button
-          v-if="recommendation.alias"
-          v-clipboard="() => recommendation.alias"
-          v-clipboard:success="clipboardSuccessHandler"
-          v-clipboard:error="clipboardErrorHandler"
-          class="btn btn-success btn-sm"
-        >
-          Copy
-        </button>
-        <br />
+        <div class="flex-grow-1">
+          <a
+            v-clipboard="() => recommendation.alias"
+            v-clipboard:success="clipboardSuccessHandler"
+            v-clipboard:error="clipboardErrorHandler"
+            v-b-tooltip.hover
+            title="Click to Copy"
+            class="cursor"
+          >
+            <span class="text-success">{{ recommendation.alias }}</span>
+          </a>
+        </div>
         <div class="small-text">
           recommended, already used on this website.
         </div>
