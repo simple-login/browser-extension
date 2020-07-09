@@ -478,7 +478,6 @@ export default {
       axios
         .delete(
           this.apiUrl + "/api/aliases/" + this.aliasArray[index].id,
-          {},
           {
             headers: { Authentication: this.apiKey },
           }
