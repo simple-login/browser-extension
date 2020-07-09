@@ -98,7 +98,7 @@
       </div>
       <hr />
 
-      <div v-if="aliasArray.length > 0">
+      <div>
         <div class="mx-auto font-weight-bold text-center">
           Or use an existing alias
         </div>
@@ -125,7 +125,7 @@
         </div>
 
         <!-- list alias -->
-        <div>
+        <div v-if="aliasArray.length > 0">
           <div v-for="(alias, index) in aliasArray" v-bind:key="alias.id">
             <div class="p-2 my-2 border-top">
               <div class="d-flex">
@@ -300,9 +300,11 @@ export default {
     async loadAlias() {
       this.aliasArray = [];
       this.hasLoadMoreAlias = true;
+      this.toggleMoreOptions(-1); // reset more options index
 
       let currentPage = 0;
       this.aliasArray = await this.getAliases(currentPage, this.searchString);
+      this.hasLoadMoreAlias = this.aliasArray.length > 0;
 
       let allAliasesAreLoaded = false;
 
