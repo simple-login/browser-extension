@@ -15,7 +15,7 @@ Vue.prototype.$browser = global.browser;
 Vue.use(Clipboard);
 Vue.use(Toasted, { duration: 1000 });
 Vue.use(BootstrapVue);
-Vue.use(VModal);
+Vue.use(VModal, { dialog: true });
 Vue.use(VueRouter);
 
 Sentry.init({

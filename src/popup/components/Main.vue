@@ -1,5 +1,7 @@
 <template>
   <div class="content">
+    <v-dialog />
+
     <!-- Main Page -->
     <div class="container">
       <div v-if="recommendation.show" class="text-center">
@@ -122,8 +124,9 @@
           </div>
         </div>
 
+        <!-- list alias -->
         <div>
-          <div v-for="alias in aliasArray" v-bind:key="alias.id">
+          <div v-for="(alias, index) in aliasArray" v-bind:key="alias.id">
             <div class="p-2 my-2 border-top">
               <div class="d-flex">
                 <div class="flex-grow-1 list-item-email">
@@ -139,16 +142,23 @@
                   </a>
                   <div class="list-item-email-fade" />
                 </div>
-                <div>
-                  <button
+                <div style="white-space: nowrap;">
+                  <img
+                    src="/images/icon-copy.svg"
                     v-if="alias"
                     v-clipboard="() => alias.email"
                     v-clipboard:success="clipboardSuccessHandler"
                     v-clipboard:error="clipboardErrorHandler"
-                    class="btn btn-success btn-sm copy-btn"
-                  >
-                    Copy
-                  </button>
+                    class="btn-svg"
+                  />
+
+                  <img
+                    src="/images/icon-dropdown.svg"
+                    v-if="alias"
+                    v-bind:style="{ transform: moreOptions.index === index ? 'rotate(180deg)' : '' }"
+                    v-on:click="toggleMoreOptions(index)"
+                    class="btn-svg"
+                  />
                 </div>
               </div>
 
@@ -163,6 +173,13 @@
               <div class="font-weight-lighter" style="font-size: 11px;">
                 {{ alias.nb_forward }} forwards, {{ alias.nb_reply }} replies,
                 {{ alias.nb_block }} blocks.
+              </div>
+
+              <div class="more-options" v-if="moreOptions.index === index">
+                <div class="btn btn-delete" v-on:click="handleClickDelete(index)" v-bind:disabled="moreOptions.loading">
+                  <img src="/images/icon-trash.svg" />
+                  <span style="color: #dc3545">Delete</span>
+                </div>
               </div>
             </div>
           </div>
@@ -209,6 +226,10 @@ export default {
       searchString: "",
       aliasArray: [], // array of existing alias
       hasLoadMoreAlias: true,
+      moreOptions: {
+        index: -1,
+        loading: false,
+      },
     };
   },
   async mounted() {
@@ -405,6 +426,65 @@ export default {
         })
         .then(() => {
           this.loading = false;
+        });
+    },
+
+    // More options
+    toggleMoreOptions(index) {
+      if (this.moreOptions.index !== -1) {
+        this.moreOptions.index = this.moreOptions.index !== index
+          ? index // show more options for another alias
+          : -1; // hide more options
+      } else {
+        this.moreOptions.index = index;
+      }
+      this.moreOptions.loading = false;
+    },
+    handleClickDelete(index) {
+      this.$modal.show('dialog', {
+        title: `Delete ${this.aliasArray[index].email}`,
+        text: 'Do you really want to delete this alias?',
+        buttons: [
+          {
+            title: 'Yes',
+            handler: () => {
+              this.$modal.hide('dialog');
+              this.deleteAlias(index);
+            }
+          },
+          {
+            title: 'No',
+            default: true,
+            handler: () => {
+              this.$modal.hide('dialog');
+            }
+          }
+        ]
+      });
+    },
+    async deleteAlias(index) {
+      this.moreOptions.loading = true;
+      axios
+        .delete(
+          this.apiUrl + "/api/aliases/" + this.aliasArray[index].id,
+          {},
+          {
+            headers: { Authentication: this.apiKey },
+          }
+        )
+        .then((res) => {
+          if (res.status === 200) {
+            this.aliasArray.splice(index, 1);
+            this.toggleMoreOptions(-1);
+          } else {
+            Utils.showError(this, res.data.error);
+          }
+        })
+        .catch((err) => {
+          Utils.showError(this, "Unknown error");
+        })
+        .then(() => {
+          this.moreOptions.loading = false;
         });
     },
 
