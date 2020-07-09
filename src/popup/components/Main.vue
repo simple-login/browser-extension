@@ -155,7 +155,10 @@
                   <img
                     src="/images/icon-dropdown.svg"
                     v-if="alias"
-                    v-bind:style="{ transform: moreOptions.index === index ? 'rotate(180deg)' : '' }"
+                    v-bind:style="{
+                      transform:
+                        moreOptions.index === index ? 'rotate(180deg)' : '',
+                    }"
                     v-on:click="toggleMoreOptions(index)"
                     class="btn-svg"
                   />
@@ -176,9 +179,13 @@
               </div>
 
               <div class="more-options" v-if="moreOptions.index === index">
-                <div class="btn btn-delete" v-on:click="handleClickDelete(index)" v-bind:disabled="moreOptions.loading">
+                <div
+                  class="btn btn-delete"
+                  v-on:click="handleClickDelete(index)"
+                  v-bind:disabled="moreOptions.loading"
+                >
                   <img src="/images/icon-trash.svg" />
-                  <span style="color: #dc3545">Delete</span>
+                  <span style="color: #dc3545;">Delete</span>
                 </div>
               </div>
             </div>
@@ -432,34 +439,35 @@ export default {
     // More options
     toggleMoreOptions(index) {
       if (this.moreOptions.index !== -1) {
-        this.moreOptions.index = this.moreOptions.index !== index
-          ? index // show more options for another alias
-          : -1; // hide more options
+        this.moreOptions.index =
+          this.moreOptions.index !== index
+            ? index // show more options for another alias
+            : -1; // hide more options
       } else {
         this.moreOptions.index = index;
       }
       this.moreOptions.loading = false;
     },
     handleClickDelete(index) {
-      this.$modal.show('dialog', {
+      this.$modal.show("dialog", {
         title: `Delete ${this.aliasArray[index].email}`,
-        text: 'Do you really want to delete this alias?',
+        text: "Do you really want to delete this alias?",
         buttons: [
           {
-            title: 'Yes',
+            title: "Yes",
             handler: () => {
-              this.$modal.hide('dialog');
+              this.$modal.hide("dialog");
               this.deleteAlias(index);
-            }
+            },
           },
           {
-            title: 'No',
+            title: "No",
             default: true,
             handler: () => {
-              this.$modal.hide('dialog');
-            }
-          }
-        ]
+              this.$modal.hide("dialog");
+            },
+          },
+        ],
       });
     },
     async deleteAlias(index) {
