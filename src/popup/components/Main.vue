@@ -158,7 +158,7 @@
                     v-if="alias"
                     v-bind:style="{
                       transform:
-                        moreOptions.index === index ? 'rotate(180deg)' : '',
+                        alias.moreOptions ? 'rotate(180deg)' : '',
                     }"
                     v-on:click="toggleMoreOptions(index)"
                     class="btn-svg"
@@ -179,11 +179,11 @@
                 {{ alias.nb_block }} blocks.
               </div>
 
-              <div class="more-options" v-if="moreOptions.index === index">
+              <div class="more-options" v-if="alias.moreOptions">
                 <div
                   class="btn btn-delete"
                   v-on:click="handleClickDelete(index)"
-                  v-bind:disabled="moreOptions.loading"
+                  v-bind:disabled="alias.moreOptions.loading"
                 >
                   <img src="/images/icon-trash.svg" />
                   <span style="color: #dc3545;">Delete</span>
@@ -234,10 +234,6 @@ export default {
       searchString: "",
       aliasArray: [], // array of existing alias
       hasLoadMoreAlias: true,
-      moreOptions: {
-        index: -1,
-        loading: false,
-      },
     };
   },
   async mounted() {
@@ -301,7 +297,6 @@ export default {
     async loadAlias() {
       this.aliasArray = [];
       this.hasLoadMoreAlias = true;
-      this.toggleMoreOptions(-1); // reset more options index
 
       let currentPage = 0;
       this.aliasArray = await this.getAliases(currentPage, this.searchString);
@@ -441,15 +436,13 @@ export default {
 
     // More options
     toggleMoreOptions(index) {
-      if (this.moreOptions.index !== -1) {
-        this.moreOptions.index =
-          this.moreOptions.index !== index
-            ? index // show more options for another alias
-            : -1; // hide more options
-      } else {
-        this.moreOptions.index = index;
-      }
-      this.moreOptions.loading = false;
+      const alias = this.aliasArray[index];
+      this.$set(this.aliasArray, index, {
+        ...alias,
+        moreOptions: alias.moreOptions ? null : {
+          loading: false,
+        },
+      });
     },
     handleClickDelete(index) {
       this.$modal.show("dialog", {
@@ -474,7 +467,7 @@ export default {
       });
     },
     async deleteAlias(index) {
-      this.moreOptions.loading = true;
+      this.aliasArray[index].loading = true;
       axios
         .delete(
           this.apiUrl + "/api/aliases/" + this.aliasArray[index].id,
@@ -485,16 +478,13 @@ export default {
         .then((res) => {
           if (res.status === 200) {
             this.aliasArray.splice(index, 1);
-            this.toggleMoreOptions(-1);
           } else {
             Utils.showError(this, res.data.error);
           }
         })
         .catch((err) => {
           Utils.showError(this, "Unknown error");
-        })
-        .then(() => {
-          this.moreOptions.loading = false;
+          this.aliasArray[index].loading = false;
         });
     },
 
