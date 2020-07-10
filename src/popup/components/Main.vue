@@ -99,7 +99,7 @@
       </div>
       <hr />
 
-      <div>
+      <div v-if="aliasArray.length > 0 || searchString !== ''">
         <div class="mx-auto font-weight-bold text-center">
           Or use an existing alias
         </div>
