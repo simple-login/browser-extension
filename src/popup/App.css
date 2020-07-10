@@ -86,7 +86,7 @@ em {
 }
 
 .list-item-email {
-  margin-right: 50px !important;
+  margin-right: 30px !important;
   position: relative;
   overflow: hidden;
 }
@@ -125,4 +125,27 @@ em {
 
 .toasted.toasted-primary > .action.ripple {
   color: white !important;
+}
+
+/* button img */
+.btn-svg {
+  cursor: pointer;
+  padding: 5px;
+}
+
+.btn-delete:hover, .btn-svg:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.btn-delete {
+  float: right;
+}
+
+.btn-delete > img {
+  vertical-align: unset;
+  height: 14px;
+}
+
+.more-options {
+  min-height: 25px;
 }

@@ -1,19 +1,22 @@
 <template>
   <div class="content">
+    <v-dialog />
+
     <!-- Main Page -->
     <div class="container">
       <div v-if="recommendation.show" class="text-center">
-        <span class="text-success">{{ recommendation.alias }}</span>
-        <button
-          v-if="recommendation.alias"
-          v-clipboard="() => recommendation.alias"
-          v-clipboard:success="clipboardSuccessHandler"
-          v-clipboard:error="clipboardErrorHandler"
-          class="btn btn-success btn-sm"
-        >
-          Copy
-        </button>
-        <br />
+        <div class="flex-grow-1">
+          <a
+            v-clipboard="() => recommendation.alias"
+            v-clipboard:success="clipboardSuccessHandler"
+            v-clipboard:error="clipboardErrorHandler"
+            v-b-tooltip.hover
+            title="Click to Copy"
+            class="cursor"
+          >
+            <span class="text-success">{{ recommendation.alias }}</span>
+          </a>
+        </div>
         <div class="small-text">
           recommended, already used on this website.
         </div>
@@ -96,7 +99,7 @@
       </div>
       <hr />
 
-      <div v-if="aliasArray.length > 0">
+      <div v-if="aliasArray.length > 0 || searchString !== ''">
         <div class="mx-auto font-weight-bold text-center">
           Or use an existing alias
         </div>
@@ -122,8 +125,9 @@
           </div>
         </div>
 
-        <div>
-          <div v-for="alias in aliasArray" v-bind:key="alias.id">
+        <!-- list alias -->
+        <div v-if="aliasArray.length > 0">
+          <div v-for="(alias, index) in aliasArray" v-bind:key="alias.id">
             <div class="p-2 my-2 border-top">
               <div class="d-flex">
                 <div class="flex-grow-1 list-item-email">
@@ -139,16 +143,26 @@
                   </a>
                   <div class="list-item-email-fade" />
                 </div>
-                <div>
-                  <button
+                <div style="white-space: nowrap;">
+                  <img
+                    src="/images/icon-copy.svg"
                     v-if="alias"
                     v-clipboard="() => alias.email"
                     v-clipboard:success="clipboardSuccessHandler"
                     v-clipboard:error="clipboardErrorHandler"
-                    class="btn btn-success btn-sm copy-btn"
-                  >
-                    Copy
-                  </button>
+                    class="btn-svg"
+                  />
+
+                  <img
+                    src="/images/icon-dropdown.svg"
+                    v-if="alias"
+                    v-bind:style="{
+                      transform:
+                        alias.moreOptions ? 'rotate(180deg)' : '',
+                    }"
+                    v-on:click="toggleMoreOptions(index)"
+                    class="btn-svg"
+                  />
                 </div>
               </div>
 
@@ -163,6 +177,17 @@
               <div class="font-weight-lighter" style="font-size: 11px;">
                 {{ alias.nb_forward }} forwards, {{ alias.nb_reply }} replies,
                 {{ alias.nb_block }} blocks.
+              </div>
+
+              <div class="more-options" v-if="alias.moreOptions">
+                <div
+                  class="btn btn-delete"
+                  v-on:click="handleClickDelete(index)"
+                  v-bind:disabled="alias.moreOptions.loading"
+                >
+                  <img src="/images/icon-trash.svg" />
+                  <span style="color: #dc3545;">Delete</span>
+                </div>
               </div>
             </div>
           </div>
@@ -205,7 +230,8 @@ export default {
         alias: "",
       },
 
-      // variables for searching alias
+      // variables for list alias
+      isFetchingAlias: true,
       searchString: "",
       aliasArray: [], // array of existing alias
       hasLoadMoreAlias: true,
@@ -274,15 +300,17 @@ export default {
       this.hasLoadMoreAlias = true;
 
       let currentPage = 0;
-      this.aliasArray = await this.getAliases(currentPage, this.searchString);
+      this.aliasArray = await this.fetchAlias(currentPage, this.searchString);
+      this.hasLoadMoreAlias = this.aliasArray.length > 0;
 
       let allAliasesAreLoaded = false;
 
       let that = this;
       window.onscroll = async function () {
-        if (allAliasesAreLoaded)
-          // nothing to do
-          return;
+        if (
+          that.isFetchingAlias
+          || allAliasesAreLoaded
+        ) return;
 
         let bottomOfWindow =
           document.documentElement.scrollTop + window.innerHeight >
@@ -292,7 +320,7 @@ export default {
           currentPage += 1;
 
           that.hasLoadMoreAlias = true;
-          let newAliases = await that.getAliases(
+          let newAliases = await that.fetchAlias(
             currentPage,
             that.searchString
           );
@@ -304,20 +332,29 @@ export default {
       };
     },
 
-    async getAliases(page, query) {
-      let res = await fetch(this.apiUrl + `/api/aliases?page_id=${page}`, {
-        method: "POST",
-        body: JSON.stringify({
-          query: query,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-          Authentication: this.apiKey,
-        },
-      });
+    async fetchAlias(page, query) {
+      this.isFetchingAlias = true;
+      try {
+        let res = await fetch(this.apiUrl + `/api/aliases?page_id=${page}`, {
+          method: "POST",
+          body: JSON.stringify({
+            query: query,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+            Authentication: this.apiKey,
+          },
+        });
+        this.isFetchingAlias = false;
 
-      let json = await res.json();
-      return json.aliases;
+        let json = await res.json();
+        return json.aliases;
+      } catch (e) {
+        console.error(e);
+        Utils.showError(this, "Cannot fetch list alias");
+        this.isFetchingAlias = false;
+        return [];
+      }
     },
 
     async resetSearch() {
@@ -405,6 +442,60 @@ export default {
         })
         .then(() => {
           this.loading = false;
+        });
+    },
+
+    // More options
+    toggleMoreOptions(index) {
+      const alias = this.aliasArray[index];
+      this.$set(this.aliasArray, index, {
+        ...alias,
+        moreOptions: alias.moreOptions ? null : {
+          loading: false,
+        },
+      });
+    },
+    handleClickDelete(index) {
+      this.$modal.show("dialog", {
+        title: `Delete ${this.aliasArray[index].email}`,
+        text: "Do you really want to delete this alias?",
+        buttons: [
+          {
+            title: "Yes",
+            handler: () => {
+              this.$modal.hide("dialog");
+              this.deleteAlias(index);
+            },
+          },
+          {
+            title: "No",
+            default: true,
+            handler: () => {
+              this.$modal.hide("dialog");
+            },
+          },
+        ],
+      });
+    },
+    async deleteAlias(index) {
+      this.aliasArray[index].loading = true;
+      axios
+        .delete(
+          this.apiUrl + "/api/aliases/" + this.aliasArray[index].id,
+          {
+            headers: { Authentication: this.apiKey },
+          }
+        )
+        .then((res) => {
+          if (res.status === 200) {
+            this.aliasArray.splice(index, 1);
+          } else {
+            Utils.showError(this, res.data.error);
+          }
+        })
+        .catch((err) => {
+          Utils.showError(this, "Unknown error");
+          this.aliasArray[index].loading = false;
         });
     },
 

@@ -23,7 +23,7 @@
 
       <div v-if="apiKey !== ''" class="col mr-2">
         <img
-          src="/images/settings-button.svg"
+          src="/images/icon-settings.svg"
           class="settings-button float-right"
           @click="toggleDropdownMenu"
         />
