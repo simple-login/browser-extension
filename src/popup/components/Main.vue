@@ -230,7 +230,8 @@ export default {
         alias: "",
       },
 
-      // variables for searching alias
+      // variables for list alias
+      isFetchingAlias: true,
       searchString: "",
       aliasArray: [], // array of existing alias
       hasLoadMoreAlias: true,
@@ -299,16 +300,17 @@ export default {
       this.hasLoadMoreAlias = true;
 
       let currentPage = 0;
-      this.aliasArray = await this.getAliases(currentPage, this.searchString);
+      this.aliasArray = await this.fetchAlias(currentPage, this.searchString);
       this.hasLoadMoreAlias = this.aliasArray.length > 0;
 
       let allAliasesAreLoaded = false;
 
       let that = this;
       window.onscroll = async function () {
-        if (allAliasesAreLoaded)
-          // nothing to do
-          return;
+        if (
+          that.isFetchingAlias
+          || allAliasesAreLoaded
+        ) return;
 
         let bottomOfWindow =
           document.documentElement.scrollTop + window.innerHeight >
@@ -318,7 +320,7 @@ export default {
           currentPage += 1;
 
           that.hasLoadMoreAlias = true;
-          let newAliases = await that.getAliases(
+          let newAliases = await that.fetchAlias(
             currentPage,
             that.searchString
           );
@@ -330,20 +332,29 @@ export default {
       };
     },
 
-    async getAliases(page, query) {
-      let res = await fetch(this.apiUrl + `/api/aliases?page_id=${page}`, {
-        method: "POST",
-        body: JSON.stringify({
-          query: query,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-          Authentication: this.apiKey,
-        },
-      });
+    async fetchAlias(page, query) {
+      this.isFetchingAlias = true;
+      try {
+        let res = await fetch(this.apiUrl + `/api/aliases?page_id=${page}`, {
+          method: "POST",
+          body: JSON.stringify({
+            query: query,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+            Authentication: this.apiKey,
+          },
+        });
+        this.isFetchingAlias = false;
 
-      let json = await res.json();
-      return json.aliases;
+        let json = await res.json();
+        return json.aliases;
+      } catch (e) {
+        console.error(e);
+        Utils.showError(this, "Cannot fetch list alias");
+        this.isFetchingAlias = false;
+        return [];
+      }
     },
 
     async resetSearch() {
