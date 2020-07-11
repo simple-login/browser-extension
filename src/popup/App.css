@@ -48,6 +48,7 @@ body {
 
 .app .content {
   box-sizing: border-box;
+  margin-bottom: 30px; /* reserved space for toast */
 }
 
 .splash .logo {
@@ -85,6 +86,16 @@ em {
   cursor: pointer;
 }
 
+/* list aliases */
+
+.vue-js-switch {
+  margin-bottom: 0;
+}
+
+.list-item-alias.disabled {
+  opacity: 0.7;
+}
+
 .list-item-email {
   margin-right: 30px !important;
   position: relative;
@@ -118,11 +129,7 @@ em {
   margin-top: 5px !important;
 }
 
-/* toaster show below header */
-.toasted-container {
-  margin-top: 45px;
-}
-
+/* toasted: white close button */
 .toasted.toasted-primary > .action.ripple {
   color: white !important;
 }
