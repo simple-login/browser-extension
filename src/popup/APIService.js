@@ -1,11 +1,11 @@
 import EventManager from "./EventManager";
-import SLStorage from './SLStorage';
-import Utils from './Utils';
-import axios from 'axios';
+import SLStorage from "./SLStorage";
+import Utils from "./Utils";
+import axios from "axios";
 
 const SETTINGS = {
-  apiKey: '',
-  apiUrl: '',
+  apiKey: "",
+  apiUrl: "",
 };
 
 const fetchSettings = async () => {
@@ -44,14 +44,22 @@ class APIService {
     GET_API_KEY_FROM_COOKIE: { method: "POST", path: "/api/api_key" },
   };
 
-  static async call(route, dataAndParams, contextForToast) {
+  static IGNORE_ERR = 1;
+  static TOAST_ON_ERR = 2;
+  static THROW_ON_ERR = 3;
+
+  static async call(
+    route,
+    params = {},
+    data = {},
+    errHandlerMethod = APIService.THROW_ON_ERR
+  ) {
     const { method, path } = route;
-    const data = JSON.parse(JSON.stringify(dataAndParams));
-    const url = SETTINGS.apiUrl + bindQueryParams(path, data);
+    const url = SETTINGS.apiUrl + bindQueryParams(path, params);
     const headers = {};
 
     if (SETTINGS.apiKey) {
-      headers['Authentication'] = SETTINGS.apiKey;
+      headers["Authentication"] = SETTINGS.apiKey;
     }
 
     try {
@@ -59,14 +67,23 @@ class APIService {
         method,
         url,
         headers,
+        data,
       });
 
       return res;
     } catch (err) {
       console.error(err);
-      if (context) {
-        Utils.showError(contextForToast, 'Unknown error');
-      } else {
+
+      if (errHandlerMethod === APIService.TOAST_ON_ERR) {
+        if (err.response.data && err.response.data.error) {
+          Utils.showError(err.response.data.error);
+        } else {
+          Utils.showError("Unknown error");
+        }
+        return;
+      }
+
+      if (errHandlerMethod === APIService.THROW_ON_ERR) {
         throw err;
       }
     }
@@ -75,10 +92,7 @@ class APIService {
 
 function bindQueryParams(url, params) {
   for (const key of Object.keys(params)) {
-    if (url.indexOf(`:${key}`) !== -1) {
-      url = url.replace(`:${key}`, encodeURIComponent(params[key]));
-      delete params[key];
-    }
+    url = url.replace(`:${key}`, encodeURIComponent(params[key]));
   }
 
   return url;
