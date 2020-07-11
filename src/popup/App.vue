@@ -20,6 +20,7 @@ import SelfHostSetting from "./components/SelfHostSetting";
 import ApiKeySetting from "./components/ApiKeySetting";
 import Main from "./components/Main";
 import NewAliasResult from "./components/NewAliasResult";
+import Utils from "./Utils";
 
 const components = {
   "sl-header": Header,
@@ -42,6 +43,7 @@ export default {
   router,
   components,
   mounted() {
+    Utils.setToasted(this.$toasted);
     Navigation.setRouter(this.$router);
     Navigation.navigateTo(Navigation.PATH.ROOT);
   },

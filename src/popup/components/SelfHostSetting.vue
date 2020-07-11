@@ -47,7 +47,7 @@ export default {
       );
       EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
 
-      Utils.showSuccess(this, "API URL saved successfully");
+      Utils.showSuccess("API URL saved successfully");
     },
   },
 };

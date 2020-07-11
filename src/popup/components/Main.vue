@@ -264,7 +264,6 @@ export default {
 
       if (res.status === 401) {
         Utils.showError(
-          this,
           "Invalid API Key. Please logout and re-setup the API Key"
         );
         await SLStorage.remove(SLStorage.SETTINGS.API_KEY);
@@ -272,10 +271,7 @@ export default {
         Navigation.navigateTo(Navigation.PATH.LOGIN);
         return;
       } else if (res.status >= 500) {
-        Utils.showError(
-          this,
-          "Unknown error. We are sorry for this inconvenience!"
-        );
+        Utils.showError("Unknown error. We are sorry for this inconvenience!");
         this.loading = false;
         return;
       }
@@ -348,7 +344,7 @@ export default {
         return json.aliases;
       } catch (e) {
         console.error(e);
-        Utils.showError(this, "Cannot fetch list alias");
+        Utils.showError("Cannot fetch list alias");
         this.isFetchingAlias = false;
         return [];
       }
@@ -379,30 +375,26 @@ export default {
             );
             Navigation.navigateTo(path, true);
           } else {
-            Utils.showError(this, res.data.error);
+            Utils.showError(res.data.error);
           }
         })
         .catch((err) => {
           // rate limit reached
           if (err.request.status === 429) {
             Utils.showError(
-              this,
               "Rate limit exceeded - please wait 60s before creating new alias"
             );
           } else if (err.request.status === 409) {
-            Utils.showError(
-              this,
-              "Alias already chosen, please select another one"
-            );
+            Utils.showError("Alias already chosen, please select another one");
           } else if (err.request.status === 412) {
             // can happen when the alias creation time slot is expired,
             // i.e user waits for too long before creating the alias
-            Utils.showError(this, err.response.data.error);
+            Utils.showError(err.response.data.error);
 
             // get new aliasSuffixes
             this.getAliasOptions();
           } else {
-            Utils.showError(this, "Unknown error");
+            Utils.showError("Unknown error");
           }
         })
         .then(() => {
@@ -430,18 +422,17 @@ export default {
             );
             Navigation.navigateTo(path, true);
           } else {
-            Utils.showError(this, res.data.error);
+            Utils.showError(res.data.error);
           }
         })
         .catch((err) => {
           // rate limit reached
           if (err.request.status === 429) {
             Utils.showError(
-              this,
               "Rate limit exceeded - please wait 60s before creating new alias"
             );
           } else {
-            Utils.showError(this, "Unknown error");
+            Utils.showError("Unknown error");
           }
         })
         .then(() => {
@@ -461,11 +452,10 @@ export default {
         );
         alias.enabled = res.data.enabled;
         Utils.showSuccess(
-          this,
           alias.email + " is " + (alias.enabled ? "enabled" : "disabled")
         );
       } catch (e) {
-        Utils.showError(this, "Unknown error");
+        Utils.showError("Unknown error");
         alias.enabled = lastState;
       }
       alias.loading = false;
@@ -515,18 +505,18 @@ export default {
           if (res.status === 200) {
             this.aliasArray.splice(index, 1);
           } else {
-            Utils.showError(this, res.data.error);
+            Utils.showError(res.data.error);
           }
         })
         .catch((err) => {
-          Utils.showError(this, "Unknown error");
+          Utils.showError("Unknown error");
           this.aliasArray[index].loading = false;
         });
     },
 
     // Clipboard
     clipboardSuccessHandler({ value, event }) {
-      Utils.showSuccess(this, value + " copied to clipboard");
+      Utils.showSuccess(value + " copied to clipboard");
     },
 
     clipboardErrorHandler({ value, event }) {
