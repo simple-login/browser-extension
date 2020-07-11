@@ -128,7 +128,10 @@
         <!-- list alias -->
         <div v-if="aliasArray.length > 0">
           <div v-for="(alias, index) in aliasArray" v-bind:key="alias.id">
-            <div class="p-2 my-2 border-top list-item-alias" v-bind:class="{ disabled: !alias.enabled }">
+            <div
+              class="p-2 my-2 border-top list-item-alias"
+              v-bind:class="{ disabled: !alias.enabled }"
+            >
               <div class="d-flex">
                 <div class="flex-grow-1 list-item-email">
                   <a
@@ -144,14 +147,19 @@
                   <div class="list-item-email-fade" />
                 </div>
                 <div style="white-space: nowrap;">
-                  <toggle-button :value="alias.enabled" color="#aa2990" :width="30" :height="18" @change="toggleAlias(alias)" />
+                  <toggle-button
+                    :value="alias.enabled"
+                    color="#aa2990"
+                    :width="30"
+                    :height="18"
+                    @change="toggleAlias(alias)"
+                  />
 
                   <img
                     src="/images/icon-dropdown.svg"
                     v-if="alias"
                     v-bind:style="{
-                      transform:
-                        alias.moreOptions ? 'rotate(180deg)' : '',
+                      transform: alias.moreOptions ? 'rotate(180deg)' : '',
                     }"
                     v-on:click="toggleMoreOptions(index)"
                     class="btn-svg"
@@ -300,10 +308,7 @@ export default {
 
       let that = this;
       window.onscroll = async function () {
-        if (
-          that.isFetchingAlias
-          || allAliasesAreLoaded
-        ) return;
+        if (that.isFetchingAlias || allAliasesAreLoaded) return;
 
         let bottomOfWindow =
           document.documentElement.scrollTop + window.innerHeight >
@@ -449,7 +454,10 @@ export default {
           }
         );
         alias.enabled = res.data.enabled;
-        Utils.showSuccess(this, alias.email + " is " + (alias.enabled ? "enabled" : "disabled"));
+        Utils.showSuccess(
+          this,
+          alias.email + " is " + (alias.enabled ? "enabled" : "disabled")
+        );
       } catch (e) {
         Utils.showError(this, "Unknown error");
         alias.enabled = lastState;
@@ -462,9 +470,11 @@ export default {
       const alias = this.aliasArray[index];
       this.$set(this.aliasArray, index, {
         ...alias,
-        moreOptions: alias.moreOptions ? null : {
-          loading: false,
-        },
+        moreOptions: alias.moreOptions
+          ? null
+          : {
+              loading: false,
+            },
       });
     },
     handleClickDelete(index) {
@@ -492,12 +502,9 @@ export default {
     async deleteAlias(index) {
       this.aliasArray[index].loading = true;
       axios
-        .delete(
-          this.apiUrl + "/api/aliases/" + this.aliasArray[index].id,
-          {
-            headers: { Authentication: this.apiKey },
-          }
-        )
+        .delete(this.apiUrl + "/api/aliases/" + this.aliasArray[index].id, {
+          headers: { Authentication: this.apiKey },
+        })
         .then((res) => {
           if (res.status === 200) {
             this.aliasArray.splice(index, 1);

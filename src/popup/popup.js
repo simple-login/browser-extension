@@ -14,7 +14,7 @@ global.browser = require("webextension-polyfill");
 Vue.prototype.$browser = global.browser;
 
 Vue.use(Clipboard);
-Vue.use(Toasted, { duration: 1000, position: 'bottom-right' });
+Vue.use(Toasted, { duration: 1000, position: "bottom-right" });
 Vue.use(BootstrapVue);
 Vue.use(VModal, { dialog: true });
 Vue.use(VueRouter);
