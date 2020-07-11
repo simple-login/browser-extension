@@ -394,6 +394,13 @@ export default {
               this,
               "Alias already chosen, please select another one"
             );
+          } else if (err.request.status === 412) {
+            // can happen when the alias creation time slot is expired,
+            // i.e user waits for too long before creating the alias
+            Utils.showError(this, err.response.data.error);
+
+            // get new aliasSuffixes
+            this.getAliasOptions();
           } else {
             Utils.showError(this, "Unknown error");
           }
