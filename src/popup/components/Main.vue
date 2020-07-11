@@ -128,7 +128,7 @@
         <!-- list alias -->
         <div v-if="aliasArray.length > 0">
           <div v-for="(alias, index) in aliasArray" v-bind:key="alias.id">
-            <div class="p-2 my-2 border-top">
+            <div class="p-2 my-2 border-top list-item-alias" v-bind:class="{ disabled: !alias.enabled }">
               <div class="d-flex">
                 <div class="flex-grow-1 list-item-email">
                   <a
@@ -144,14 +144,7 @@
                   <div class="list-item-email-fade" />
                 </div>
                 <div style="white-space: nowrap;">
-                  <img
-                    src="/images/icon-copy.svg"
-                    v-if="alias"
-                    v-clipboard="() => alias.email"
-                    v-clipboard:success="clipboardSuccessHandler"
-                    v-clipboard:error="clipboardErrorHandler"
-                    class="btn-svg"
-                  />
+                  <toggle-button :value="alias.enabled" color="#aa2990" :width="30" :height="18" @change="toggleAlias(alias)" />
 
                   <img
                     src="/images/icon-dropdown.svg"
@@ -443,6 +436,25 @@ export default {
         .then(() => {
           this.loading = false;
         });
+    },
+    async toggleAlias(alias) {
+      const lastState = alias.enabled;
+      alias.loading = true;
+      try {
+        const res = await axios.post(
+          `${this.apiUrl}/api/aliases/${alias.id}/toggle`,
+          {},
+          {
+            headers: { Authentication: this.apiKey },
+          }
+        );
+        alias.enabled = res.data.enabled;
+        Utils.showSuccess(this, alias.email + " is " + (alias.enabled ? "enabled" : "disabled"));
+      } catch (e) {
+        Utils.showError(this, "Unknown error");
+        alias.enabled = lastState;
+      }
+      alias.loading = false;
     },
 
     // More options
