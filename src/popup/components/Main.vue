@@ -290,7 +290,6 @@ export default {
       this.aliasPrefix = json.prefix_suggestion;
       this.canCreate = json.can_create;
 
-      this.optionsReady = true;
       this.loading = false;
 
       await this.loadAlias();
