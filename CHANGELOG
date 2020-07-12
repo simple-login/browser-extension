@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.1] - 2020-07-12
+- Take into account the case alias creation time is expired
+
 ## [1.9.0] - 2020-07-11
 - Able to enable/disable an alias
 - Able to delete an alias
