@@ -47,10 +47,10 @@
 </template>
 
 <script>
-import axios from "axios";
 import SLStorage from "../SLStorage";
 import EventManager from "../EventManager";
 import Navigation from "../Navigation";
+import { callAPI, ROUTE, API_ON_ERR } from "../APIService";
 
 export default {
   name: "sl-header",
@@ -93,9 +93,7 @@ export default {
     },
 
     handleLogout: async function () {
-      await axios.get(this.apiUrl + "/api/logout").catch(() => {
-        /* do nothing */
-      });
+      await callAPI(ROUTE.LOGOUT, {}, {}, API_ON_ERR.IGNORE);
       await SLStorage.remove(SLStorage.SETTINGS.API_KEY);
       EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
       Navigation.navigateTo(Navigation.PATH.LOGIN);

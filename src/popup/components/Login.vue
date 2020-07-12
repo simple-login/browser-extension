@@ -82,11 +82,11 @@
 </template>
 
 <script>
-import axios from "axios";
 import Utils from "../Utils";
 import SLStorage from "../SLStorage";
 import EventManager from "../EventManager";
 import Navigation from "../Navigation";
+import { callAPI, ROUTE, API_ON_ERR } from "../APIService";
 
 export default {
   data() {
@@ -103,46 +103,14 @@ export default {
   },
   methods: {
     async login() {
-      axios
-        .post(this.apiUrl + "/api/auth/login", {
+      try {
+        const res = await callAPI(ROUTE.LOGIN, {}, {
           email: this.email,
           password: this.password,
           device: Utils.getDeviceName(),
-        })
-        .then(async (res) => {
-          if (res.data.api_key) {
-            const userName = res.data.name || res.data.email;
-            await SLStorage.set(SLStorage.SETTINGS.API_KEY, res.data.api_key);
-            EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
-
-            Utils.showSuccess(`Hi ${userName}!`);
-
-            Navigation.navigateTo(Navigation.PATH.MAIN);
-          } else if (res.data.mfa_enabled) {
-            this.mfaKey = res.data.mfa_key;
-            this.isShowMfa = true;
-          }
-        })
-        .catch((err) => {
-          // FIDO
-          if (err.response.status === 403) {
-            Utils.showError(
-              "WebAuthn/FIDO is not supported on browser extension yet, please use API Key to login"
-            );
-          } else {
-            Utils.showError("Email or Password incorrect");
-          }
         });
-    },
 
-    async submitMfaCode() {
-      axios
-        .post(this.apiUrl + "/api/auth/mfa", {
-          mfa_token: this.mfaCode,
-          mfa_key: this.mfaKey,
-          device: Utils.getDeviceName(),
-        })
-        .then(async (res) => {
+        if (res.data.api_key) {
           const userName = res.data.name || res.data.email;
           await SLStorage.set(SLStorage.SETTINGS.API_KEY, res.data.api_key);
           EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
@@ -150,11 +118,41 @@ export default {
           Utils.showSuccess(`Hi ${userName}!`);
 
           Navigation.navigateTo(Navigation.PATH.MAIN);
-        })
-        .catch((err) => {
-          Utils.showError("Incorrect MFA Code");
-          this.mfaCode = "";
+        } else if (res.data.mfa_enabled) {
+          this.mfaKey = res.data.mfa_key;
+          this.isShowMfa = true;
+        }
+      } catch (err) {
+        // FIDO
+        if (err.response.status === 403) {
+          Utils.showError(
+            "WebAuthn/FIDO is not supported on browser extension yet, please use API Key to login"
+          );
+        } else {
+          Utils.showError("Email or Password incorrect");
+        }
+      }
+    },
+
+    async submitMfaCode() {
+      try {
+        const res = await callAPI(ROUTE.MFA, {}, {
+          mfa_token: this.mfaCode,
+          mfa_key: this.mfaKey,
+          device: Utils.getDeviceName(),
         });
+
+        const userName = res.data.name || res.data.email;
+        await SLStorage.set(SLStorage.SETTINGS.API_KEY, res.data.api_key);
+        EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
+
+        Utils.showSuccess(`Hi ${userName}!`);
+
+        Navigation.navigateTo(Navigation.PATH.MAIN);
+      } catch (err) {
+        Utils.showError("Incorrect MFA Code");
+        this.mfaCode = "";
+      }
     },
 
     showApiKeySetup: function () {

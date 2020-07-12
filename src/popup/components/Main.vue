@@ -211,7 +211,7 @@ import Utils from "../Utils";
 import SLStorage from "../SLStorage";
 import EventManager from "../EventManager";
 import Navigation from "../Navigation";
-import axios from "axios";
+import { callAPI, ROUTE, API_ON_ERR } from "../APIService";
 
 export default {
   data() {
@@ -249,44 +249,35 @@ export default {
     async getAliasOptions() {
       this.loading = true;
 
-      let res = await fetch(
-        this.apiUrl + "/api/v4/alias/options?hostname=" + this.hostName,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authentication: this.apiKey,
-          },
+      try {
+        const res = await callAPI(ROUTE.GET_ALIAS_OPTIONS, {
+          hostname: this.hostName,
+        });
+        const json = res.data;
+
+        if (json.recommendation) {
+          this.recommendation.show = true;
+          this.recommendation.alias = json.recommendation.alias;
         }
-      );
 
-      let json = await res.json();
+        this.aliasSuffixes = json.suffixes;
+        this.signedSuffix = this.aliasSuffixes[0][1];
+        this.aliasPrefix = json.prefix_suggestion;
+        this.canCreate = json.can_create;
 
-      if (res.status === 401) {
-        Utils.showError(
-          "Invalid API Key. Please logout and re-setup the API Key"
-        );
-        await SLStorage.remove(SLStorage.SETTINGS.API_KEY);
-        EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
-        Navigation.navigateTo(Navigation.PATH.LOGIN);
-        return;
-      } else if (res.status >= 500) {
-        Utils.showError("Unknown error. We are sorry for this inconvenience!");
         this.loading = false;
-        return;
+      } catch (err) {
+        if (err.response.status === 401) {
+          Utils.showError(
+            "Invalid API Key. Please logout and re-setup the API Key"
+          );
+          await SLStorage.remove(SLStorage.SETTINGS.API_KEY);
+          EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
+          Navigation.navigateTo(Navigation.PATH.LOGIN);
+        } else {
+          Utils.showError("Unknown error. We are sorry for this inconvenience!");
+        }
       }
-
-      if (json.recommendation) {
-        this.recommendation.show = true;
-        this.recommendation.alias = json.recommendation.alias;
-      }
-
-      this.aliasSuffixes = json.suffixes;
-      this.signedSuffix = this.aliasSuffixes[0][1];
-      this.aliasPrefix = json.prefix_suggestion;
-      this.canCreate = json.can_create;
-
-      this.loading = false;
 
       await this.loadAlias();
     },
@@ -328,22 +319,12 @@ export default {
     async fetchAlias(page, query) {
       this.isFetchingAlias = true;
       try {
-        let res = await fetch(this.apiUrl + `/api/aliases?page_id=${page}`, {
-          method: "POST",
-          body: JSON.stringify({
-            query: query,
-          }),
-          headers: {
-            "Content-Type": "application/json",
-            Authentication: this.apiKey,
-          },
+        const { data } = await callAPI(ROUTE.GET_ALIASES, {
+          page_id: page,
         });
         this.isFetchingAlias = false;
-
-        let json = await res.json();
-        return json.aliases;
+        return data.aliases;
       } catch (e) {
-        console.error(e);
         Utils.showError("Cannot fetch list alias");
         this.isFetchingAlias = false;
         return [];
@@ -359,105 +340,93 @@ export default {
       if (this.loading) return;
       this.loading = true;
 
-      axios
-        .post(
-          this.apiUrl + "/api/v2/alias/custom/new?hostname=" + this.hostName,
-          { alias_prefix: this.aliasPrefix, signed_suffix: this.signedSuffix },
-          {
-            headers: { Authentication: this.apiKey },
-          }
-        )
-        .then((res) => {
-          if (res.status === 201) {
-            let path = Navigation.PATH.NEW_ALIAS_RESULT.replace(
-              ":email",
-              encodeURIComponent(res.data.alias)
-            );
-            Navigation.navigateTo(path, true);
-          } else {
-            Utils.showError(res.data.error);
-          }
-        })
-        .catch((err) => {
-          // rate limit reached
-          if (err.request.status === 429) {
-            Utils.showError(
-              "Rate limit exceeded - please wait 60s before creating new alias"
-            );
-          } else if (err.request.status === 409) {
-            Utils.showError("Alias already chosen, please select another one");
-          } else if (err.request.status === 412) {
-            // can happen when the alias creation time slot is expired,
-            // i.e user waits for too long before creating the alias
-            Utils.showError(err.response.data.error);
-
-            // get new aliasSuffixes
-            this.getAliasOptions();
-          } else {
-            Utils.showError("Unknown error");
-          }
-        })
-        .then(() => {
-          this.loading = false;
+      try {
+        const res = await callAPI(ROUTE.NEW_ALIAS, {
+          hostname: this.hostName,
+        }, {
+          alias_prefix: this.aliasPrefix,
+          signed_suffix: this.signedSuffix
         });
+
+        if (res.status === 201) {
+          let path = Navigation.PATH.NEW_ALIAS_RESULT.replace(
+            ":email",
+            encodeURIComponent(res.data.alias)
+          );
+          Navigation.navigateTo(path, true);
+        } else {
+          Utils.showError(res.data.error);
+        }
+      } catch (err) {
+        // rate limit reached
+        if (err.request.status === 429) {
+          Utils.showError(
+            "Rate limit exceeded - please wait 60s before creating new alias"
+          );
+        } else if (err.request.status === 409) {
+          Utils.showError("Alias already chosen, please select another one");
+        } else if (err.request.status === 412) {
+          // can happen when the alias creation time slot is expired,
+          // i.e user waits for too long before creating the alias
+          Utils.showError(err.response.data.error);
+
+          // get new aliasSuffixes
+          this.getAliasOptions();
+        } else {
+          Utils.showError("Unknown error");
+        }
+      }
+
+      this.loading = false;
     },
 
     async createRandomAlias() {
       if (this.loading) return;
       this.loading = true;
 
-      axios
-        .post(
-          this.apiUrl + "/api/alias/random/new?hostname=" + this.hostName,
-          {},
-          {
-            headers: { Authentication: this.apiKey },
-          }
-        )
-        .then((res) => {
-          if (res.status === 201) {
-            let path = Navigation.PATH.NEW_ALIAS_RESULT.replace(
-              ":email",
-              encodeURIComponent(res.data.alias)
-            );
-            Navigation.navigateTo(path, true);
-          } else {
-            Utils.showError(res.data.error);
-          }
-        })
-        .catch((err) => {
-          // rate limit reached
-          if (err.request.status === 429) {
-            Utils.showError(
-              "Rate limit exceeded - please wait 60s before creating new alias"
-            );
-          } else {
-            Utils.showError("Unknown error");
-          }
-        })
-        .then(() => {
-          this.loading = false;
-        });
+      try {
+        const res = await callAPI(ROUTE.NEW_RANDOM_ALIAS, {
+          hostname: this.hostName,
+        }, {});
+
+        if (res.status === 201) {
+          let path = Navigation.PATH.NEW_ALIAS_RESULT.replace(
+            ":email",
+            encodeURIComponent(res.data.alias)
+          );
+          Navigation.navigateTo(path, true);
+        } else {
+          Utils.showError(res.data.error);
+        }
+      } catch (err) {
+        // rate limit reached
+        if (err.request.status === 429) {
+          Utils.showError(
+            "Rate limit exceeded - please wait 60s before creating new alias"
+          );
+        } else {
+          Utils.showError("Unknown error");
+        }
+      }
+
+      this.loading = false;
     },
     async toggleAlias(alias) {
       const lastState = alias.enabled;
       alias.loading = true;
-      try {
-        const res = await axios.post(
-          `${this.apiUrl}/api/aliases/${alias.id}/toggle`,
-          {},
-          {
-            headers: { Authentication: this.apiKey },
-          }
-        );
+      const res = await callAPI(ROUTE.TOGGLE_ALIAS, {
+        alias_id: alias.id
+      }, {}, API_ON_ERR.TOAST);
+
+      if (res) {
         alias.enabled = res.data.enabled;
         Utils.showSuccess(
           alias.email + " is " + (alias.enabled ? "enabled" : "disabled")
         );
-      } catch (e) {
-        Utils.showError("Unknown error");
+      } else {
         alias.enabled = lastState;
       }
+
       alias.loading = false;
     },
 
@@ -497,21 +466,14 @@ export default {
     },
     async deleteAlias(index) {
       this.aliasArray[index].loading = true;
-      axios
-        .delete(this.apiUrl + "/api/aliases/" + this.aliasArray[index].id, {
-          headers: { Authentication: this.apiKey },
-        })
-        .then((res) => {
-          if (res.status === 200) {
-            this.aliasArray.splice(index, 1);
-          } else {
-            Utils.showError(res.data.error);
-          }
-        })
-        .catch((err) => {
-          Utils.showError("Unknown error");
-          this.aliasArray[index].loading = false;
-        });
+      const res = await callAPI(ROUTE.DELETE_ALIAS, {
+        alias_id: this.aliasArray[index].id
+      }, {}, API_ON_ERR.TOAST);
+      if (res) {
+        this.aliasArray.splice(index, 1);
+      } else {
+        this.aliasArray[index].loading = false;
+      }
     },
 
     // Clipboard

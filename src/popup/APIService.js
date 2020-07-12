@@ -3,6 +3,35 @@ import SLStorage from "./SLStorage";
 import Utils from "./Utils";
 import axios from "axios";
 
+const ROUTE = {
+  GET_USER_INFO: { method: "GET", path: "/api/user_info" },
+  LOGOUT: { method: "GET", path: "/api/logout" },
+  LOGIN: { method: "POST", path: "/api/auth/login" },
+  MFA: { method: "POST", path: "/api/auth/mfa" },
+  GET_ALIAS_OPTIONS: {
+    method: "GET",
+    path: "/api/v4/alias/options?hostname=:hostname",
+  },
+  GET_ALIASES: { method: "GET", path: "/api/aliases?page_id=:page_id" },
+  NEW_ALIAS: {
+    method: "POST",
+    path: "/api/v2/alias/custom/new?hostname=:hostname",
+  },
+  NEW_RANDOM_ALIAS: {
+    method: "POST",
+    path: "/api/alias/random/new?hostname=:hostname",
+  },
+  TOGGLE_ALIAS: { method: "POST", path: "/api/aliases/:alias_id/toggle" },
+  DELETE_ALIAS: { method: "DELETE", path: "/api/aliases/:alias_id" },
+  GET_API_KEY_FROM_COOKIE: { method: "POST", path: "/api/api_key" },
+};
+
+const API_ON_ERR = {
+  IGNORE: 1,
+  TOAST: 2,
+  THROW: 3,
+};
+
 const SETTINGS = {
   apiKey: "",
   apiUrl: "",
@@ -18,74 +47,45 @@ const fetchSettings = async () => {
   });
 };
 
-fetchSettings();
+const callAPI = async function(
+  route,
+  params = {},
+  data = {},
+  errHandlerMethod = API_ON_ERR.THROW
+) {
+  const { method, path } = route;
+  const url = SETTINGS.apiUrl + bindQueryParams(path, params);
+  const headers = {};
 
-class APIService {
-  static ROUTE = {
-    GET_USER_INFO: { method: "GET", path: "/api/user_info" },
-    LOGOUT: { method: "GET", path: "/api/logout" },
-    LOGIN: { method: "POST", path: "/api/auth/login" },
-    MFA: { method: "POST", path: "/api/auth/mfa" },
-    GET_ALIAS_OPTIONS: {
-      method: "GET",
-      path: "/api/v4/alias/options?hostname=:hostname",
-    },
-    GET_ALIASES: { method: "GET", path: "/api/aliases?page_id=:page_id" },
-    NEW_ALIAS: {
-      method: "POST",
-      path: "/api/v2/alias/custom/new?hostname=:hostname",
-    },
-    NEW_RANDOM_ALIAS: {
-      method: "POST",
-      path: "/api/alias/random/new?hostname=:hostname",
-    },
-    TOGGLE_ALIAS: { method: "POST", path: "/api/aliases/:alias_id/toggle" },
-    DELETE_ALIAS: { method: "DELETE", path: "/api/aliases/:alias_id" },
-    GET_API_KEY_FROM_COOKIE: { method: "POST", path: "/api/api_key" },
-  };
+  if (SETTINGS.apiKey) {
+    headers["Authentication"] = SETTINGS.apiKey;
+  }
 
-  static IGNORE_ERR = 1;
-  static TOAST_ON_ERR = 2;
-  static THROW_ON_ERR = 3;
+  try {
+    const res = await axios({
+      method,
+      url,
+      headers,
+      data,
+    });
 
-  static async call(
-    route,
-    params = {},
-    data = {},
-    errHandlerMethod = APIService.THROW_ON_ERR
-  ) {
-    const { method, path } = route;
-    const url = SETTINGS.apiUrl + bindQueryParams(path, params);
-    const headers = {};
-
-    if (SETTINGS.apiKey) {
-      headers["Authentication"] = SETTINGS.apiKey;
+    return res;
+  } catch (err) {
+    if (errHandlerMethod !== API_ON_ERR.IGNORE) {
+      console.error(err);
     }
 
-    try {
-      const res = await axios({
-        method,
-        url,
-        headers,
-        data,
-      });
-
-      return res;
-    } catch (err) {
-      console.error(err);
-
-      if (errHandlerMethod === APIService.TOAST_ON_ERR) {
-        if (err.response.data && err.response.data.error) {
-          Utils.showError(err.response.data.error);
-        } else {
-          Utils.showError("Unknown error");
-        }
-        return;
+    if (errHandlerMethod === API_ON_ERR.TOAST) {
+      if (err.response.data && err.response.data.error) {
+        Utils.showError(err.response.data.error);
+      } else {
+        Utils.showError("Unknown error");
       }
+      return null;
+    }
 
-      if (errHandlerMethod === APIService.THROW_ON_ERR) {
-        throw err;
-      }
+    if (errHandlerMethod === API_ON_ERR.THROW) {
+      throw err;
     }
   }
 }
@@ -98,4 +98,9 @@ function bindQueryParams(url, params) {
   return url;
 }
 
-export default APIService;
+export {
+  callAPI,
+  ROUTE,
+  API_ON_ERR,
+  fetchSettings,
+};
