@@ -47,7 +47,7 @@ const fetchSettings = async () => {
   });
 };
 
-const callAPI = async function(
+const callAPI = async function (
   route,
   params = {},
   data = {},
@@ -88,7 +88,7 @@ const callAPI = async function(
       throw err;
     }
   }
-}
+};
 
 function bindQueryParams(url, params) {
   for (const key of Object.keys(params)) {
@@ -98,9 +98,4 @@ function bindQueryParams(url, params) {
   return url;
 }
 
-export {
-  callAPI,
-  ROUTE,
-  API_ON_ERR,
-  fetchSettings,
-};
+export { callAPI, ROUTE, API_ON_ERR, fetchSettings };

@@ -275,7 +275,9 @@ export default {
           EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
           Navigation.navigateTo(Navigation.PATH.LOGIN);
         } else {
-          Utils.showError("Unknown error. We are sorry for this inconvenience!");
+          Utils.showError(
+            "Unknown error. We are sorry for this inconvenience!"
+          );
         }
       }
 
@@ -341,12 +343,16 @@ export default {
       this.loading = true;
 
       try {
-        const res = await callAPI(ROUTE.NEW_ALIAS, {
-          hostname: this.hostName,
-        }, {
-          alias_prefix: this.aliasPrefix,
-          signed_suffix: this.signedSuffix
-        });
+        const res = await callAPI(
+          ROUTE.NEW_ALIAS,
+          {
+            hostname: this.hostName,
+          },
+          {
+            alias_prefix: this.aliasPrefix,
+            signed_suffix: this.signedSuffix,
+          }
+        );
 
         if (res.status === 201) {
           let path = Navigation.PATH.NEW_ALIAS_RESULT.replace(
@@ -385,9 +391,13 @@ export default {
       this.loading = true;
 
       try {
-        const res = await callAPI(ROUTE.NEW_RANDOM_ALIAS, {
-          hostname: this.hostName,
-        }, {});
+        const res = await callAPI(
+          ROUTE.NEW_RANDOM_ALIAS,
+          {
+            hostname: this.hostName,
+          },
+          {}
+        );
 
         if (res.status === 201) {
           let path = Navigation.PATH.NEW_ALIAS_RESULT.replace(
@@ -414,9 +424,14 @@ export default {
     async toggleAlias(alias) {
       const lastState = alias.enabled;
       alias.loading = true;
-      const res = await callAPI(ROUTE.TOGGLE_ALIAS, {
-        alias_id: alias.id
-      }, {}, API_ON_ERR.TOAST);
+      const res = await callAPI(
+        ROUTE.TOGGLE_ALIAS,
+        {
+          alias_id: alias.id,
+        },
+        {},
+        API_ON_ERR.TOAST
+      );
 
       if (res) {
         alias.enabled = res.data.enabled;
@@ -466,9 +481,14 @@ export default {
     },
     async deleteAlias(index) {
       this.aliasArray[index].loading = true;
-      const res = await callAPI(ROUTE.DELETE_ALIAS, {
-        alias_id: this.aliasArray[index].id
-      }, {}, API_ON_ERR.TOAST);
+      const res = await callAPI(
+        ROUTE.DELETE_ALIAS,
+        {
+          alias_id: this.aliasArray[index].id,
+        },
+        {},
+        API_ON_ERR.TOAST
+      );
       if (res) {
         this.aliasArray.splice(index, 1);
       } else {

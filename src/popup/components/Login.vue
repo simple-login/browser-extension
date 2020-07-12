@@ -104,11 +104,15 @@ export default {
   methods: {
     async login() {
       try {
-        const res = await callAPI(ROUTE.LOGIN, {}, {
-          email: this.email,
-          password: this.password,
-          device: Utils.getDeviceName(),
-        });
+        const res = await callAPI(
+          ROUTE.LOGIN,
+          {},
+          {
+            email: this.email,
+            password: this.password,
+            device: Utils.getDeviceName(),
+          }
+        );
 
         if (res.data.api_key) {
           const userName = res.data.name || res.data.email;
@@ -136,11 +140,15 @@ export default {
 
     async submitMfaCode() {
       try {
-        const res = await callAPI(ROUTE.MFA, {}, {
-          mfa_token: this.mfaCode,
-          mfa_key: this.mfaKey,
-          device: Utils.getDeviceName(),
-        });
+        const res = await callAPI(
+          ROUTE.MFA,
+          {},
+          {
+            mfa_token: this.mfaCode,
+            mfa_key: this.mfaKey,
+            device: Utils.getDeviceName(),
+          }
+        );
 
         const userName = res.data.name || res.data.email;
         await SLStorage.set(SLStorage.SETTINGS.API_KEY, res.data.api_key);

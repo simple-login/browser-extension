@@ -38,9 +38,13 @@ export default {
     } else {
       // try to get api key when user is already logged in
       try {
-        const res = await callAPI(ROUTE.GET_API_KEY_FROM_COOKIE, {}, {
-          device: Utils.getDeviceName(),
-        });
+        const res = await callAPI(
+          ROUTE.GET_API_KEY_FROM_COOKIE,
+          {},
+          {
+            device: Utils.getDeviceName(),
+          }
+        );
 
         this.apiKey = res.data.api_key || "";
         if (this.apiKey) {

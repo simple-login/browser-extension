@@ -21,7 +21,7 @@ import ApiKeySetting from "./components/ApiKeySetting";
 import Main from "./components/Main";
 import NewAliasResult from "./components/NewAliasResult";
 import Utils from "./Utils";
-import {fetchSettings} from './APIService';
+import { fetchSettings } from "./APIService";
 
 const components = {
   "sl-header": Header,
