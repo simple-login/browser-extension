@@ -41,13 +41,19 @@ export default {
   },
   methods: {
     async saveApiUrl() {
+      // remove last slash
+      this.apiUrl = this.apiUrl.replace(/\/$/, "");
+
+      // save apiUrl to storage
       await SLStorage.set(
         SLStorage.SETTINGS.API_URL,
-        this.apiUrl !== "" ? this.apiUrl : null
+        this.apiUrl !== ""
+          ? this.apiUrl
+          : SLStorage.DEFAULT_SETTINGS[SLStorage.SETTINGS.API_URL]
       );
       EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
 
-      Utils.showSuccess(this, "API URL saved successfully");
+      Utils.showSuccess("API URL saved successfully");
     },
   },
 };

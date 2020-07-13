@@ -44,6 +44,7 @@ import SLStorage from "../SLStorage";
 import EventManager from "../EventManager";
 import Navigation from "../Navigation";
 import Utils from "../Utils";
+import { API_ROUTE } from "../APIService";
 
 export default {
   data() {
@@ -58,13 +59,13 @@ export default {
   methods: {
     async saveApiKey() {
       if (this.apiKey === "") {
-        Utils.showError(this, "API Key cannot be empty");
+        Utils.showError("API Key cannot be empty");
         return;
       }
 
       // check api key
       axios
-        .get(this.apiUrl + "/api/user_info", {
+        .get(this.apiUrl + API_ROUTE.GET_USER_INFO.path, {
           headers: { Authentication: this.apiKey },
         })
         .then(async (res) => {
@@ -72,13 +73,12 @@ export default {
           await SLStorage.set(SLStorage.SETTINGS.API_KEY, this.apiKey);
           EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
 
-          Utils.showSuccess(this, `Hi ${userName}!`);
-
+          Utils.showSuccess(`Hi ${userName}!`);
           Navigation.clearHistory();
           Navigation.navigateTo(Navigation.PATH.MAIN);
         })
         .catch((err) => {
-          Utils.showError(this, "Incorrect API Key.");
+          Utils.showError("Incorrect API Key.");
         });
     },
   },

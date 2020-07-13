@@ -15,6 +15,7 @@ import EventManager from "../EventManager";
 import Navigation from "../Navigation";
 import Utils from "../Utils";
 import axios from "axios";
+import { API_ROUTE } from "../APIService";
 
 export default {
   name: "sl-loading",
@@ -38,7 +39,7 @@ export default {
       // try to get api key when user is already logged in
       const apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
       axios
-        .post(apiUrl + "/api/api_key", {
+        .post(apiUrl + API_ROUTE.GET_API_KEY_FROM_COOKIE.path, {
           device: Utils.getDeviceName(),
         })
         .then(async (res) => {

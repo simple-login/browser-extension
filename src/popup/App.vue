@@ -20,6 +20,8 @@ import SelfHostSetting from "./components/SelfHostSetting";
 import ApiKeySetting from "./components/ApiKeySetting";
 import Main from "./components/Main";
 import NewAliasResult from "./components/NewAliasResult";
+import Utils from "./Utils";
+import APIService from "./APIService";
 
 const components = {
   "sl-header": Header,
@@ -41,7 +43,9 @@ const router = new VueRouter({
 export default {
   router,
   components,
-  mounted() {
+  async mounted() {
+    await APIService.initService();
+    Utils.setToasted(this.$toasted);
     Navigation.setRouter(this.$router);
     Navigation.navigateTo(Navigation.PATH.ROOT);
   },

@@ -72,7 +72,7 @@ export default {
   methods: {
     // Clipboard
     clipboardSuccessHandler({ value, event }) {
-      Utils.showSuccess(this, value + " copied to clipboard");
+      Utils.showSuccess(value + " copied to clipboard");
     },
 
     clipboardErrorHandler({ value, event }) {

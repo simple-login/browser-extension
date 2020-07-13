@@ -1,4 +1,5 @@
 const browser = require("webextension-polyfill");
+let toasted = null;
 
 class Utils {
   static getRandomIntBetween(min, max) {
@@ -33,18 +34,22 @@ class Utils {
     return isFirefox ? firefoxExtensionUrl : chromeExtensionUrl;
   }
 
-  static showSuccess(context, message) {
-    if (context.$toasted) {
-      context.$toasted.show(message, {
+  static setToasted($toasted) {
+    toasted = $toasted;
+  }
+
+  static showSuccess(message) {
+    if (toasted) {
+      toasted.show(message, {
         type: "success",
         duration: 2500,
       });
     }
   }
 
-  static showError(context, message) {
-    if (context.$toasted) {
-      context.$toasted.show(message, {
+  static showError(message) {
+    if (toasted) {
+      toasted.show(message, {
         type: "error",
         duration: 3000,
         action: {
