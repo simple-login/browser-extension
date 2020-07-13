@@ -211,7 +211,7 @@ import Utils from "../Utils";
 import SLStorage from "../SLStorage";
 import EventManager from "../EventManager";
 import Navigation from "../Navigation";
-import { callAPI, ROUTE, API_ON_ERR } from "../APIService";
+import { callAPI, ROUTE, API_ON_ERR, API_ROUTE } from "../APIService";
 
 export default {
   data() {
@@ -250,7 +250,7 @@ export default {
       this.loading = true;
 
       try {
-        const res = await callAPI(ROUTE.GET_ALIAS_OPTIONS, {
+        const res = await callAPI(API_ROUTE.GET_ALIAS_OPTIONS, {
           hostname: this.hostName,
         });
         const json = res.data;
@@ -321,7 +321,7 @@ export default {
     async fetchAlias(page, query) {
       this.isFetchingAlias = true;
       try {
-        const { data } = await callAPI(ROUTE.GET_ALIASES, {
+        const { data } = await callAPI(API_ROUTE.GET_ALIASES, {
           page_id: page,
         });
         this.isFetchingAlias = false;
@@ -344,7 +344,7 @@ export default {
 
       try {
         const res = await callAPI(
-          ROUTE.NEW_ALIAS,
+          API_ROUTE.NEW_ALIAS,
           {
             hostname: this.hostName,
           },
@@ -392,7 +392,7 @@ export default {
 
       try {
         const res = await callAPI(
-          ROUTE.NEW_RANDOM_ALIAS,
+          API_ROUTE.NEW_RANDOM_ALIAS,
           {
             hostname: this.hostName,
           },
@@ -425,7 +425,7 @@ export default {
       const lastState = alias.enabled;
       alias.loading = true;
       const res = await callAPI(
-        ROUTE.TOGGLE_ALIAS,
+        API_ROUTE.TOGGLE_ALIAS,
         {
           alias_id: alias.id,
         },
@@ -482,7 +482,7 @@ export default {
     async deleteAlias(index) {
       this.aliasArray[index].loading = true;
       const res = await callAPI(
-        ROUTE.DELETE_ALIAS,
+        API_ROUTE.DELETE_ALIAS,
         {
           alias_id: this.aliasArray[index].id,
         },

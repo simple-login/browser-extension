@@ -105,7 +105,7 @@ export default {
     async login() {
       try {
         const res = await callAPI(
-          ROUTE.LOGIN,
+          API_ROUTE.LOGIN,
           {},
           {
             email: this.email,
@@ -141,7 +141,7 @@ export default {
     async submitMfaCode() {
       try {
         const res = await callAPI(
-          ROUTE.MFA,
+          API_ROUTE.MFA,
           {},
           {
             mfa_token: this.mfaCode,

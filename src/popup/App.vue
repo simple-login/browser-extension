@@ -22,6 +22,7 @@ import Main from "./components/Main";
 import NewAliasResult from "./components/NewAliasResult";
 import Utils from "./Utils";
 import { fetchSettings } from "./APIService";
+import APIService from "./APIService";
 
 const components = {
   "sl-header": Header,
@@ -44,7 +45,7 @@ export default {
   router,
   components,
   async mounted() {
-    await fetchSettings();
+    await APIService.fetchSettings();
     Utils.setToasted(this.$toasted);
     Navigation.setRouter(this.$router);
     Navigation.navigateTo(Navigation.PATH.ROOT);

@@ -3,7 +3,7 @@ import SLStorage from "./SLStorage";
 import Utils from "./Utils";
 import axios from "axios";
 
-const ROUTE = {
+const API_ROUTE = {
   GET_USER_INFO: { method: "GET", path: "/api/user_info" },
   LOGOUT: { method: "GET", path: "/api/logout" },
   LOGIN: { method: "POST", path: "/api/auth/login" },
@@ -98,4 +98,5 @@ function bindQueryParams(url, params) {
   return url;
 }
 
-export { callAPI, ROUTE, API_ON_ERR, fetchSettings };
+export { callAPI, API_ROUTE, API_ON_ERR };
+export default { fetchSettings };

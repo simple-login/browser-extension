@@ -63,7 +63,12 @@ export default {
       }
 
       // check api key
-      const res = await callAPI(ROUTE.GET_USER_INFO, {}, {}, API_ON_ERR.TOAST);
+      const res = await callAPI(
+        API_ROUTE.GET_USER_INFO,
+        {},
+        {},
+        API_ON_ERR.TOAST
+      );
       if (res) {
         const userName = res.data.name || res.data.email;
         await SLStorage.set(SLStorage.SETTINGS.API_KEY, this.apiKey);
