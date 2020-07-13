@@ -39,11 +39,12 @@
 </template>
 
 <script>
+import axios from "axios";
 import SLStorage from "../SLStorage";
 import EventManager from "../EventManager";
 import Navigation from "../Navigation";
 import Utils from "../Utils";
-import { callAPI, API_ROUTE, API_ON_ERR } from "../APIService";
+import { API_ROUTE } from "../APIService";
 
 export default {
   data() {
@@ -58,32 +59,27 @@ export default {
   methods: {
     async saveApiKey() {
       if (this.apiKey === "") {
-        Utils.showError("API Key cannot be empty");
+        Utils.showError(this, "API Key cannot be empty");
         return;
       }
 
-      try {
-        const res = await callAPI(
-          API_ROUTE.GET_USER_INFO,
-          {},
-          {},
-          API_ON_ERR.IGNORE_401_HANDLER,
-          {
-            apiUrl: this.apiUrl,
-            apiKey: this.apiKey,
-          }
-        );
-        const userName = res.data.name || res.data.email;
-        await SLStorage.set(SLStorage.SETTINGS.API_KEY, this.apiKey);
-        EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
+      // check api key
+      axios
+        .get(this.apiUrl + API_ROUTE.GET_USER_INFO.path, {
+          headers: { Authentication: this.apiKey },
+        })
+        .then(async (res) => {
+          const userName = res.data.name || res.data.email;
+          await SLStorage.set(SLStorage.SETTINGS.API_KEY, this.apiKey);
+          EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
 
-        Utils.showSuccess(`Hi ${userName}!`);
-
-        Navigation.clearHistory();
-        Navigation.navigateTo(Navigation.PATH.MAIN);
-      } catch (err) {
-        Utils.showError("Invalid API Key");
-      }
+          Utils.showSuccess(`Hi ${userName}!`);
+          Navigation.clearHistory();
+          Navigation.navigateTo(Navigation.PATH.MAIN);
+        })
+        .catch((err) => {
+          Utils.showError("Incorrect API Key.");
+        });
     },
   },
   computed: {},

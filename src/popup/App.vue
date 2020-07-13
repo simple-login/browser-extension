@@ -21,7 +21,6 @@ import ApiKeySetting from "./components/ApiKeySetting";
 import Main from "./components/Main";
 import NewAliasResult from "./components/NewAliasResult";
 import Utils from "./Utils";
-import { fetchSettings } from "./APIService";
 import APIService from "./APIService";
 
 const components = {
@@ -45,7 +44,7 @@ export default {
   router,
   components,
   async mounted() {
-    await APIService.fetchSettings();
+    await APIService.initService();
     Utils.setToasted(this.$toasted);
     Navigation.setRouter(this.$router);
     Navigation.navigateTo(Navigation.PATH.ROOT);

@@ -31,7 +31,6 @@ const API_ON_ERR = {
   IGNORE: 1,
   TOAST: 2,
   THROW: 3,
-  IGNORE_401_HANDLER: 4,
 };
 
 const SETTINGS = {
@@ -39,7 +38,7 @@ const SETTINGS = {
   apiUrl: "",
 };
 
-const fetchSettings = async () => {
+const initService = async () => {
   SETTINGS.apiKey = await SLStorage.get(SLStorage.SETTINGS.API_KEY);
   SETTINGS.apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
 
@@ -54,14 +53,13 @@ const callAPI = async function (
   params = {},
   data = {},
   errHandlerMethod = API_ON_ERR.THROW,
-  config = SETTINGS
 ) {
   const { method, path } = route;
-  const url = config.apiUrl + bindQueryParams(path, params);
+  const url = SETTINGS.apiUrl + bindQueryParams(path, params);
   const headers = {};
 
-  if (config.apiKey) {
-    headers["Authentication"] = config.apiKey;
+  if (SETTINGS.apiKey) {
+    headers["Authentication"] = SETTINGS.apiKey;
   }
 
   try {
@@ -78,7 +76,7 @@ const callAPI = async function (
       console.error(err);
     }
 
-    if (errHandlerMethod !== API_ON_ERR.IGNORE_401_HANDLER && err.response.status === 401) {
+    if (err.response.status === 401) {
       handle401Error();
       return null;
     }
@@ -114,4 +112,4 @@ function bindQueryParams(url, params) {
 }
 
 export { callAPI, API_ROUTE, API_ON_ERR };
-export default { fetchSettings };
+export default { initService };
