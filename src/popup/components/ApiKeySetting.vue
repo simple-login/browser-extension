@@ -67,7 +67,7 @@ export default {
           API_ROUTE.GET_USER_INFO,
           {},
           {},
-          API_ON_ERR.IGNORE_401,
+          API_ON_ERR.IGNORE_401_HANDLER,
           {
             apiUrl: this.apiUrl,
             apiKey: this.apiKey,

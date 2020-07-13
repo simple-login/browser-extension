@@ -44,7 +44,7 @@ export default {
           {
             device: Utils.getDeviceName(),
           },
-          API_ON_ERR.IGNORE_401
+          API_ON_ERR.IGNORE_401_HANDLER
         );
 
         this.apiKey = res.data.api_key || "";

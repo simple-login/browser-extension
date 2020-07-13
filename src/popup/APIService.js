@@ -31,7 +31,7 @@ const API_ON_ERR = {
   IGNORE: 1,
   TOAST: 2,
   THROW: 3,
-  IGNORE_401: 4,
+  IGNORE_401_HANDLER: 4,
 };
 
 const SETTINGS = {
@@ -78,7 +78,7 @@ const callAPI = async function (
       console.error(err);
     }
 
-    if (errHandlerMethod !== API_ON_ERR.IGNORE_401 && err.response.status === 401) {
+    if (errHandlerMethod !== API_ON_ERR.IGNORE_401_HANDLER && err.response.status === 401) {
       handle401Error();
       return null;
     }
