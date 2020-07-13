@@ -15,7 +15,7 @@ import EventManager from "../EventManager";
 import Navigation from "../Navigation";
 import Utils from "../Utils";
 import axios from "axios";
-import { callAPI, ROUTE, API_ON_ERR } from "../APIService";
+import { callAPI, API_ROUTE, API_ON_ERR } from "../APIService";
 
 export default {
   name: "sl-loading",
@@ -43,7 +43,8 @@ export default {
           {},
           {
             device: Utils.getDeviceName(),
-          }
+          },
+          API_ON_ERR.IGNORE_401
         );
 
         this.apiKey = res.data.api_key || "";

@@ -31,6 +31,7 @@ const API_ON_ERR = {
   IGNORE: 1,
   TOAST: 2,
   THROW: 3,
+  IGNORE_401: 4,
 };
 
 const SETTINGS = {
@@ -52,14 +53,15 @@ const callAPI = async function (
   route,
   params = {},
   data = {},
-  errHandlerMethod = API_ON_ERR.THROW
+  errHandlerMethod = API_ON_ERR.THROW,
+  config = SETTINGS
 ) {
   const { method, path } = route;
-  const url = SETTINGS.apiUrl + bindQueryParams(path, params);
+  const url = config.apiUrl + bindQueryParams(path, params);
   const headers = {};
 
-  if (SETTINGS.apiKey) {
-    headers["Authentication"] = SETTINGS.apiKey;
+  if (config.apiKey) {
+    headers["Authentication"] = config.apiKey;
   }
 
   try {
@@ -76,7 +78,7 @@ const callAPI = async function (
       console.error(err);
     }
 
-    if (err.response.status === 401) {
+    if (errHandlerMethod !== API_ON_ERR.IGNORE_401 && err.response.status === 401) {
       handle401Error();
       return null;
     }
@@ -96,7 +98,7 @@ const callAPI = async function (
   }
 };
 
-function handle401Error() {
+async function handle401Error() {
   Utils.showError("Invalid API Key. Please logout and re-setup the API Key");
   await SLStorage.remove(SLStorage.SETTINGS.API_KEY);
   EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);

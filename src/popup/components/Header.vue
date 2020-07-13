@@ -50,7 +50,7 @@
 import SLStorage from "../SLStorage";
 import EventManager from "../EventManager";
 import Navigation from "../Navigation";
-import { callAPI, ROUTE, API_ON_ERR } from "../APIService";
+import { callAPI, API_ROUTE, API_ON_ERR } from "../APIService";
 
 export default {
   name: "sl-header",

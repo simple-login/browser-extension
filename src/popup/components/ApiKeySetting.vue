@@ -43,7 +43,7 @@ import SLStorage from "../SLStorage";
 import EventManager from "../EventManager";
 import Navigation from "../Navigation";
 import Utils from "../Utils";
-import { callAPI, ROUTE, API_ON_ERR } from "../APIService";
+import { callAPI, API_ROUTE, API_ON_ERR } from "../APIService";
 
 export default {
   data() {
@@ -62,14 +62,17 @@ export default {
         return;
       }
 
-      // check api key
-      const res = await callAPI(
-        API_ROUTE.GET_USER_INFO,
-        {},
-        {},
-        API_ON_ERR.TOAST
-      );
-      if (res) {
+      try {
+        const res = await callAPI(
+          API_ROUTE.GET_USER_INFO,
+          {},
+          {},
+          API_ON_ERR.IGNORE_401,
+          {
+            apiUrl: this.apiUrl,
+            apiKey: this.apiKey,
+          }
+        );
         const userName = res.data.name || res.data.email;
         await SLStorage.set(SLStorage.SETTINGS.API_KEY, this.apiKey);
         EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
@@ -78,6 +81,8 @@ export default {
 
         Navigation.clearHistory();
         Navigation.navigateTo(Navigation.PATH.MAIN);
+      } catch (err) {
+        Utils.showError("Invalid API Key");
       }
     },
   },

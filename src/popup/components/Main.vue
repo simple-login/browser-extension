@@ -211,7 +211,7 @@ import Utils from "../Utils";
 import SLStorage from "../SLStorage";
 import EventManager from "../EventManager";
 import Navigation from "../Navigation";
-import { callAPI, ROUTE, API_ON_ERR, API_ROUTE } from "../APIService";
+import { callAPI, API_ROUTE, API_ON_ERR } from "../APIService";
 
 export default {
   data() {
