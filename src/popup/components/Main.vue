@@ -249,37 +249,22 @@ export default {
     async getAliasOptions() {
       this.loading = true;
 
-      try {
-        const res = await callAPI(API_ROUTE.GET_ALIAS_OPTIONS, {
-          hostname: this.hostName,
-        });
-        const json = res.data;
+      const res = await callAPI(API_ROUTE.GET_ALIAS_OPTIONS, {
+        hostname: this.hostName,
+      }, API_ON_ERR.TOAST);
+      const json = res.data;
 
-        if (json.recommendation) {
-          this.recommendation.show = true;
-          this.recommendation.alias = json.recommendation.alias;
-        }
-
-        this.aliasSuffixes = json.suffixes;
-        this.signedSuffix = this.aliasSuffixes[0][1];
-        this.aliasPrefix = json.prefix_suggestion;
-        this.canCreate = json.can_create;
-
-        this.loading = false;
-      } catch (err) {
-        if (err.response.status === 401) {
-          Utils.showError(
-            "Invalid API Key. Please logout and re-setup the API Key"
-          );
-          await SLStorage.remove(SLStorage.SETTINGS.API_KEY);
-          EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
-          Navigation.navigateTo(Navigation.PATH.LOGIN);
-        } else {
-          Utils.showError(
-            "Unknown error. We are sorry for this inconvenience!"
-          );
-        }
+      if (json.recommendation) {
+        this.recommendation.show = true;
+        this.recommendation.alias = json.recommendation.alias;
       }
+
+      this.aliasSuffixes = json.suffixes;
+      this.signedSuffix = this.aliasSuffixes[0][1];
+      this.aliasPrefix = json.prefix_suggestion;
+      this.canCreate = json.can_create;
+
+      this.loading = false;
 
       await this.loadAlias();
     },

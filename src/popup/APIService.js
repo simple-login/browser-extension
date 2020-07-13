@@ -1,4 +1,5 @@
 import EventManager from "./EventManager";
+import Navigation from "./Navigation";
 import SLStorage from "./SLStorage";
 import Utils from "./Utils";
 import axios from "axios";
@@ -75,6 +76,11 @@ const callAPI = async function (
       console.error(err);
     }
 
+    if (err.response.status === 401) {
+      handle401Error();
+      return null;
+    }
+
     if (errHandlerMethod === API_ON_ERR.TOAST) {
       if (err.response.data && err.response.data.error) {
         Utils.showError(err.response.data.error);
@@ -89,6 +95,13 @@ const callAPI = async function (
     }
   }
 };
+
+function handle401Error() {
+  Utils.showError("Invalid API Key. Please logout and re-setup the API Key");
+  await SLStorage.remove(SLStorage.SETTINGS.API_KEY);
+  EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
+  Navigation.navigateTo(Navigation.PATH.LOGIN);
+}
 
 function bindQueryParams(url, params) {
   for (const key of Object.keys(params)) {
