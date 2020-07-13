@@ -59,7 +59,7 @@ export default {
   methods: {
     async saveApiKey() {
       if (this.apiKey === "") {
-        Utils.showError(this, "API Key cannot be empty");
+        Utils.showError("API Key cannot be empty");
         return;
       }
 
