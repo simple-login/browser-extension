@@ -24,10 +24,15 @@
             class="form-control"
             style="width: 100%;"
             v-model="note"
+            :disabled="loading"
           ></textarea-autosize>
         </div>
 
-        <button @click="backToMainPage" class="btn btn-primary btn-block mt-3">
+        <button
+          @click="backToMainPage"
+          class="btn btn-primary btn-block mt-3"
+          :disabled="loading"
+        >
           <font-awesome-icon icon="chevron-left" />
           {{ note !== "" ? "Save & Back" : "Back" }}
         </button>
@@ -74,6 +79,7 @@ export default {
       showVoteScreen: false,
       extensionUrl: Utils.getExtensionURL(),
       note: "",
+      loading: false,
     };
   },
   async mounted() {
@@ -95,6 +101,7 @@ export default {
 
     async backToMainPage() {
       if (this.note !== "") {
+        this.loading = true;
         await callAPI(
           API_ROUTE.EDIT_ALIAS,
           {
@@ -105,6 +112,7 @@ export default {
           },
           API_ON_ERR.TOAST
         );
+        this.loading = false;
       }
       Navigation.navigateBack();
     },
