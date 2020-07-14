@@ -12,9 +12,9 @@ import ToggleButton from "vue-js-toggle-button";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { faRandom, faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons";
+import { faRandom, faExternalLinkAlt, faTrash } from "@fortawesome/free-solid-svg-icons";
 
-library.add(faRandom, faExternalLinkAlt);
+library.add(faRandom, faExternalLinkAlt, faTrash);
 
 global.browser = require("webextension-polyfill");
 Vue.prototype.$browser = global.browser;

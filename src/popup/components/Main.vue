@@ -98,21 +98,6 @@
         </form>
       </div>
 
-      <!--div>
-        <hr />
-        <form @submit.prevent="createRandomAlias">
-          <button
-            :disabled="loading || !canCreate"
-            class="btn btn-success btn-block mt-2"
-          >
-            Create Random Alias
-          </button>
-          <div class="small-text mb-1 text-center" v-if="aliasPrefix">
-            Generate a totally random alias.
-          </div>
-        </form>
-      </div-->
-
       <div v-if="!canCreate">
         <p class="text-danger" style="font-size: 14px;">
           You have reached limit number of email aliases in free plan, please
@@ -172,7 +157,7 @@
                 <div style="white-space: nowrap;">
                   <toggle-button
                     :value="alias.enabled"
-                    color="#e92e7b"
+                    color="#cf3088"
                     :width="30"
                     :height="18"
                     @change="toggleAlias(alias)"
@@ -205,12 +190,13 @@
 
               <div class="more-options" v-if="alias.moreOptions">
                 <div
-                  class="btn btn-delete"
+                  class="btn btn-sm btn-delete"
+                  style="color: #dc3545;"
                   v-on:click="handleClickDelete(index)"
                   v-bind:disabled="alias.moreOptions.loading"
                 >
-                  <img src="/images/icon-trash.svg" />
-                  <span style="color: #dc3545;">Delete</span>
+                  <font-awesome-icon icon="trash" />
+                  Delete
                 </div>
               </div>
             </div>
