@@ -24,11 +24,38 @@
         <hr />
       </div>
 
-      <p class="font-weight-bold mb-2">Email Alias</p>
+      <div>
+        <p
+          class="font-weight-bold mt-2 align-self-center"
+          style="display: inline-block;"
+        >
+          New Alias
+        </p>
+
+        <button
+          :disabled="loading || !canCreate"
+          style="margin-left: 15px;"
+          class="btn btn-outline-primary btn-sm"
+          title="Generate a totally random alias."
+          @click="createRandomAlias"
+          v-b-tooltip.hover
+        >
+          <font-awesome-icon icon="random" /> Random
+        </button>
+      </div>
+
+      <div class="small-text mb-1" v-if="aliasPrefix">
+        Alias is autofilled by the current website name, please feel free to
+        change it.
+      </div>
+
       <div>
         <form @submit.prevent="createCustomAlias">
           <div class="row mb-2">
-            <div class="col input-group-sm" style="padding-right: 0;">
+            <div
+              class="col align-self-center input-group-sm"
+              style="padding-right: 0;"
+            >
               <input
                 v-model="aliasPrefix"
                 class="form-control"
@@ -43,7 +70,7 @@
 
             <div
               class="col align-self-center input-group-sm"
-              style="padding-left: 5px;"
+              style="padding-left: 5px; padding-right: 5px;"
             >
               <select
                 v-model="signedSuffix"
@@ -59,23 +86,19 @@
                 </option>
               </select>
             </div>
-          </div>
 
-          <div class="small-text mb-1" v-if="aliasPrefix">
-            Alias is autofilled by the current website name, please feel free to
-            change it.
+            <button
+              :disabled="loading || !canCreate"
+              style="margin-right: 15px;"
+              class="btn btn-primary btn-sm align-self-center"
+            >
+              Create
+            </button>
           </div>
-
-          <button
-            :disabled="loading || !canCreate"
-            class="btn btn-primary btn-block mt-2"
-          >
-            Create Alias
-          </button>
         </form>
       </div>
 
-      <div>
+      <!--div>
         <hr />
         <form @submit.prevent="createRandomAlias">
           <button
@@ -88,7 +111,7 @@
             Generate a totally random alias.
           </div>
         </form>
-      </div>
+      </div-->
 
       <div v-if="!canCreate">
         <p class="text-danger" style="font-size: 14px;">
@@ -149,7 +172,7 @@
                 <div style="white-space: nowrap;">
                   <toggle-button
                     :value="alias.enabled"
-                    color="#aa2990"
+                    color="#e92e7b"
                     :width="30"
                     :height="18"
                     @change="toggleAlias(alias)"
@@ -249,9 +272,13 @@ export default {
     async getAliasOptions() {
       this.loading = true;
 
-      const res = await callAPI(API_ROUTE.GET_ALIAS_OPTIONS, {
-        hostname: this.hostName,
-      }, API_ON_ERR.TOAST);
+      const res = await callAPI(
+        API_ROUTE.GET_ALIAS_OPTIONS,
+        {
+          hostname: this.hostName,
+        },
+        API_ON_ERR.TOAST
+      );
       const json = res.data;
 
       if (json.recommendation) {

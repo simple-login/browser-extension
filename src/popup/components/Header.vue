@@ -32,7 +32,7 @@
           target="_blank"
           class="btn btn-sm btn-outline-success float-right"
         >
-          Dashboard ↗
+          <font-awesome-icon icon="external-link-alt" /> Dashboard
         </a>
 
         <div

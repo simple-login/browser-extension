@@ -52,7 +52,7 @@ const callAPI = async function (
   route,
   params = {},
   data = {},
-  errHandlerMethod = API_ON_ERR.THROW,
+  errHandlerMethod = API_ON_ERR.THROW
 ) {
   const { method, path } = route;
   const url = SETTINGS.apiUrl + bindQueryParams(path, params);
