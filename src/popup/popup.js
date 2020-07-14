@@ -10,6 +10,12 @@ import VModal from "vue-js-modal";
 import VueRouter from "vue-router";
 import ToggleButton from "vue-js-toggle-button";
 
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { faRandom, faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons";
+
+library.add(faRandom, faExternalLinkAlt);
+
 global.browser = require("webextension-polyfill");
 Vue.prototype.$browser = global.browser;
 
@@ -19,6 +25,7 @@ Vue.use(BootstrapVue);
 Vue.use(VModal, { dialog: true });
 Vue.use(VueRouter);
 Vue.use(ToggleButton);
+Vue.component("font-awesome-icon", FontAwesomeIcon);
 
 Sentry.init({
   dsn: "https://dfc7a7727433452fbe5741b602058cc5@sentry.io/1839562",
