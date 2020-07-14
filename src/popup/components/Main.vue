@@ -353,11 +353,8 @@ export default {
         );
 
         if (res.status === 201) {
-          let path = Navigation.PATH.NEW_ALIAS_RESULT.replace(
-            ":email",
-            encodeURIComponent(res.data.alias)
-          );
-          Navigation.navigateTo(path, true);
+          SLStorage.setTemporary('newAliasData', res.data);
+          Navigation.navigateTo(Navigation.PATH.NEW_ALIAS_RESULT, true);
         } else {
           Utils.showError(res.data.error);
         }
@@ -398,11 +395,8 @@ export default {
         );
 
         if (res.status === 201) {
-          let path = Navigation.PATH.NEW_ALIAS_RESULT.replace(
-            ":email",
-            encodeURIComponent(res.data.alias)
-          );
-          Navigation.navigateTo(path, true);
+          SLStorage.setTemporary('newAliasData', res.data);
+          Navigation.navigateTo(Navigation.PATH.NEW_ALIAS_RESULT, true);
         } else {
           Utils.showError(res.data.error);
         }

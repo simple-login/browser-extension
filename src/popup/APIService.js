@@ -23,6 +23,7 @@ const API_ROUTE = {
     path: "/api/alias/random/new?hostname=:hostname",
   },
   TOGGLE_ALIAS: { method: "POST", path: "/api/aliases/:alias_id/toggle" },
+  EDIT_ALIAS: { method: "PUT", path: "/api/aliases/:alias_id" },
   DELETE_ALIAS: { method: "DELETE", path: "/api/aliases/:alias_id" },
   GET_API_KEY_FROM_COOKIE: { method: "POST", path: "/api/api_key" },
 };
