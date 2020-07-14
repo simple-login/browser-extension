@@ -157,7 +157,7 @@
                 <div style="white-space: nowrap;">
                   <toggle-button
                     :value="alias.enabled"
-                    color="#cf3088"
+                    color="#b02a8f"
                     :width="30"
                     :height="18"
                     @change="toggleAlias(alias)"
