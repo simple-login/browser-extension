@@ -353,7 +353,7 @@ export default {
         );
 
         if (res.status === 201) {
-          SLStorage.setTemporary('newAliasData', res.data);
+          SLStorage.setTemporary("newAliasData", res.data);
           Navigation.navigateTo(Navigation.PATH.NEW_ALIAS_RESULT, true);
         } else {
           Utils.showError(res.data.error);
@@ -395,7 +395,7 @@ export default {
         );
 
         if (res.status === 201) {
-          SLStorage.setTemporary('newAliasData', res.data);
+          SLStorage.setTemporary("newAliasData", res.data);
           Navigation.navigateTo(Navigation.PATH.NEW_ALIAS_RESULT, true);
         } else {
           Utils.showError(res.data.error);

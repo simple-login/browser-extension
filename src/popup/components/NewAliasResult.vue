@@ -12,16 +12,24 @@
             title="Click to Copy"
             class="cursor"
           >
-            <span class="text-success">{{ newAliasData.alias }} <font-awesome-icon icon="copy" /></span>
+            <span class="text-success"
+              >{{ newAliasData.alias }} <font-awesome-icon icon="copy"
+            /></span>
           </a>
         </p>
 
         <div>
-          <textarea-autosize placeholder="Add some notes for this alias..." class="form-control" style="width: 100%;" v-model="note"></textarea-autosize>
+          <textarea-autosize
+            placeholder="Add some notes for this alias..."
+            class="form-control"
+            style="width: 100%;"
+            v-model="note"
+          ></textarea-autosize>
         </div>
 
         <button @click="backToMainPage" class="btn btn-primary btn-block mt-3">
-          <font-awesome-icon icon="chevron-left" /> {{ note !== "" ? "Save & Back" : "Back" }}
+          <font-awesome-icon icon="chevron-left" />
+          {{ note !== "" ? "Save & Back" : "Back" }}
         </button>
 
         <div
@@ -86,12 +94,17 @@ export default {
     },
 
     async backToMainPage() {
-      if (this.note !== '') {
-        await callAPI(API_ROUTE.EDIT_ALIAS, {
-          alias_id: this.newAliasData.id
-        }, {
-          note: this.note
-        }, API_ON_ERR.TOAST);
+      if (this.note !== "") {
+        await callAPI(
+          API_ROUTE.EDIT_ALIAS,
+          {
+            alias_id: this.newAliasData.id,
+          },
+          {
+            note: this.note,
+          },
+          API_ON_ERR.TOAST
+        );
       }
       Navigation.navigateBack();
     },
