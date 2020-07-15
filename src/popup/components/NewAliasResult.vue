@@ -84,6 +84,7 @@ export default {
   },
   async mounted() {
     this.newAlias = this.$route.params.email;
+    this.note = `Used on ${await Utils.getHostName()}`;
     let notAskingRate = await SLStorage.get(SLStorage.SETTINGS.NOT_ASKING_RATE);
     if (!!notAskingRate) this.showVoteScreen = false;
     // TODO showVoteScreen 1 day after user installed plugin
@@ -114,7 +115,7 @@ export default {
         );
         this.loading = false;
       }
-      Navigation.navigateBack();
+      Navigation.navigateTo(Navigation.PATH.MAIN);
     },
 
     doNotAskRateAgain() {

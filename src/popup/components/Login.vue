@@ -41,7 +41,7 @@
           target="_blank"
           class="mt-2 btn btn-outline-success btn-block"
         >
-          <font-awesome-icon icon="external-link-alt" /> Sign Up
+          Sign Up <font-awesome-icon icon="external-link-alt" />
         </a>
       </div>
 

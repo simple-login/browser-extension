@@ -33,7 +33,7 @@
           class="float-right"
           style="padding: 0.25rem 0.5rem; font-size: 0.875rem;"
         >
-          <font-awesome-icon icon="external-link-alt" /> Dashboard
+          Dashboard <font-awesome-icon icon="external-link-alt" />
         </a>
 
         <div

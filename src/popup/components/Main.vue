@@ -44,11 +44,6 @@
         </button>
       </div>
 
-      <div class="small-text mb-1" v-if="aliasPrefix">
-        Alias is autofilled by the current website name, please feel free to
-        change it.
-      </div>
-
       <div>
         <form @submit.prevent="createCustomAlias">
           <div class="row mb-2">
@@ -96,6 +91,11 @@
             </button>
           </div>
         </form>
+      </div>
+
+      <div class="small-text mb-1" v-if="aliasPrefix">
+        Alias is autofilled by the current website name, please feel free to
+        change it.
       </div>
 
       <div v-if="!canCreate">
@@ -354,7 +354,7 @@ export default {
 
         if (res.status === 201) {
           SLStorage.setTemporary("newAliasData", res.data);
-          Navigation.navigateTo(Navigation.PATH.NEW_ALIAS_RESULT, true);
+          Navigation.navigateTo(Navigation.PATH.NEW_ALIAS_RESULT);
         } else {
           Utils.showError(res.data.error);
         }
@@ -396,7 +396,7 @@ export default {
 
         if (res.status === 201) {
           SLStorage.setTemporary("newAliasData", res.data);
-          Navigation.navigateTo(Navigation.PATH.NEW_ALIAS_RESULT, true);
+          Navigation.navigateTo(Navigation.PATH.NEW_ALIAS_RESULT);
         } else {
           Utils.showError(res.data.error);
         }
