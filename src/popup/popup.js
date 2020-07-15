@@ -9,6 +9,29 @@ import * as Integrations from "@sentry/integrations";
 import VModal from "vue-js-modal";
 import VueRouter from "vue-router";
 import ToggleButton from "vue-js-toggle-button";
+import TextareaAutosize from "vue-textarea-autosize";
+
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import {
+  faRandom,
+  faExternalLinkAlt,
+  faTrash,
+  faLongArrowAltUp,
+  faChevronLeft,
+  faCopy,
+  faStar,
+} from "@fortawesome/free-solid-svg-icons";
+
+library.add(
+  faRandom,
+  faExternalLinkAlt,
+  faTrash,
+  faLongArrowAltUp,
+  faChevronLeft,
+  faCopy,
+  faStar
+);
 
 global.browser = require("webextension-polyfill");
 Vue.prototype.$browser = global.browser;
@@ -19,6 +42,8 @@ Vue.use(BootstrapVue);
 Vue.use(VModal, { dialog: true });
 Vue.use(VueRouter);
 Vue.use(ToggleButton);
+Vue.use(TextareaAutosize);
+Vue.component("font-awesome-icon", FontAwesomeIcon);
 
 Sentry.init({
   dsn: "https://dfc7a7727433452fbe5741b602058cc5@sentry.io/1839562",

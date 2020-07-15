@@ -4,8 +4,12 @@
     <div v-if="!isShowMfa" class="p-6 container" style="min-height: 350px;">
       <h1 class="h5 mb-3">
         Welcome to
-        <a href="https://simplelogin.io" target="_blank">SimpleLogin ↗</a>, the
-        most powerful email alias solution!
+        <a href="https://simplelogin.io" target="_blank"
+          >SimpleLogin
+          <font-awesome-icon
+            icon="long-arrow-alt-up"
+            :transform="{ rotate: 45 }" /></a
+        >, the most powerful email alias solution!
       </h1>
 
       <form @submit.prevent="login">
@@ -37,7 +41,7 @@
           target="_blank"
           class="mt-2 btn btn-outline-success btn-block"
         >
-          Sign Up ↗
+          Sign Up <font-awesome-icon icon="external-link-alt" />
         </a>
       </div>
 

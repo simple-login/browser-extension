@@ -24,11 +24,33 @@
         <hr />
       </div>
 
-      <p class="font-weight-bold mb-2">Email Alias</p>
+      <div>
+        <p
+          class="font-weight-bold mt-2 align-self-center"
+          style="display: inline-block;"
+        >
+          New Alias
+        </p>
+
+        <button
+          :disabled="loading || !canCreate"
+          style="margin-left: 15px;"
+          class="btn btn-outline-primary btn-sm"
+          title="Generate a totally random alias."
+          @click="createRandomAlias"
+          v-b-tooltip.hover
+        >
+          <font-awesome-icon icon="random" /> Random
+        </button>
+      </div>
+
       <div>
         <form @submit.prevent="createCustomAlias">
           <div class="row mb-2">
-            <div class="col input-group-sm" style="padding-right: 0;">
+            <div
+              class="col align-self-center input-group-sm"
+              style="padding-right: 0;"
+            >
               <input
                 v-model="aliasPrefix"
                 class="form-control"
@@ -43,7 +65,7 @@
 
             <div
               class="col align-self-center input-group-sm"
-              style="padding-left: 5px;"
+              style="padding-left: 5px; padding-right: 5px;"
             >
               <select
                 v-model="signedSuffix"
@@ -59,35 +81,21 @@
                 </option>
               </select>
             </div>
-          </div>
 
-          <div class="small-text mb-1" v-if="aliasPrefix">
-            Alias is autofilled by the current website name, please feel free to
-            change it.
+            <button
+              :disabled="loading || !canCreate"
+              style="margin-right: 15px;"
+              class="btn btn-primary btn-sm align-self-center"
+            >
+              Create
+            </button>
           </div>
-
-          <button
-            :disabled="loading || !canCreate"
-            class="btn btn-primary btn-block mt-2"
-          >
-            Create Alias
-          </button>
         </form>
       </div>
 
-      <div>
-        <hr />
-        <form @submit.prevent="createRandomAlias">
-          <button
-            :disabled="loading || !canCreate"
-            class="btn btn-success btn-block mt-2"
-          >
-            Create Random Alias
-          </button>
-          <div class="small-text mb-1 text-center" v-if="aliasPrefix">
-            Generate a totally random alias.
-          </div>
-        </form>
+      <div class="small-text mb-1" v-if="aliasPrefix">
+        Alias is autofilled by the current website name, please feel free to
+        change it.
       </div>
 
       <div v-if="!canCreate">
@@ -149,7 +157,7 @@
                 <div style="white-space: nowrap;">
                   <toggle-button
                     :value="alias.enabled"
-                    color="#aa2990"
+                    color="#b02a8f"
                     :width="30"
                     :height="18"
                     @change="toggleAlias(alias)"
@@ -182,12 +190,13 @@
 
               <div class="more-options" v-if="alias.moreOptions">
                 <div
-                  class="btn btn-delete"
+                  class="btn btn-sm btn-delete"
+                  style="color: #dc3545;"
                   v-on:click="handleClickDelete(index)"
                   v-bind:disabled="alias.moreOptions.loading"
                 >
-                  <img src="/images/icon-trash.svg" />
-                  <span style="color: #dc3545;">Delete</span>
+                  <font-awesome-icon icon="trash" />
+                  Delete
                 </div>
               </div>
             </div>
@@ -249,9 +258,13 @@ export default {
     async getAliasOptions() {
       this.loading = true;
 
-      const res = await callAPI(API_ROUTE.GET_ALIAS_OPTIONS, {
-        hostname: this.hostName,
-      }, API_ON_ERR.TOAST);
+      const res = await callAPI(
+        API_ROUTE.GET_ALIAS_OPTIONS,
+        {
+          hostname: this.hostName,
+        },
+        API_ON_ERR.TOAST
+      );
       const json = res.data;
 
       if (json.recommendation) {
@@ -340,11 +353,8 @@ export default {
         );
 
         if (res.status === 201) {
-          let path = Navigation.PATH.NEW_ALIAS_RESULT.replace(
-            ":email",
-            encodeURIComponent(res.data.alias)
-          );
-          Navigation.navigateTo(path, true);
+          SLStorage.setTemporary("newAliasData", res.data);
+          Navigation.navigateTo(Navigation.PATH.NEW_ALIAS_RESULT);
         } else {
           Utils.showError(res.data.error);
         }
@@ -385,11 +395,8 @@ export default {
         );
 
         if (res.status === 201) {
-          let path = Navigation.PATH.NEW_ALIAS_RESULT.replace(
-            ":email",
-            encodeURIComponent(res.data.alias)
-          );
-          Navigation.navigateTo(path, true);
+          SLStorage.setTemporary("newAliasData", res.data);
+          Navigation.navigateTo(Navigation.PATH.NEW_ALIAS_RESULT);
         } else {
           Utils.showError(res.data.error);
         }
