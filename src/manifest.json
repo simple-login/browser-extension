@@ -26,5 +26,15 @@
     "scripts": [
       "background.js"
     ]
-  }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+          "<all_urls>"
+      ],
+      "js": ["content_script/input_tools.js"],
+      "css": ["content_script/input_tools.css"],
+      "all_frames": true
+    }
+  ]
 }
