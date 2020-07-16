@@ -184,35 +184,40 @@
                 {{ alias.nb_block }} blocks.
               </div>
 
-              <div class="more-options" v-if="alias.moreOptions">
-                <textarea-autosize
-                  placeholder="Note, can be anything to help you remember why you created this alias. This field is optional."
-                  class="form-control"
-                  style="width: 100%;"
-                  v-model="alias.moreOptions.note"
-                  :disabled="alias.moreOptions.loading"
-                ></textarea-autosize>
-
-                <div class="action">
-                  <button
-                    class="btn btn-sm btn-primary"
-                    v-on:click="handleClickSave(index)"
-                    :disabled="alias.moreOptions.loading || alias.note === alias.moreOptions.note"
-                  >
-                    <font-awesome-icon icon="save" />
-                    Save
-                  </button>
-                  <button
-                    class="btn btn-sm btn-delete"
-                    style="color: #dc3545;"
-                    v-on:click="handleClickDelete(index)"
+              <expand-transition>
+                <div class="more-options" v-if="alias.moreOptions">
+                  <textarea-autosize
+                    placeholder="Note, can be anything to help you remember why you created this alias. This field is optional."
+                    class="form-control"
+                    style="width: 100%;"
+                    v-model="alias.moreOptions.note"
                     :disabled="alias.moreOptions.loading"
-                  >
-                    <font-awesome-icon icon="trash" />
-                    Delete
-                  </button>
+                  ></textarea-autosize>
+
+                  <div class="action">
+                    <button
+                      class="btn btn-sm btn-primary"
+                      v-on:click="handleClickSave(index)"
+                      :disabled="
+                        alias.moreOptions.loading ||
+                        alias.note === alias.moreOptions.note
+                      "
+                    >
+                      <font-awesome-icon icon="save" />
+                      Save
+                    </button>
+                    <button
+                      class="btn btn-sm btn-delete"
+                      style="color: #dc3545;"
+                      v-on:click="handleClickDelete(index)"
+                      :disabled="alias.moreOptions.loading"
+                    >
+                      <font-awesome-icon icon="trash" />
+                      Delete
+                    </button>
+                  </div>
                 </div>
-              </div>
+              </expand-transition>
             </div>
           </div>
         </div>
@@ -234,9 +239,13 @@ import Utils from "../Utils";
 import SLStorage from "../SLStorage";
 import EventManager from "../EventManager";
 import Navigation from "../Navigation";
+import ExpandTransition from "./ExpandTransition";
 import { callAPI, API_ROUTE, API_ON_ERR } from "../APIService";
 
 export default {
+  components: {
+    "expand-transition": ExpandTransition,
+  },
   data() {
     return {
       apiUrl: "",
