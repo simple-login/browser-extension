@@ -189,7 +189,7 @@
 
               <div class="more-options" v-if="alias.moreOptions">
                 <textarea-autosize
-                  placeholder="Add some notes for this alias..."
+                  placeholder="Note, can be anything to help you remember why you created this alias. This field is optional."
                   class="form-control"
                   style="width: 100%;"
                   v-model="alias.moreOptions.note"
@@ -200,7 +200,7 @@
                   <button
                     class="btn btn-sm btn-primary"
                     v-on:click="handleClickSave(index)"
-                    :disabled="alias.moreOptions.loading"
+                    :disabled="alias.moreOptions.loading || alias.note === alias.moreOptions.note"
                   >
                     <font-awesome-icon icon="save" />
                     Save
@@ -522,10 +522,8 @@ export default {
       if (res) {
         Utils.showSuccess("Updated alias");
         alias.note = alias.moreOptions.note;
-        alias.moreOptions = null;
-      } else {
-        alias.moreOptions.loading = false;
       }
+      alias.moreOptions.loading = false;
     },
 
     // Clipboard
