@@ -136,11 +136,8 @@
         <!-- list alias -->
         <div v-if="aliasArray.length > 0">
           <div v-for="(alias, index) in aliasArray" v-bind:key="alias.id">
-            <div
-              class="p-2 my-2 border-top list-item-alias"
-              v-bind:class="{ disabled: !alias.enabled }"
-            >
-              <div class="d-flex">
+            <div class="p-2 my-2 border-top list-item-alias">
+              <div class="d-flex" v-bind:class="{ disabled: !alias.enabled }">
                 <div class="flex-grow-1 list-item-email">
                   <a
                     v-clipboard="() => alias.email"
