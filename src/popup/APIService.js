@@ -13,7 +13,7 @@ const API_ROUTE = {
     method: "GET",
     path: "/api/v4/alias/options?hostname=:hostname",
   },
-  GET_ALIASES: { method: "GET", path: "/api/aliases?page_id=:page_id" },
+  GET_ALIASES: { method: "POST", path: "/api/aliases?page_id=:page_id" },
   NEW_ALIAS: {
     method: "POST",
     path: "/api/v2/alias/custom/new?hostname=:hostname",

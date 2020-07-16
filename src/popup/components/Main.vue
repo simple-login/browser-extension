@@ -344,6 +344,8 @@ export default {
       try {
         const { data } = await callAPI(API_ROUTE.GET_ALIASES, {
           page_id: page,
+        }, {
+          query,
         });
         this.isFetchingAlias = false;
         return data.aliases;
