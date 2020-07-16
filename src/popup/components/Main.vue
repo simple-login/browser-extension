@@ -136,11 +136,8 @@
         <!-- list alias -->
         <div v-if="aliasArray.length > 0">
           <div v-for="(alias, index) in aliasArray" v-bind:key="alias.id">
-            <div
-              class="p-2 my-2 border-top list-item-alias"
-              v-bind:class="{ disabled: !alias.enabled }"
-            >
-              <div class="d-flex">
+            <div class="p-2 my-2 border-top list-item-alias">
+              <div class="d-flex" v-bind:class="{ disabled: !alias.enabled }">
                 <div class="flex-grow-1 list-item-email">
                   <a
                     v-clipboard="() => alias.email"
@@ -177,8 +174,7 @@
 
               <div
                 v-if="alias.note"
-                class="font-weight-light"
-                style="font-size: 12px;"
+                class="font-weight-light alias-note-preview"
               >
                 {{ alias.note }}
               </div>
@@ -188,17 +184,40 @@
                 {{ alias.nb_block }} blocks.
               </div>
 
-              <div class="more-options" v-if="alias.moreOptions">
-                <div
-                  class="btn btn-sm btn-delete"
-                  style="color: #dc3545;"
-                  v-on:click="handleClickDelete(index)"
-                  v-bind:disabled="alias.moreOptions.loading"
-                >
-                  <font-awesome-icon icon="trash" />
-                  Delete
+              <expand-transition>
+                <div class="more-options" v-if="alias.moreOptions">
+                  <textarea-autosize
+                    placeholder="Note, can be anything to help you remember why you created this alias. This field is optional."
+                    class="form-control"
+                    style="width: 100%;"
+                    v-model="alias.moreOptions.note"
+                    :disabled="alias.moreOptions.loading"
+                  ></textarea-autosize>
+
+                  <div class="action">
+                    <button
+                      class="btn btn-sm btn-primary"
+                      v-on:click="handleClickSave(index)"
+                      :disabled="
+                        alias.moreOptions.loading ||
+                        alias.note === alias.moreOptions.note
+                      "
+                    >
+                      <font-awesome-icon icon="save" />
+                      Save
+                    </button>
+                    <button
+                      class="btn btn-sm btn-delete"
+                      style="color: #dc3545;"
+                      v-on:click="handleClickDelete(index)"
+                      :disabled="alias.moreOptions.loading"
+                    >
+                      <font-awesome-icon icon="trash" />
+                      Delete
+                    </button>
+                  </div>
                 </div>
-              </div>
+              </expand-transition>
             </div>
           </div>
         </div>
@@ -220,9 +239,13 @@ import Utils from "../Utils";
 import SLStorage from "../SLStorage";
 import EventManager from "../EventManager";
 import Navigation from "../Navigation";
+import ExpandTransition from "./ExpandTransition";
 import { callAPI, API_ROUTE, API_ON_ERR } from "../APIService";
 
 export default {
+  components: {
+    "expand-transition": ExpandTransition,
+  },
   data() {
     return {
       apiUrl: "",
@@ -446,6 +469,7 @@ export default {
           ? null
           : {
               loading: false,
+              note: alias.note,
             },
       });
     },
@@ -472,11 +496,12 @@ export default {
       });
     },
     async deleteAlias(index) {
-      this.aliasArray[index].loading = true;
+      const alias = this.aliasArray[index];
+      alias.moreOptions.loading = true;
       const res = await callAPI(
         API_ROUTE.DELETE_ALIAS,
         {
-          alias_id: this.aliasArray[index].id,
+          alias_id: alias.id,
         },
         {},
         API_ON_ERR.TOAST
@@ -484,8 +509,27 @@ export default {
       if (res) {
         this.aliasArray.splice(index, 1);
       } else {
-        this.aliasArray[index].loading = false;
+        alias.moreOptions.loading = false;
       }
+    },
+    async handleClickSave(index) {
+      const alias = this.aliasArray[index];
+      alias.moreOptions.loading = true;
+      const res = await callAPI(
+        API_ROUTE.EDIT_ALIAS,
+        {
+          alias_id: alias.id,
+        },
+        {
+          note: alias.moreOptions.note,
+        },
+        API_ON_ERR.TOAST
+      );
+      if (res) {
+        Utils.showSuccess("Updated alias");
+        alias.note = alias.moreOptions.note;
+      }
+      alias.moreOptions.loading = false;
     },
 
     // Clipboard

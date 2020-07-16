@@ -21,6 +21,7 @@ import {
   faChevronLeft,
   faCopy,
   faStar,
+  faSave,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -30,7 +31,8 @@ library.add(
   faLongArrowAltUp,
   faChevronLeft,
   faCopy,
-  faStar
+  faStar,
+  faSave
 );
 
 global.browser = require("webextension-polyfill");
