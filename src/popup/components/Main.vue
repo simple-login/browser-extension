@@ -223,7 +223,7 @@
         </div>
       </div>
 
-      <div v-if="isLoadingAlias" class="text-secondary mx-auto text-center">
+      <div v-if="isFetchingAlias" class="text-secondary mx-auto text-center">
         <img
           src="/images/loading-three-dots.svg"
           style="width: 80px; margin: 20px;"
@@ -267,7 +267,6 @@ export default {
       isFetchingAlias: true,
       searchString: "",
       aliasArray: [], // array of existing alias
-      isLoadingAlias: true,
     };
   },
   async mounted() {
@@ -308,13 +307,11 @@ export default {
     async loadAlias() {
       this.aliasArray = [];
       let currentPage = 0;
-      
-      this.isLoadingAlias = true;
+
       this.aliasArray = await this.fetchAlias(
         currentPage,
         this.searchString
       );
-      this.isLoadingAlias = false;
 
       let allAliasesAreLoaded = false;
 
@@ -329,12 +326,10 @@ export default {
         if (bottomOfWindow) {
           currentPage += 1;
 
-          that.isLoadingAlias = true;
           let newAliases = await that.fetchAlias(
             currentPage,
             that.searchString
           );
-          that.isLoadingAlias = false;
 
           allAliasesAreLoaded = newAliases.length === 0;
           that.aliasArray = mergeAliases(that.aliasArray, newAliases);
