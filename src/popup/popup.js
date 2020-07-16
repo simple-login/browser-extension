@@ -48,7 +48,7 @@ Vue.use(TextareaAutosize);
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 
 Sentry.init({
-  dsn: "https://dfc7a7727433452fbe5741b602058cc5@sentry.io/1839562",
+  dsn: "https://0e2d03e61f194df9ba85a791d364088b@o336535.ingest.sentry.io/5341174",
   integrations: [
     new Integrations.Vue({ Vue, attachProps: true, logErrors: true }),
   ],
