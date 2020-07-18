@@ -24,11 +24,33 @@
         <hr />
       </div>
 
-      <p class="font-weight-bold mb-2">Email Alias</p>
+      <div>
+        <p
+          class="font-weight-bold mt-2 align-self-center"
+          style="display: inline-block;"
+        >
+          New Alias
+        </p>
+
+        <button
+          :disabled="loading || !canCreate"
+          style="margin-left: 15px;"
+          class="btn btn-outline-primary btn-sm"
+          title="Generate a totally random alias."
+          @click="createRandomAlias"
+          v-b-tooltip.hover
+        >
+          <font-awesome-icon icon="random" /> Random
+        </button>
+      </div>
+
       <div>
         <form @submit.prevent="createCustomAlias">
           <div class="row mb-2">
-            <div class="col input-group-sm" style="padding-right: 0;">
+            <div
+              class="col align-self-center input-group-sm"
+              style="padding-right: 0;"
+            >
               <input
                 v-model="aliasPrefix"
                 class="form-control"
@@ -43,7 +65,7 @@
 
             <div
               class="col align-self-center input-group-sm"
-              style="padding-left: 5px;"
+              style="padding-left: 5px; padding-right: 5px;"
             >
               <select
                 v-model="signedSuffix"
@@ -59,35 +81,21 @@
                 </option>
               </select>
             </div>
-          </div>
 
-          <div class="small-text mb-1" v-if="aliasPrefix">
-            Alias is autofilled by the current website name, please feel free to
-            change it.
+            <button
+              :disabled="loading || !canCreate"
+              style="margin-right: 15px;"
+              class="btn btn-primary btn-sm align-self-center"
+            >
+              Create
+            </button>
           </div>
-
-          <button
-            :disabled="loading || !canCreate"
-            class="btn btn-primary btn-block mt-2"
-          >
-            Create Alias
-          </button>
         </form>
       </div>
 
-      <div>
-        <hr />
-        <form @submit.prevent="createRandomAlias">
-          <button
-            :disabled="loading || !canCreate"
-            class="btn btn-success btn-block mt-2"
-          >
-            Create Random Alias
-          </button>
-          <div class="small-text mb-1 text-center" v-if="aliasPrefix">
-            Generate a totally random alias.
-          </div>
-        </form>
+      <div class="small-text mb-1" v-if="aliasPrefix">
+        Alias is autofilled by the current website name, please feel free to
+        change it.
       </div>
 
       <div v-if="!canCreate">
@@ -128,11 +136,8 @@
         <!-- list alias -->
         <div v-if="aliasArray.length > 0">
           <div v-for="(alias, index) in aliasArray" v-bind:key="alias.id">
-            <div
-              class="p-2 my-2 border-top list-item-alias"
-              v-bind:class="{ disabled: !alias.enabled }"
-            >
-              <div class="d-flex">
+            <div class="p-2 my-2 border-top list-item-alias">
+              <div class="d-flex" v-bind:class="{ disabled: !alias.enabled }">
                 <div class="flex-grow-1 list-item-email">
                   <a
                     v-clipboard="() => alias.email"
@@ -149,7 +154,7 @@
                 <div style="white-space: nowrap;">
                   <toggle-button
                     :value="alias.enabled"
-                    color="#aa2990"
+                    color="#b02a8f"
                     :width="30"
                     :height="18"
                     @change="toggleAlias(alias)"
@@ -169,8 +174,7 @@
 
               <div
                 v-if="alias.note"
-                class="font-weight-light"
-                style="font-size: 12px;"
+                class="font-weight-light alias-note-preview"
               >
                 {{ alias.note }}
               </div>
@@ -180,22 +184,46 @@
                 {{ alias.nb_block }} blocks.
               </div>
 
-              <div class="more-options" v-if="alias.moreOptions">
-                <div
-                  class="btn btn-delete"
-                  v-on:click="handleClickDelete(index)"
-                  v-bind:disabled="alias.moreOptions.loading"
-                >
-                  <img src="/images/icon-trash.svg" />
-                  <span style="color: #dc3545;">Delete</span>
+              <expand-transition>
+                <div class="more-options" v-if="alias.moreOptions">
+                  <textarea-autosize
+                    placeholder="Note, can be anything to help you remember why you created this alias. This field is optional."
+                    class="form-control"
+                    style="width: 100%;"
+                    v-model="alias.moreOptions.note"
+                    :disabled="alias.moreOptions.loading"
+                  ></textarea-autosize>
+
+                  <div class="action">
+                    <button
+                      class="btn btn-sm btn-primary"
+                      v-on:click="handleClickSave(index)"
+                      :disabled="
+                        alias.moreOptions.loading ||
+                        alias.note === alias.moreOptions.note
+                      "
+                    >
+                      <font-awesome-icon icon="save" />
+                      Save
+                    </button>
+                    <button
+                      class="btn btn-sm btn-delete"
+                      style="color: #dc3545;"
+                      v-on:click="handleClickDelete(index)"
+                      :disabled="alias.moreOptions.loading"
+                    >
+                      <font-awesome-icon icon="trash" />
+                      Delete
+                    </button>
+                  </div>
                 </div>
-              </div>
+              </expand-transition>
             </div>
           </div>
         </div>
       </div>
 
-      <div v-if="hasLoadMoreAlias" class="text-secondary mx-auto text-center">
+      <div v-if="isFetchingAlias" class="text-secondary mx-auto text-center">
         <img
           src="/images/loading-three-dots.svg"
           style="width: 80px; margin: 20px;"
@@ -211,9 +239,13 @@ import Utils from "../Utils";
 import SLStorage from "../SLStorage";
 import EventManager from "../EventManager";
 import Navigation from "../Navigation";
+import ExpandTransition from "./ExpandTransition";
 import { callAPI, API_ROUTE, API_ON_ERR } from "../APIService";
 
 export default {
+  components: {
+    "expand-transition": ExpandTransition,
+  },
   data() {
     return {
       apiUrl: "",
@@ -235,7 +267,6 @@ export default {
       isFetchingAlias: true,
       searchString: "",
       aliasArray: [], // array of existing alias
-      hasLoadMoreAlias: true,
     };
   },
   async mounted() {
@@ -249,9 +280,13 @@ export default {
     async getAliasOptions() {
       this.loading = true;
 
-      const res = await callAPI(API_ROUTE.GET_ALIAS_OPTIONS, {
-        hostname: this.hostName,
-      }, API_ON_ERR.TOAST);
+      const res = await callAPI(
+        API_ROUTE.GET_ALIAS_OPTIONS,
+        {
+          hostname: this.hostName,
+        },
+        API_ON_ERR.TOAST
+      );
       const json = res.data;
 
       if (json.recommendation) {
@@ -271,11 +306,12 @@ export default {
 
     async loadAlias() {
       this.aliasArray = [];
-      this.hasLoadMoreAlias = true;
-
       let currentPage = 0;
-      this.aliasArray = await this.fetchAlias(currentPage, this.searchString);
-      this.hasLoadMoreAlias = this.aliasArray.length > 0;
+
+      this.aliasArray = await this.fetchAlias(
+        currentPage,
+        this.searchString
+      );
 
       let allAliasesAreLoaded = false;
 
@@ -290,12 +326,10 @@ export default {
         if (bottomOfWindow) {
           currentPage += 1;
 
-          that.hasLoadMoreAlias = true;
           let newAliases = await that.fetchAlias(
             currentPage,
             that.searchString
           );
-          that.hasLoadMoreAlias = false;
 
           allAliasesAreLoaded = newAliases.length === 0;
           that.aliasArray = mergeAliases(that.aliasArray, newAliases);
@@ -308,6 +342,8 @@ export default {
       try {
         const { data } = await callAPI(API_ROUTE.GET_ALIASES, {
           page_id: page,
+        }, {
+          query,
         });
         this.isFetchingAlias = false;
         return data.aliases;
@@ -340,11 +376,8 @@ export default {
         );
 
         if (res.status === 201) {
-          let path = Navigation.PATH.NEW_ALIAS_RESULT.replace(
-            ":email",
-            encodeURIComponent(res.data.alias)
-          );
-          Navigation.navigateTo(path, true);
+          SLStorage.setTemporary("newAliasData", res.data);
+          Navigation.navigateTo(Navigation.PATH.NEW_ALIAS_RESULT);
         } else {
           Utils.showError(res.data.error);
         }
@@ -385,11 +418,8 @@ export default {
         );
 
         if (res.status === 201) {
-          let path = Navigation.PATH.NEW_ALIAS_RESULT.replace(
-            ":email",
-            encodeURIComponent(res.data.alias)
-          );
-          Navigation.navigateTo(path, true);
+          SLStorage.setTemporary("newAliasData", res.data);
+          Navigation.navigateTo(Navigation.PATH.NEW_ALIAS_RESULT);
         } else {
           Utils.showError(res.data.error);
         }
@@ -439,6 +469,7 @@ export default {
           ? null
           : {
               loading: false,
+              note: alias.note,
             },
       });
     },
@@ -465,11 +496,12 @@ export default {
       });
     },
     async deleteAlias(index) {
-      this.aliasArray[index].loading = true;
+      const alias = this.aliasArray[index];
+      alias.moreOptions.loading = true;
       const res = await callAPI(
         API_ROUTE.DELETE_ALIAS,
         {
-          alias_id: this.aliasArray[index].id,
+          alias_id: alias.id,
         },
         {},
         API_ON_ERR.TOAST
@@ -477,8 +509,27 @@ export default {
       if (res) {
         this.aliasArray.splice(index, 1);
       } else {
-        this.aliasArray[index].loading = false;
+        alias.moreOptions.loading = false;
       }
+    },
+    async handleClickSave(index) {
+      const alias = this.aliasArray[index];
+      alias.moreOptions.loading = true;
+      const res = await callAPI(
+        API_ROUTE.EDIT_ALIAS,
+        {
+          alias_id: alias.id,
+        },
+        {
+          note: alias.moreOptions.note,
+        },
+        API_ON_ERR.TOAST
+      );
+      if (res) {
+        Utils.showSuccess("Updated alias");
+        alias.note = alias.moreOptions.note;
+      }
+      alias.moreOptions.loading = false;
     },
 
     // Clipboard

@@ -30,9 +30,10 @@
         <a
           :href="apiUrl + '/dashboard/'"
           target="_blank"
-          class="btn btn-sm btn-outline-success float-right"
+          class="float-right"
+          style="padding: 0.25rem 0.5rem; font-size: 0.875rem;"
         >
-          Dashboard ↗
+          Dashboard <font-awesome-icon icon="external-link-alt" />
         </a>
 
         <div

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.10.0] - 2020-07-16
+- Able to add and edit alias note
+- Lots of UI touches 🎨
+
 ## [1.9.1] - 2020-07-12
 - Take into account the case alias creation time is expired
 

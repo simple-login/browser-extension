@@ -6,10 +6,8 @@
 </template>
 
 <script>
+import "./App.scss";
 import VueRouter from "vue-router";
-import "./App.css";
-import "bootstrap/dist/css/bootstrap.css";
-import "bootstrap-vue/dist/bootstrap-vue.css";
 import Navigation from "./Navigation";
 import EventManager from "./EventManager";
 

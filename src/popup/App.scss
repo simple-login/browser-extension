@@ -1,3 +1,7 @@
+@import './App-color.scss';
+@import '~bootstrap/scss/bootstrap.scss';
+@import '~bootstrap-vue/src/index.scss';
+
 body {
   margin: 0 0;
   width: 470px;
@@ -87,12 +91,11 @@ em {
 }
 
 /* list aliases */
-
 .vue-js-switch {
   margin-bottom: 0;
 }
 
-.list-item-alias.disabled {
+.list-item-alias .disabled {
   opacity: 0.7;
 }
 
@@ -113,6 +116,12 @@ em {
   background: linear-gradient(to right, transparent, white);
   top: 0;
   position: absolute;
+}
+
+.list-item-alias .alias-note-preview {
+  font-size: 12px;
+  max-height: calc(12px * 1.5 * 3); /* font-size * line-height */
+  overflow-y: hidden;
 }
 
 .settings-button {
@@ -140,6 +149,7 @@ em {
   padding: 5px;
 }
 
+/* more options */
 .btn-delete:hover, .btn-svg:hover {
   background-color: rgba(0, 0, 0, 0.1);
 }
@@ -154,5 +164,10 @@ em {
 }
 
 .more-options {
+  margin-top: 10px;
+}
+
+.more-options > .action {
+  margin-top: 10px;
   min-height: 25px;
 }

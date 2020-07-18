@@ -13,7 +13,7 @@ const API_ROUTE = {
     method: "GET",
     path: "/api/v4/alias/options?hostname=:hostname",
   },
-  GET_ALIASES: { method: "GET", path: "/api/aliases?page_id=:page_id" },
+  GET_ALIASES: { method: "POST", path: "/api/aliases?page_id=:page_id" },
   NEW_ALIAS: {
     method: "POST",
     path: "/api/v2/alias/custom/new?hostname=:hostname",
@@ -23,6 +23,7 @@ const API_ROUTE = {
     path: "/api/alias/random/new?hostname=:hostname",
   },
   TOGGLE_ALIAS: { method: "POST", path: "/api/aliases/:alias_id/toggle" },
+  EDIT_ALIAS: { method: "PUT", path: "/api/aliases/:alias_id" },
   DELETE_ALIAS: { method: "DELETE", path: "/api/aliases/:alias_id" },
   GET_API_KEY_FROM_COOKIE: { method: "POST", path: "/api/api_key" },
 };
@@ -52,7 +53,7 @@ const callAPI = async function (
   route,
   params = {},
   data = {},
-  errHandlerMethod = API_ON_ERR.THROW,
+  errHandlerMethod = API_ON_ERR.THROW
 ) {
   const { method, path } = route;
   const url = SETTINGS.apiUrl + bindQueryParams(path, params);

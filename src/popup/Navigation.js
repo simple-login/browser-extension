@@ -5,7 +5,7 @@ let router = null;
 const PATH = {
   ROOT: "/",
   MAIN: "/main",
-  NEW_ALIAS_RESULT: "/new-alias-result/:email",
+  NEW_ALIAS_RESULT: "/new-alias-result/",
   LOGIN: "/login",
   API_KEY_SETTING: "/api-key-setting",
   SELF_HOST_SETTING: "/self-host-setting",
