@@ -18,6 +18,7 @@ import SelfHostSetting from "./components/SelfHostSetting";
 import ApiKeySetting from "./components/ApiKeySetting";
 import Main from "./components/Main";
 import NewAliasResult from "./components/NewAliasResult";
+import AppSettings from "./components/AppSettings";
 import Utils from "./Utils";
 import APIService from "./APIService";
 
@@ -29,6 +30,7 @@ const components = {
   ApiKeySetting,
   Main,
   NewAliasResult,
+  AppSettings,
 };
 
 const routes = Navigation.getRoutes(components);
