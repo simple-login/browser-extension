@@ -383,13 +383,13 @@ export default {
         }
       } catch (err) {
         // rate limit reached
-        if (err.request.status === 429) {
+        if (err.response.status === 429) {
           Utils.showError(
             "Rate limit exceeded - please wait 60s before creating new alias"
           );
-        } else if (err.request.status === 409) {
+        } else if (err.response.status === 409) {
           Utils.showError("Alias already chosen, please select another one");
-        } else if (err.request.status === 412) {
+        } else if (err.response.status === 412) {
           // can happen when the alias creation time slot is expired,
           // i.e user waits for too long before creating the alias
           Utils.showError(err.response.data.error);
@@ -425,7 +425,7 @@ export default {
         }
       } catch (err) {
         // rate limit reached
-        if (err.request.status === 429) {
+        if (err.response.status === 429) {
           Utils.showError(
             "Rate limit exceeded - please wait 60s before creating new alias"
           );
