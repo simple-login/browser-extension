@@ -35,7 +35,7 @@ const InputTools = {
   queryEmailInputAndApply(target, actionFunction) {
     if (!target.querySelectorAll) return;
     const elements = target.querySelectorAll(
-      "input[type='email'],input[name*='email']"
+      "input[type='email'],input[name*='email'],input[autocomplete='email']"
     );
     for (const element of elements) {
       actionFunction(element);
