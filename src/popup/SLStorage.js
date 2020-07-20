@@ -5,6 +5,8 @@ class SLStorage {
     API_URL: "apiUrl",
     API_KEY: "apiKey",
     NOT_ASKING_RATE: "notAskingRate",
+    SHOW_SL_BUTTON: "showSLButton",
+    BETA_ENABLED: "betaEnabled",
   };
 
   static DEFAULT_SETTINGS = {
@@ -13,6 +15,8 @@ class SLStorage {
       : "https://app.simplelogin.io",
     [SLStorage.SETTINGS.API_KEY]: "",
     [SLStorage.SETTINGS.NOT_ASKING_RATE]: false,
+    [SLStorage.SETTINGS.SHOW_SL_BUTTON]: true,
+    [SLStorage.SETTINGS.BETA_ENABLED]: false,
   };
 
   static set(key, value) {
@@ -36,7 +40,11 @@ class SLStorage {
   }
 
   static remove(key) {
-    return SLStorage.set(key, null);
+    return new Promise((resolve) => {
+      chrome.storage.sync.remove(key, function () {
+        resolve();
+      });
+    });
   }
 
   static setTemporary(key, value) {

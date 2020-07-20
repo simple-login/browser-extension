@@ -6,30 +6,43 @@ import Utils from "./popup/Utils";
 global.browser = require("webextension-polyfill");
 
 const onMessageHandler = async function (request, sender) {
-  console.log(await Utils.getHostName(sender.tab));
   if (request.tag === "NEW_RANDOM_ALIAS") {
+    const hostname = await Utils.getHostName(sender.tab);
     try {
       const res = await callAPI(
         API_ROUTE.NEW_RANDOM_ALIAS,
         {
-          hostname: await Utils.getHostName(sender.tab),
+          hostname,
         },
-        {}
+        {
+          note: `Used on ${hostname}`,
+        }
       );
 
       return res.data;
     } catch (err) {
       // rate limit reached
-      if (err.request.status === 429) {
+      if (err.response.status === 429) {
         return {
-          error: "Rate limit exceeded - please wait 60s before creating new alias"
+          error:
+            "Rate limit exceeded - please wait 60s before creating new alias",
+        };
+      } else if (err.response.data.error) {
+        return {
+          error: err.response.data.error,
         };
       } else {
         return {
-          error: "Unknown error"
+          error: "Unknown error",
         };
       }
     }
+  } else if (request.tag === "CAN_SHOW_SL_BUTTON") {
+    const res =
+      (await SLStorage.get(SLStorage.SETTINGS.BETA_ENABLED)) &&
+      (await SLStorage.get(SLStorage.SETTINGS.API_KEY)) !== "" &&
+      (await SLStorage.get(SLStorage.SETTINGS.SHOW_SL_BUTTON));
+    return res;
   }
 };
 

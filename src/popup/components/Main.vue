@@ -308,10 +308,7 @@ export default {
       this.aliasArray = [];
       let currentPage = 0;
 
-      this.aliasArray = await this.fetchAlias(
-        currentPage,
-        this.searchString
-      );
+      this.aliasArray = await this.fetchAlias(currentPage, this.searchString);
 
       let allAliasesAreLoaded = false;
 
@@ -340,11 +337,15 @@ export default {
     async fetchAlias(page, query) {
       this.isFetchingAlias = true;
       try {
-        const { data } = await callAPI(API_ROUTE.GET_ALIASES, {
-          page_id: page,
-        }, {
-          query,
-        });
+        const { data } = await callAPI(
+          API_ROUTE.GET_ALIASES,
+          {
+            page_id: page,
+          },
+          {
+            query,
+          }
+        );
         this.isFetchingAlias = false;
         return data.aliases;
       } catch (e) {

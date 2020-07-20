@@ -3,28 +3,31 @@ const InputTools = {
   processedElements: [],
 
   init(target) {
-    const elements = target.querySelectorAll(
-      "input[type='email'],input[name*='email']"
-    );
-    for (const element of elements) {
+    InputTools.queryEmailInputAndApply(target, (element) => {
       const i = InputTools.processedElements.indexOf(element);
       if (i === -1) {
         InputTools.processedElements.push(element);
         InputTools.addSLButtonToInput(element);
       }
-    }
+    });
   },
 
   destroy(target) {
+    InputTools.queryEmailInputAndApply(target, (element) => {
+      const i = InputTools.processedElements.indexOf(element);
+      if (i !== -1) {
+        InputTools.processedElements.splice(i, 1);
+      }
+    });
+  },
+
+  queryEmailInputAndApply(target, actionFunction) {
     if (!target.querySelectorAll) return;
     const elements = target.querySelectorAll(
       "input[type='email'],input[name*='email']"
     );
     for (const element of elements) {
-      const i = InputTools.processedElements.indexOf(element);
-      if (i !== -1) {
-        InputTools.processedElements.splice(i, 1);
-      }
+      actionFunction(element);
     }
   },
 
@@ -104,7 +107,11 @@ const InputTools = {
     InputTools.isLoading = true;
     slButton.classList.add("loading");
 
-    const res = await InputTools.sendMessageToBackground("NEW_RANDOM_ALIAS");
+    let res = await sendMessageToBackground("NEW_RANDOM_ALIAS");
+    if (res.error) {
+      alert("SimpleLogin Error: " + res.error);
+      res = { alias: "" };
+    }
 
     InputTools.isLoading = false;
     slButton.classList.remove("loading");
@@ -129,23 +136,7 @@ const InputTools = {
       return 0;
     }
   },
-
-  sendMessageToBackground(tag, data = null) {
-    return new Promise((resolve) => {
-      chrome.runtime.sendMessage(
-        {
-          tag,
-          data,
-        },
-        function (response) {
-          resolve(response);
-        }
-      );
-    });
-  },
 };
-
-InputTools.init(document);
 
 const MutationObserver =
   window.MutationObserver ||
@@ -155,7 +146,7 @@ const MutationObserver =
 function addMutationObserver() {
   const mutationObserver = new MutationObserver(function (mutations) {
     mutations.forEach(function (mutation) {
-      console.log(mutation.target);
+      //console.log(mutation.target);
 
       for (const removedNode of mutation.removedNodes) {
         InputTools.destroy(removedNode);
@@ -166,7 +157,6 @@ function addMutationObserver() {
   });
 
   const target = document.body;
-  console.log(document.body);
   if (!target) return;
 
   mutationObserver.observe(target, {
@@ -175,4 +165,31 @@ function addMutationObserver() {
   });
 }
 
-addMutationObserver();
+function sendMessageToBackground(tag, data = null) {
+  return new Promise((resolve) => {
+    try {
+      chrome.runtime.sendMessage(
+        {
+          tag,
+          data,
+        },
+        function (response) {
+          resolve(response);
+        }
+      );
+    } catch (e) {
+      // Extension context invalidated.
+      alert("SimpleLogin Error: Please reload the page.");
+    }
+  });
+}
+
+async function initModule() {
+  const canShowSLButton = await sendMessageToBackground("CAN_SHOW_SL_BUTTON");
+  if (canShowSLButton) {
+    InputTools.init(document);
+    addMutationObserver();
+  }
+}
+
+initModule();
