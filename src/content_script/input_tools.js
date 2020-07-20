@@ -2,13 +2,16 @@ let SLSettings = {};
 
 const InputTools = {
   isLoading: false,
-  processedElements: [],
+
+  // store tracked input elements
+  trackedElements: [],
 
   init(target) {
     InputTools.queryEmailInputAndApply(target, (element) => {
-      const i = InputTools.processedElements.indexOf(element);
+      // ignore if this elements has already been tracked
+      const i = InputTools.trackedElements.indexOf(element);
       if (i === -1) {
-        InputTools.processedElements.push(element);
+        InputTools.trackedElements.push(element);
         InputTools.addSLButtonToInput(element);
       }
     });
@@ -16,9 +19,10 @@ const InputTools = {
 
   destroy(target) {
     InputTools.queryEmailInputAndApply(target, (element) => {
-      const i = InputTools.processedElements.indexOf(element);
+      // remove element from tracking list
+      const i = InputTools.trackedElements.indexOf(element);
       if (i !== -1) {
-        InputTools.processedElements.splice(i, 1);
+        InputTools.trackedElements.splice(i, 1);
       }
     });
   },
@@ -63,8 +67,8 @@ const InputTools = {
     let intervalId = 0;
 
     function updatePosition() {
-      // check is element is removed
-      const i = InputTools.processedElements.indexOf(anchor);
+      // check is element is removed from trackedElements
+      const i = InputTools.trackedElements.indexOf(anchor);
       if (i === -1) {
         elem.parentNode.removeChild(elem);
         clearInterval(intervalId);
@@ -150,16 +154,21 @@ const MutationObserver =
   window.WebKitMutationObserver ||
   window.MozMutationObserver;
 
+/**
+ * Add DOM mutations listener
+ */
 function addMutationObserver() {
   const mutationObserver = new MutationObserver(function (mutations) {
     mutations.forEach(function (mutation) {
-      //console.log(mutation.target);
-
-      for (const removedNode of mutation.removedNodes) {
-        InputTools.destroy(removedNode);
+      for (const addedNode of mutation.addedNodes) {
+        // add SLButton for newly added nodes
+        InputTools.init(addedNode);
       }
 
-      InputTools.init(mutation.target);
+      for (const removedNode of mutation.removedNodes) {
+        // destroy SLButton for removed nodes
+        InputTools.destroy(removedNode);
+      }
     });
   });
 
@@ -172,6 +181,11 @@ function addMutationObserver() {
   });
 }
 
+/**
+ * Send message to background.js and resolve with the response
+ * @param {string} tag
+ * @param {object} data
+ */
 function sendMessageToBackground(tag, data = null) {
   return new Promise((resolve) => {
     try {
