@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <div class="p-3 container">
-      <p class="font-weight-bold mt-2 align-self-center">App Settings</p>
+      <p class="font-weight-bold align-self-center">App Settings</p>
 
       <table class="settings-list">
         <tr>
