@@ -39,7 +39,6 @@ const onMessageHandler = async function (request, sender) {
     }
   } else if (request.tag === "CAN_SHOW_SL_BUTTON") {
     const res =
-      (await SLStorage.get(SLStorage.SETTINGS.BETA_ENABLED)) &&
       (await SLStorage.get(SLStorage.SETTINGS.API_KEY)) !== "" &&
       (await SLStorage.get(SLStorage.SETTINGS.SHOW_SL_BUTTON));
     return res;

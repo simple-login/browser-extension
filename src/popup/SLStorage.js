@@ -6,7 +6,6 @@ class SLStorage {
     API_KEY: "apiKey",
     NOT_ASKING_RATE: "notAskingRate",
     SHOW_SL_BUTTON: "showSLButton",
-    BETA_ENABLED: "betaEnabled",
   };
 
   static DEFAULT_SETTINGS = {
@@ -16,7 +15,6 @@ class SLStorage {
     [SLStorage.SETTINGS.API_KEY]: "",
     [SLStorage.SETTINGS.NOT_ASKING_RATE]: false,
     [SLStorage.SETTINGS.SHOW_SL_BUTTON]: true,
-    [SLStorage.SETTINGS.BETA_ENABLED]: false,
   };
 
   static set(key, value) {
