@@ -1,3 +1,5 @@
+let SLSettings = {};
+
 const InputTools = {
   isLoading: false,
   processedElements: [],
@@ -73,14 +75,19 @@ const InputTools = {
       const elemWidth = InputTools.dimensionToInt(elem.style.width);
       const pageXOffset = isFixed ? 0 : window.pageXOffset;
       const pageYOffset = isFixed ? 0 : window.pageYOffset;
+      const buttonXOffset =
+        SLSettings.SLButtonPosition === "right-inside"
+          ? -elemWidth * 1.1
+          : elemWidth * 0.1;
 
       // calculate elem position
       const left =
         anchorCoords.left +
         pageXOffset +
-        anchor.offsetWidth -
-        elemWidth * 1.2 +
+        anchor.offsetWidth +
+        buttonXOffset +
         "px";
+
       const top = anchorCoords.top + pageYOffset + "px";
 
       if (isFixed) {
@@ -185,8 +192,8 @@ function sendMessageToBackground(tag, data = null) {
 }
 
 async function initModule() {
-  const canShowSLButton = await sendMessageToBackground("CAN_SHOW_SL_BUTTON");
-  if (canShowSLButton) {
+  SLSettings = await sendMessageToBackground("GET_APP_SETTINGS");
+  if (SLSettings.showSLButton) {
     InputTools.init(document);
     addMutationObserver();
   }
