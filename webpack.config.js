@@ -5,6 +5,11 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtensionReloader = require('webpack-extension-reloader');
 const { VueLoaderPlugin } = require('vue-loader');
 const { version } = require('./package.json');
+const fs = require('fs');
+
+const devConfig = fs.existsSync('./.dev.json')
+  ? JSON.parse(fs.readFileSync('./.dev.json').toString())
+  : JSON.parse(fs.readFileSync('./.dev.sample.json').toString());
 
 const config = {
   mode: process.env.NODE_ENV,
@@ -91,6 +96,7 @@ const config = {
 
           if (config.mode === 'development') {
             jsonContent['content_security_policy'] = "script-src 'self' 'unsafe-eval'; object-src 'self'";
+            jsonContent['permissions'] = jsonContent['permissions'].concat(devConfig.permissions);
           }
 
           return JSON.stringify(jsonContent, null, 2);
@@ -99,6 +105,14 @@ const config = {
     ]),
   ],
 };
+
+if (config.mode === 'development') {
+  config.plugins = (config.plugins || []).concat([
+    new webpack.DefinePlugin({
+      devConfig: JSON.stringify(devConfig),
+    }),
+  ]);
+}
 
 if (config.mode === 'production') {
   config.plugins = (config.plugins || []).concat([
@@ -121,6 +135,7 @@ if (process.env.HMR === 'true') {
 function transformHtml(content) {
   return ejs.render(content.toString(), {
     ...process.env,
+    devConfig,
   });
 }
 
