@@ -8,6 +8,11 @@ const InputTools = {
 
   init(target) {
     InputTools.queryEmailInputAndApply(target, (element) => {
+      // ignore if this input is disabled
+      if (element.disabled) {
+        return;
+      }
+
       // ignore if this elements has already been tracked
       const i = InputTools.trackedElements.indexOf(element);
       if (i === -1) {
