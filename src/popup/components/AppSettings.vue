@@ -4,7 +4,6 @@
       <p class="font-weight-bold mt-2 align-self-center">App Settings</p>
 
       <table class="settings-list">
-
         <tr>
           <td>
             <toggle-button
@@ -17,8 +16,11 @@
             />
           </td>
           <td>
-            Show SimpleLogin button on email input fields<br/>
-            <small>SimpleLogin button allows you to quickly create random alias without having to navigating to SimpleLogin application.</small>
+            Show SimpleLogin button on email input fields<br />
+            <small
+              >SimpleLogin button allows you to quickly create random alias
+              without having to navigating to SimpleLogin application.</small
+            >
           </td>
         </tr>
 
@@ -34,14 +36,19 @@
             />
           </td>
           <td>
-            Place SimpleLogin button outside of the input<br/>
-            <small>This will prevent SimpleLogin button from overlapping buttons of other extensions (LastPass,...)</small>
+            Place SimpleLogin button outside the input<br />
+            <small
+              >This will prevent SimpleLogin button from overlapping buttons of
+              other extensions (LastPass, Dashlane,...)</small
+            >
           </td>
         </tr>
-
       </table>
 
-      <button @click="handleLogout" class="btn btn-outline-primary btn-block mt-2">
+      <button
+        @click="handleLogout"
+        class="btn btn-outline-primary btn-block mt-2"
+      >
         Logout
       </button>
     </div>
@@ -60,7 +67,7 @@ export default {
   data() {
     return {
       showSLButton: false,
-      SLButtonPosition: 'right-inside',
+      SLButtonPosition: "right-inside",
     };
   },
   async mounted() {
@@ -68,8 +75,12 @@ export default {
   },
   methods: {
     async fetchSettings() {
-      this.showSLButton = await SLStorage.get(SLStorage.SETTINGS.SHOW_SL_BUTTON);
-      this.SLButtonPosition = await SLStorage.get(SLStorage.SETTINGS.SL_BUTTON_POSITION);
+      this.showSLButton = await SLStorage.get(
+        SLStorage.SETTINGS.SHOW_SL_BUTTON
+      );
+      this.SLButtonPosition = await SLStorage.get(
+        SLStorage.SETTINGS.SL_BUTTON_POSITION
+      );
     },
 
     async handleToggleSLButton() {
@@ -80,9 +91,14 @@ export default {
     },
 
     async handleToggleSLButtonOutside() {
-      this.SLButtonPosition = this.SLButtonPosition === 'right-outside'
-        ? 'right-inside' : 'right-outside';
-      await SLStorage.set(SLStorage.SETTINGS.SL_BUTTON_POSITION, this.SLButtonPosition);
+      this.SLButtonPosition =
+        this.SLButtonPosition === "right-outside"
+          ? "right-inside"
+          : "right-outside";
+      await SLStorage.set(
+        SLStorage.SETTINGS.SL_BUTTON_POSITION,
+        this.SLButtonPosition
+      );
       this.fetchSettings();
       this.showSavedSettingsToast();
     },

@@ -16,7 +16,7 @@ class SLStorage {
     [SLStorage.SETTINGS.API_KEY]: "",
     [SLStorage.SETTINGS.NOT_ASKING_RATE]: false,
     [SLStorage.SETTINGS.SHOW_SL_BUTTON]: true,
-    [SLStorage.SETTINGS.SL_BUTTON_POSITION]: 'right-inside',
+    [SLStorage.SETTINGS.SL_BUTTON_POSITION]: "right-inside",
   };
 
   static set(key, value) {
