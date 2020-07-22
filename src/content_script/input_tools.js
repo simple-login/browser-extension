@@ -95,6 +95,7 @@ const InputTools = {
 
       // get dimension & position of anchor
       const anchorCoords = anchor.getBoundingClientRect();
+      const anchorStyle = getComputedStyle(anchor);
       const elemWidth = InputTools.dimensionToInt(elem.style.width);
       const pageXOffset = isFixed ? 0 : window.pageXOffset;
       const pageYOffset = isFixed ? 0 : window.pageYOffset;
@@ -108,7 +109,8 @@ const InputTools = {
         anchorCoords.left +
         pageXOffset +
         anchor.offsetWidth +
-        buttonXOffset +
+        buttonXOffset -
+        InputTools.dimensionToInt(anchorStyle.paddingRight) +
         "px";
 
       const top = anchorCoords.top + pageYOffset + "px";
