@@ -8,8 +8,7 @@ const InputTools = {
 
   init(target) {
     InputTools.queryEmailInputAndApply(target, (element) => {
-      // ignore if this input is disabled
-      if (element.disabled) {
+      if (!InputTools.isValidEmailInput(element)) {
         return;
       }
 
@@ -35,11 +34,26 @@ const InputTools = {
   queryEmailInputAndApply(target, actionFunction) {
     if (!target.querySelectorAll) return;
     const elements = target.querySelectorAll(
-      "input[type='email'],input[name*='email'],input[autocomplete='email']"
+      "input[type='email'],input[name*='email'],input[id*='email']"
     );
     for (const element of elements) {
       actionFunction(element);
     }
+  },
+
+  isValidEmailInput(element) {
+    const style = getComputedStyle(element);
+    return (
+      // check if element is visible
+      style.visibility !== "hidden" &&
+      style.display !== "none" &&
+      style.opacity !== "0" &&
+      // check if element is not disabled
+      !element.disabled &&
+      // for example, we must filter out a checkbox with name*=email
+      // check if element is text or email input
+      (element.type === "text" || element.type === "email")
+    );
   },
 
   addSLButtonToInput(inputElem, isInputFixed) {
