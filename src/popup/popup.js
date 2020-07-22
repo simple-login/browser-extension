@@ -47,13 +47,15 @@ Vue.use(ToggleButton);
 Vue.use(TextareaAutosize);
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 
-Sentry.init({
-  dsn:
-    "https://0e2d03e61f194df9ba85a791d364088b@o336535.ingest.sentry.io/5341174",
-  integrations: [
-    new Integrations.Vue({ Vue, attachProps: true, logErrors: true }),
-  ],
-});
+if (process.env.NODE_ENV === "production") {
+  Sentry.init({
+    dsn:
+      "https://0e2d03e61f194df9ba85a791d364088b@o336535.ingest.sentry.io/5341174",
+    integrations: [
+      new Integrations.Vue({ Vue, attachProps: true, logErrors: true }),
+    ],
+  });
+}
 
 /* eslint-disable no-new */
 new Vue({
