@@ -56,7 +56,7 @@ const InputTools = {
     );
   },
 
-  addSLButtonToInput(inputElem, isInputFixed) {
+  addSLButtonToInput(inputElem) {
     // create wrapper for SL button
     const btnWrapper = InputTools.newDiv("sl-button-wrapper");
     const inputSumHeight = inputElem.getBoundingClientRect().height + "px";
@@ -73,58 +73,54 @@ const InputTools = {
     slButton.style.width = inputSumHeight;
     btnWrapper.appendChild(slButton);
 
-    InputTools.placeElementToTheRight(inputElem, btnWrapper, isInputFixed);
+    InputTools.placeBtnToTheRightOfElement(inputElem, btnWrapper);
   },
 
-  newDiv(classes) {
+  newDiv(...className) {
     const div = document.createElement("div");
-    div.classList.add(classes);
+    div.classList.add(...className);
     return div;
   },
 
-  placeElementToTheRight(anchor, elem, isFixed) {
+  placeBtnToTheRightOfElement(inputElem, btnWrapper) {
     let intervalId = 0;
 
     function updatePosition() {
       // check is element is removed from trackedElements
-      const i = InputTools.trackedElements.indexOf(anchor);
+      const i = InputTools.trackedElements.indexOf(inputElem);
       if (i === -1) {
-        elem.parentNode.removeChild(elem);
+        btnWrapper.parentNode.removeChild(btnWrapper);
         clearInterval(intervalId);
       }
 
-      // get dimension & position of anchor
-      const anchorCoords = anchor.getBoundingClientRect();
-      const anchorStyle = getComputedStyle(anchor);
-      const elemWidth = InputTools.dimensionToInt(elem.style.width);
-      const pageXOffset = isFixed ? 0 : window.pageXOffset;
-      const pageYOffset = isFixed ? 0 : window.pageYOffset;
+      // get dimension & position of input
+      const inputCoords = inputElem.getBoundingClientRect();
+      const inputStyle = getComputedStyle(inputElem);
+      const elemWidth = InputTools.dimensionToInt(btnWrapper.style.width);
+      const pageXOffset = window.pageXOffset;
+      const pageYOffset = window.pageYOffset;
       const buttonXOffset =
         SLSettings.SLButtonPosition === "right-inside"
-          ? -elemWidth * 1.1
-          : elemWidth * 0.1;
+          ? -elemWidth * 1.02
+          : elemWidth * 0.02;
 
       // calculate elem position
       const left =
-        anchorCoords.left +
+        inputCoords.left +
         pageXOffset +
-        anchor.offsetWidth +
+        inputElem.offsetWidth +
         buttonXOffset -
-        InputTools.dimensionToInt(anchorStyle.paddingRight) +
+        InputTools.dimensionToInt(inputStyle.paddingRight) +
         "px";
 
-      const top = anchorCoords.top + pageYOffset + "px";
+      const top = inputCoords.top + pageYOffset + "px";
 
-      if (isFixed) {
-        elem.style.position = "fixed";
+      if (btnWrapper.style.left !== left) {
+        btnWrapper.style.left = left;
       }
 
-      if (elem.style.left !== left) {
-        elem.style.left = left;
-      }
-
-      if (elem.style.top !== top) {
-        elem.style.top = top;
+      if (btnWrapper.style.top !== top) {
+        btnWrapper.style.top = top;
       }
     }
 
