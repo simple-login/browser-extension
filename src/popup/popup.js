@@ -22,6 +22,7 @@ import {
   faCopy,
   faStar,
   faSave,
+  faBug,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -32,7 +33,8 @@ library.add(
   faChevronLeft,
   faCopy,
   faStar,
-  faSave
+  faSave,
+  faBug
 );
 
 global.browser = require("webextension-polyfill");

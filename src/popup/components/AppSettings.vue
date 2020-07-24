@@ -17,10 +17,13 @@
           </td>
           <td>
             Show SimpleLogin button on email input fields<br />
-            <small
-              >SimpleLogin button allows you to quickly create random alias
-              without having to navigating to SimpleLogin application.</small
-            >
+            <small>
+              SimpleLogin button allows you to quickly create random alias
+              without having to navigating to SimpleLogin application.
+              <a :href="SLButtonReport" v-show="showSLButton" target="_blank">
+                <br/><font-awesome-icon icon="bug" /> Report a problem with this feature
+              </a>
+            </small>
           </td>
         </tr>
 
@@ -68,6 +71,7 @@ export default {
     return {
       showSLButton: false,
       SLButtonPosition: "right-inside",
+      SLButtonReport: '',
     };
   },
   async mounted() {
@@ -81,6 +85,7 @@ export default {
       this.SLButtonPosition = await SLStorage.get(
         SLStorage.SETTINGS.SL_BUTTON_POSITION
       );
+      this.setMailToUri();
     },
 
     async handleToggleSLButton() {
@@ -114,6 +119,13 @@ export default {
       Navigation.clearHistory();
       Navigation.navigateTo(Navigation.PATH.LOGIN);
     },
+
+    async setMailToUri() {
+      const subject = encodeURIComponent('Problem with SLButton feature');
+      const hostname = await Utils.getHostName();
+      const body = encodeURIComponent('(Optional) Affected website: ' + hostname);
+      this.SLButtonReport = `mailto:hi@simplelogin.io?subject=${subject}&body=${body}`;
+    }
   },
   computed: {},
 };
