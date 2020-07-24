@@ -37,11 +37,15 @@ const onMessageHandler = async function (request, sender) {
         };
       }
     }
-  } else if (request.tag === "CAN_SHOW_SL_BUTTON") {
-    const res =
-      (await SLStorage.get(SLStorage.SETTINGS.API_KEY)) !== "" &&
-      (await SLStorage.get(SLStorage.SETTINGS.SHOW_SL_BUTTON));
-    return res;
+  } else if (request.tag === "GET_APP_SETTINGS") {
+    return {
+      showSLButton:
+        (await SLStorage.get(SLStorage.SETTINGS.API_KEY)) !== "" &&
+        (await SLStorage.get(SLStorage.SETTINGS.SHOW_SL_BUTTON)),
+      SLButtonPosition: await SLStorage.get(
+        SLStorage.SETTINGS.SL_BUTTON_POSITION
+      ),
+    };
   }
 };
 

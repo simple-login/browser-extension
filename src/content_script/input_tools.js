@@ -1,12 +1,21 @@
+let SLSettings = {};
+
 const InputTools = {
   isLoading: false,
-  processedElements: [],
+
+  // store tracked input elements
+  trackedElements: [],
 
   init(target) {
     InputTools.queryEmailInputAndApply(target, (element) => {
-      const i = InputTools.processedElements.indexOf(element);
+      if (!InputTools.isValidEmailInput(element)) {
+        return;
+      }
+
+      // ignore if this elements has already been tracked
+      const i = InputTools.trackedElements.indexOf(element);
       if (i === -1) {
-        InputTools.processedElements.push(element);
+        InputTools.trackedElements.push(element);
         InputTools.addSLButtonToInput(element);
       }
     });
@@ -14,9 +23,10 @@ const InputTools = {
 
   destroy(target) {
     InputTools.queryEmailInputAndApply(target, (element) => {
-      const i = InputTools.processedElements.indexOf(element);
+      // remove element from tracking list
+      const i = InputTools.trackedElements.indexOf(element);
       if (i !== -1) {
-        InputTools.processedElements.splice(i, 1);
+        InputTools.trackedElements.splice(i, 1);
       }
     });
   },
@@ -24,14 +34,29 @@ const InputTools = {
   queryEmailInputAndApply(target, actionFunction) {
     if (!target.querySelectorAll) return;
     const elements = target.querySelectorAll(
-      "input[type='email'],input[name*='email']"
+      "input[type='email'],input[name*='email'],input[id*='email']"
     );
     for (const element of elements) {
       actionFunction(element);
     }
   },
 
-  addSLButtonToInput(inputElem, isInputFixed) {
+  isValidEmailInput(element) {
+    const style = getComputedStyle(element);
+    return (
+      // check if element is visible
+      style.visibility !== "hidden" &&
+      style.display !== "none" &&
+      style.opacity !== "0" &&
+      // check if element is not disabled
+      !element.disabled &&
+      // for example, we must filter out a checkbox with name*=email
+      // check if element is text or email input
+      (element.type === "text" || element.type === "email")
+    );
+  },
+
+  addSLButtonToInput(inputElem) {
     // create wrapper for SL button
     const btnWrapper = InputTools.newDiv("sl-button-wrapper");
     const inputSumHeight = inputElem.getBoundingClientRect().height + "px";
@@ -48,51 +73,55 @@ const InputTools = {
     slButton.style.width = inputSumHeight;
     btnWrapper.appendChild(slButton);
 
-    InputTools.placeElementToTheRight(inputElem, btnWrapper, isInputFixed);
+    InputTools.placeBtnToTheRightOfElement(inputElem, btnWrapper);
   },
 
-  newDiv(classes) {
+  newDiv(...className) {
     const div = document.createElement("div");
-    div.classList.add(classes);
+    div.classList.add(...className);
     return div;
   },
 
-  placeElementToTheRight(anchor, elem, isFixed) {
+  placeBtnToTheRightOfElement(inputElem, btnWrapper) {
     let intervalId = 0;
 
     function updatePosition() {
-      // check is element is removed
-      const i = InputTools.processedElements.indexOf(anchor);
+      // check is element is removed from trackedElements
+      const i = InputTools.trackedElements.indexOf(inputElem);
       if (i === -1) {
-        elem.parentNode.removeChild(elem);
+        btnWrapper.parentNode.removeChild(btnWrapper);
         clearInterval(intervalId);
       }
 
-      // get dimension & position of anchor
-      const anchorCoords = anchor.getBoundingClientRect();
-      const elemWidth = InputTools.dimensionToInt(elem.style.width);
-      const pageXOffset = isFixed ? 0 : window.pageXOffset;
-      const pageYOffset = isFixed ? 0 : window.pageYOffset;
+      // get dimension & position of input
+      const inputCoords = inputElem.getBoundingClientRect();
+      const inputStyle = getComputedStyle(inputElem);
+      const elemWidth = InputTools.dimensionToInt(btnWrapper.style.width);
+      const pageXOffset = window.pageXOffset;
+      const pageYOffset = window.pageYOffset;
+      const buttonXOffset =
+        SLSettings.SLButtonPosition === "right-inside"
+          ? -elemWidth * 1.02
+          : elemWidth * 0.02;
 
       // calculate elem position
       const left =
-        anchorCoords.left +
-        pageXOffset +
-        anchor.offsetWidth -
-        elemWidth * 1.2 +
-        "px";
-      const top = anchorCoords.top + pageYOffset + "px";
+        InputTools.sumPixel([
+          inputCoords.left,
+          pageXOffset,
+          inputElem.offsetWidth,
+          buttonXOffset,
+          -inputStyle.paddingRight,
+        ]) + "px";
 
-      if (isFixed) {
-        elem.style.position = "fixed";
+      const top = InputTools.sumPixel([inputCoords.top, pageYOffset]) + "px";
+
+      if (btnWrapper.style.left !== left) {
+        btnWrapper.style.left = left;
       }
 
-      if (elem.style.left !== left) {
-        elem.style.left = left;
-      }
-
-      if (elem.style.top !== top) {
-        elem.style.top = top;
+      if (btnWrapper.style.top !== top) {
+        btnWrapper.style.top = top;
       }
     }
 
@@ -122,9 +151,8 @@ const InputTools = {
   sumPixel(dimensions) {
     let sum = 0;
     for (const dim of dimensions) {
-      sum += InputTools.dimensionToInt(dim);
+      sum += !isNaN(dim) ? dim : InputTools.dimensionToInt(dim);
     }
-
     return sum;
   },
 
@@ -143,16 +171,21 @@ const MutationObserver =
   window.WebKitMutationObserver ||
   window.MozMutationObserver;
 
+/**
+ * Add DOM mutations listener
+ */
 function addMutationObserver() {
   const mutationObserver = new MutationObserver(function (mutations) {
     mutations.forEach(function (mutation) {
-      //console.log(mutation.target);
-
-      for (const removedNode of mutation.removedNodes) {
-        InputTools.destroy(removedNode);
+      for (const addedNode of mutation.addedNodes) {
+        // add SLButton for newly added nodes
+        InputTools.init(addedNode);
       }
 
-      InputTools.init(mutation.target);
+      for (const removedNode of mutation.removedNodes) {
+        // destroy SLButton for removed nodes
+        InputTools.destroy(removedNode);
+      }
     });
   });
 
@@ -165,10 +198,16 @@ function addMutationObserver() {
   });
 }
 
+/**
+ * Send message to background.js and resolve with the response
+ * @param {string} tag
+ * @param {object} data
+ */
 function sendMessageToBackground(tag, data = null) {
+  const _browser = window.browser || window.chrome;
   return new Promise((resolve) => {
     try {
-      chrome.runtime.sendMessage(
+      _browser.runtime.sendMessage(
         {
           tag,
           data,
@@ -185,8 +224,8 @@ function sendMessageToBackground(tag, data = null) {
 }
 
 async function initModule() {
-  const canShowSLButton = await sendMessageToBackground("CAN_SHOW_SL_BUTTON");
-  if (canShowSLButton) {
+  SLSettings = await sendMessageToBackground("GET_APP_SETTINGS");
+  if (SLSettings.showSLButton) {
     InputTools.init(document);
     addMutationObserver();
   }
