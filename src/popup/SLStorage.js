@@ -5,12 +5,18 @@ class SLStorage {
     API_URL: "apiUrl",
     API_KEY: "apiKey",
     NOT_ASKING_RATE: "notAskingRate",
+    SHOW_SL_BUTTON: "showSLButton",
+    SL_BUTTON_POSITION: "SLButtonPosition",
   };
 
   static DEFAULT_SETTINGS = {
-    [SLStorage.SETTINGS.API_URL]: "https://app.simplelogin.io",
+    [SLStorage.SETTINGS.API_URL]: devConfig
+      ? devConfig.DEFAULT_API_URL
+      : "https://app.simplelogin.io",
     [SLStorage.SETTINGS.API_KEY]: "",
     [SLStorage.SETTINGS.NOT_ASKING_RATE]: false,
+    [SLStorage.SETTINGS.SHOW_SL_BUTTON]: true,
+    [SLStorage.SETTINGS.SL_BUTTON_POSITION]: "right-inside",
   };
 
   static set(key, value) {
@@ -34,7 +40,11 @@ class SLStorage {
   }
 
   static remove(key) {
-    return SLStorage.set(key, null);
+    return new Promise((resolve) => {
+      chrome.storage.sync.remove(key, function () {
+        resolve();
+      });
+    });
   }
 
   static setTemporary(key, value) {

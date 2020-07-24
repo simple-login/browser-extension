@@ -1,0 +1,35 @@
+.sl-button-wrapper {
+  position: absolute;
+  z-index: 999999;
+}
+
+.sl-button {
+  cursor: pointer;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
+  max-height: 30px;
+  max-width: 30px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 100px;
+  background-image: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='utf-8'%3F%3E%3C!-- Generator: Adobe Illustrator 23.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0) --%3E%3Csvg version='1.1' id='Layer_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='-30 -68.5 345 286.5' style='enable-background:new 0 0 265 156.86; background-color: white;' xml:space='preserve'%3E%3Cstyle type='text/css'%3E .st0%7Bfill:%23BE1E2D;%7D .st1%7Bfill:url(%23SVGID_1_);%7D%0A%3C/style%3E%3Cg%3E%3ClinearGradient id='SVGID_1_' gradientUnits='userSpaceOnUse' x1='0.1062' y1='77.7856' x2='696.6286' y2='77.7856'%3E%3Cstop offset='0' style='stop-color:%23EE307C'/%3E%3Cstop offset='1' style='stop-color:%23AA2990'/%3E%3C/linearGradient%3E%3Cpath class='st1' d='M66.82-0.04L66.77,0h0.08L66.82-0.04z M257.49,0H66.77l-2.42,2.5l-0.42,0.46c-1.83,1.92-3.75,3.75-5.66,5.5 C43.66,21.9,26.09,32.06,7.02,37.06c-0.54,0.17-1.08,0.29-1.62,0.46L2.98,38.1l-0.54,2.42c-0.21,0.87-0.37,1.75-0.54,2.67 c-1.17,6.16-1.79,12.49-1.79,18.78c0,20.57,6.2,40.31,17.95,57.09c10.58,15.12,24.9,26.9,41.64,34.23 c0.42,0.21,0.87,0.42,1.33,0.58c1,0.46,2,0.83,3,1.25l1.21,0.46l0.17,0.04l0.08-0.04c0.08,0.04,0.21,0.04,0.29,0.04h191.72 c4.16,0,7.5-3.37,7.5-7.5V7.45C264.99,3.33,261.65,0,257.49,0z M244.54,11.95l-79.83,69.58c-1.67,1.42-4.08,1.42-5.7-0.04 l-26.03-23.07c-0.12-5.58-0.71-11.12-1.79-16.53c-0.08-0.46-0.17-0.92-0.25-1.42l-0.54-2.42l-2.42-0.62 c-0.58-0.12-1.17-0.29-1.75-0.42c-13.24-3.54-25.78-9.58-37.06-17.45l-8.62-7.62H244.54z M137.11,77.62l-6.54,5.79 c0.75-3.29,1.33-6.62,1.75-10.04L137.11,77.62z M65.52,147.12c-2.46-1-4.87-2.12-7.25-3.33C27.92,128.25,8.1,96.52,8.1,61.96 c0-5.83,0.54-11.66,1.67-17.32c17.78-4.79,34.27-13.24,48.51-24.9c2.96-2.37,5.79-4.91,8.54-7.58 c13.49,13.12,29.52,23.11,47.1,29.36c3.16,1.17,6.37,2.17,9.66,3.04c0.37,2.08,0.71,4.21,0.92,6.33c0.37,3.37,0.58,6.83,0.58,10.29 c0,1.87-0.04,3.75-0.21,5.62c-0.54,9.24-2.5,18.24-5.7,26.69C110,117.76,90.68,137.67,65.52,147.12z M88.8,144.04 c14.12-9.49,25.53-22.36,33.19-37.31l23.94-21.15l12.99,11.62c1.62,1.46,4.12,1.46,5.75,0l13.24-11.74l66.46,58.51L88.8,144.04z M186.95,77.58l66.5-59.09l0.13,117.84L186.95,77.58z M83.47,124.92c3.16-2.33,6.16-4.96,8.83-7.79L83.47,124.92z M113.12,56.42 c-0.21-1.67-0.46-3.33-0.75-5c-2.62-0.71-5.21-1.54-7.75-2.5c0,0-0.04,0-0.04-0.04c-0.67-0.21-1.29-0.5-1.96-0.75 c-1.46-0.58-2.91-1.21-4.37-1.92c-1-0.46-2.04-0.92-3.04-1.46c-0.71-0.33-1.46-0.71-2.17-1.12c-2.29-1.21-4.54-2.54-6.75-3.96 c-1.37-0.83-2.71-1.75-4-2.67c-0.13-0.04-0.21-0.13-0.29-0.21c-1.42-0.96-2.79-2-4.16-3.04c-2.71-2.08-5.33-4.29-7.87-6.62 c-1.08-0.96-2.17-1.96-3.21-3c-2.71,2.62-5.54,5.16-8.49,7.58C47.2,40.73,34.54,47.85,20.93,51.51c-0.87,4.58-1.33,9.24-1.33,13.95 c0,5.62,0.67,11.16,1.87,16.53c4.75,20.65,18.2,38.98,36.81,49.18c2.42,1.33,4.87,2.5,7.45,3.54c1.5-0.58,3-1.21,4.46-1.87 c0.04,0,0.08-0.04,0.08-0.04c1.21-0.54,2.42-1.12,3.58-1.75c1.08-0.54,2.12-1.12,3.16-1.79c0.33-0.17,0.67-0.37,1-0.58 c0.54-0.33,1.08-0.67,1.58-1c0.13-0.08,0.25-0.12,0.33-0.25c0.96-0.58,1.83-1.21,2.71-1.87c0.29-0.17,0.58-0.37,0.83-0.62 l8.83-7.79c0.08,0,0.08,0,0.08-0.04c8.74-9.08,15.2-20.36,18.53-32.65c1.75-6.33,2.67-12.95,2.67-19.65 C113.58,62,113.41,59.21,113.12,56.42z M70.1,99.23l-6.79,6.79h-0.04L35.17,77.91l8.62-8.7l19.53,19.53l6.79-6.79L93.8,58.21 l8.66,8.66L70.1,99.23z'/%3E%3C/g%3E%3C/svg%3E");
+  transition: all 0.2s ease;
+  pointer-events: all;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-color: white;
+  background-size: contain;
+}
+
+.sl-button:hover {
+  transform: translate(-50%, -50%) scale(1.2);
+}
+
+.sl-button.loading {
+  background-image: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='utf-8'%3F%3E%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' style='margin: auto; background: none; display: block; shape-rendering: auto;' width='200px' height='200px' viewBox='0 0 100 100' preserveAspectRatio='xMidYMid'%3E%3Ccircle cx='50' cy='50' fill='none' stroke='%23aa2990' stroke-width='10' r='35' stroke-dasharray='164.93361431346415 56.97787143782138' transform='rotate(178.465 50 50)'%3E%3CanimateTransform attributeName='transform' type='rotate' repeatCount='indefinite' dur='1s' values='0 50 50;360 50 50' keyTimes='0;1'%3E%3C/animateTransform%3E%3C/circle%3E%3C/svg%3E");
+}
+
+.sl-button.loading:hover {
+  transform: translate(-50%, -50%);
+}

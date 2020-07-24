@@ -6,14 +6,19 @@ class Utils {
     return Math.floor(min + Math.random() * Math.floor(max));
   }
 
-  static async getHostName() {
+  static async getHostName(currentTab) {
     try {
-      const result = await browser.tabs.query({
-        active: true,
-        currentWindow: true,
-      });
-      const url = new URL(result[0].url);
-      return url.hostname;
+      if (currentTab) {
+        const url = new URL(currentTab.url);
+        return url.hostname;
+      } else {
+        const result = await browser.tabs.query({
+          active: true,
+          currentWindow: true,
+        });
+        const url = new URL(result[0].url);
+        return url.hostname;
+      }
     } catch (error) {
       console.log(error);
     }

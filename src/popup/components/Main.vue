@@ -308,10 +308,7 @@ export default {
       this.aliasArray = [];
       let currentPage = 0;
 
-      this.aliasArray = await this.fetchAlias(
-        currentPage,
-        this.searchString
-      );
+      this.aliasArray = await this.fetchAlias(currentPage, this.searchString);
 
       let allAliasesAreLoaded = false;
 
@@ -340,11 +337,15 @@ export default {
     async fetchAlias(page, query) {
       this.isFetchingAlias = true;
       try {
-        const { data } = await callAPI(API_ROUTE.GET_ALIASES, {
-          page_id: page,
-        }, {
-          query,
-        });
+        const { data } = await callAPI(
+          API_ROUTE.GET_ALIASES,
+          {
+            page_id: page,
+          },
+          {
+            query,
+          }
+        );
         this.isFetchingAlias = false;
         return data.aliases;
       } catch (e) {
@@ -383,13 +384,13 @@ export default {
         }
       } catch (err) {
         // rate limit reached
-        if (err.request.status === 429) {
+        if (err.response.status === 429) {
           Utils.showError(
             "Rate limit exceeded - please wait 60s before creating new alias"
           );
-        } else if (err.request.status === 409) {
+        } else if (err.response.status === 409) {
           Utils.showError("Alias already chosen, please select another one");
-        } else if (err.request.status === 412) {
+        } else if (err.response.status === 412) {
           // can happen when the alias creation time slot is expired,
           // i.e user waits for too long before creating the alias
           Utils.showError(err.response.data.error);
@@ -425,7 +426,7 @@ export default {
         }
       } catch (err) {
         // rate limit reached
-        if (err.request.status === 429) {
+        if (err.response.status === 429) {
           Utils.showError(
             "Rate limit exceeded - please wait 60s before creating new alias"
           );
