@@ -204,9 +204,10 @@ function addMutationObserver() {
  * @param {object} data
  */
 function sendMessageToBackground(tag, data = null) {
+  const _browser = window.browser || window.chrome;
   return new Promise((resolve) => {
     try {
-      chrome.runtime.sendMessage(
+      _browser.runtime.sendMessage(
         {
           tag,
           data,
