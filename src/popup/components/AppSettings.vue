@@ -18,10 +18,14 @@
           <td>
             Show SimpleLogin button on email input fields<br />
             <small>
-              SimpleLogin button allows you to quickly create random alias
-              without having to navigating to SimpleLogin application.
-              <a :href="SLButtonReport" v-show="showSLButton" target="_blank">
-                <br/><font-awesome-icon icon="bug" /> Report a problem with this feature
+              If enabled, you can quickly create a random alias by clicking on
+              the SimpleLogin button placed next to the email field.
+              <a
+                :href="reportURISLButton"
+                v-show="showSLButton"
+                target="_blank"
+              >
+                <br /><font-awesome-icon icon="bug" /> Report an issue
               </a>
             </small>
           </td>
@@ -30,7 +34,7 @@
         <tr v-show="showSLButton">
           <td>
             <toggle-button
-              :value="SLButtonPosition === 'right-outside'"
+              :value="positionSLButton === 'right-outside'"
               :sync="true"
               color="#b02a8f"
               :width="30"
@@ -40,10 +44,11 @@
           </td>
           <td>
             Place SimpleLogin button outside the input<br />
-            <small
-              >This will prevent SimpleLogin button from overlapping buttons of
-              other extensions (LastPass, Dashlane,...)</small
-            >
+            <small>
+              Display the SimpleLogin button next to the email field instead of
+              inside the field. This can avoid having overlapping buttons with
+              other extensions like Dashlane, LastPass, etc
+            </small>
           </td>
         </tr>
       </table>
@@ -70,8 +75,8 @@ export default {
   data() {
     return {
       showSLButton: false,
-      SLButtonPosition: "right-inside",
-      SLButtonReport: '',
+      positionSLButton: "right-inside",
+      reportURISLButton: "",
     };
   },
   async mounted() {
@@ -82,7 +87,7 @@ export default {
       this.showSLButton = await SLStorage.get(
         SLStorage.SETTINGS.SHOW_SL_BUTTON
       );
-      this.SLButtonPosition = await SLStorage.get(
+      this.positionSLButton = await SLStorage.get(
         SLStorage.SETTINGS.SL_BUTTON_POSITION
       );
       this.setMailToUri();
@@ -96,13 +101,13 @@ export default {
     },
 
     async handleToggleSLButtonOutside() {
-      this.SLButtonPosition =
-        this.SLButtonPosition === "right-outside"
+      this.positionSLButton =
+        this.positionSLButton === "right-outside"
           ? "right-inside"
           : "right-outside";
       await SLStorage.set(
         SLStorage.SETTINGS.SL_BUTTON_POSITION,
-        this.SLButtonPosition
+        this.positionSLButton
       );
       this.fetchSettings();
       this.showSavedSettingsToast();
@@ -121,11 +126,13 @@ export default {
     },
 
     async setMailToUri() {
-      const subject = encodeURIComponent('Problem with SLButton feature');
+      const subject = encodeURIComponent("Problem with SLButton feature");
       const hostname = await Utils.getHostName();
-      const body = encodeURIComponent('(Optional) Affected website: ' + hostname);
-      this.SLButtonReport = `mailto:hi@simplelogin.io?subject=${subject}&body=${body}`;
-    }
+      const body = encodeURIComponent(
+        "(Optional) Affected website: " + hostname
+      );
+      this.reportURISLButton = `mailto:extension@simplelogin.io?subject=${subject}&body=${body}`;
+    },
   },
   computed: {},
 };
