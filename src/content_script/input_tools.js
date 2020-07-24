@@ -106,14 +106,15 @@ const InputTools = {
 
       // calculate elem position
       const left =
-        inputCoords.left +
-        pageXOffset +
-        inputElem.offsetWidth +
-        buttonXOffset -
-        InputTools.dimensionToInt(inputStyle.paddingRight) +
-        "px";
+        InputTools.sumPixel([
+          inputCoords.left,
+          pageXOffset,
+          inputElem.offsetWidth,
+          buttonXOffset,
+          -inputStyle.paddingRight,
+        ]) + "px";
 
-      const top = inputCoords.top + pageYOffset + "px";
+      const top = InputTools.sumPixel([inputCoords.top, pageYOffset]) + "px";
 
       if (btnWrapper.style.left !== left) {
         btnWrapper.style.left = left;
@@ -150,9 +151,8 @@ const InputTools = {
   sumPixel(dimensions) {
     let sum = 0;
     for (const dim of dimensions) {
-      sum += InputTools.dimensionToInt(dim);
+      sum += !isNaN(dim) ? dim : InputTools.dimensionToInt(dim);
     }
-
     return sum;
   },
 
