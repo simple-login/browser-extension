@@ -3,7 +3,7 @@
     <div class="p-3 container">
       <p class="font-weight-bold align-self-center">App Settings</p>
 
-      <table class="settings-list">
+      <table class="settings-list" v-if="iSettingsFetched">
         <tr>
           <td>
             <toggle-button
@@ -74,6 +74,7 @@ import { callAPI, API_ROUTE, API_ON_ERR } from "../APIService";
 export default {
   data() {
     return {
+      iSettingsFetched: false,
       showSLButton: false,
       positionSLButton: "right-inside",
       reportURISLButton: "",
@@ -90,7 +91,8 @@ export default {
       this.positionSLButton = await SLStorage.get(
         SLStorage.SETTINGS.SL_BUTTON_POSITION
       );
-      this.setMailToUri();
+      await this.setMailToUri();
+      this.iSettingsFetched = true;
     },
 
     async handleToggleSLButton() {
