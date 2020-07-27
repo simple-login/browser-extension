@@ -70,3 +70,5 @@ async function initApp() {
     render: (h) => h(App),
   });  
 }
+
+initApp();
