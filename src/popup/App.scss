@@ -171,3 +171,13 @@ em {
   margin-top: 10px;
   min-height: 25px;
 }
+
+/* BETA badge */
+.beta-badge {
+  padding: 0.1em 0.4em;
+  font-size: 0.65em;
+  margin-left: 1em;
+  border: 0.7px solid #b02a8f;
+  display: inline-block;
+  color: #b02a8f;
+}

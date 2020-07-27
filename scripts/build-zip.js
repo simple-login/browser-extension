@@ -9,9 +9,11 @@ const DEST_ZIP_DIR = path.join(__dirname, '../dist-zip');
 
 const extractExtensionData = () => {
   const extPackageJson = require('../package.json');
+  const distManifestJson = require('../dist/manifest.json');
+  const isBeta = distManifestJson.name.match(/beta/i);
 
   return {
-    name: extPackageJson.name,
+    name: extPackageJson.name + (isBeta ? '-beta' : ''),
     version: extPackageJson.version
   }
 };

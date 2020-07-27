@@ -99,6 +99,15 @@ const config = {
             jsonContent['permissions'] = jsonContent['permissions'].concat(devConfig.permissions);
           }
 
+          if (process.env.BETA) {
+            jsonContent['name'] = jsonContent['name'].replace('SimpleLogin', 'SimpleLogin (BETA)');
+
+            jsonContent['icons'] = {
+              '48': 'icons/icon_beta_48.png',
+              '128': 'icons/icon_beta_128.png'
+            };
+          }
+
           return JSON.stringify(jsonContent, null, 2);
         },
       },
@@ -109,7 +118,8 @@ const config = {
 if (config.mode === 'development') {
   config.plugins = (config.plugins || []).concat([
     new webpack.DefinePlugin({
-      devConfig: JSON.stringify(devConfig),
+      'devConfig': JSON.stringify(devConfig),
+      'process.env.BETA': JSON.stringify(!!process.env.BETA),
     }),
   ]);
 }
@@ -118,7 +128,8 @@ if (config.mode === 'production') {
   config.plugins = (config.plugins || []).concat([
     new webpack.DefinePlugin({
       'process.env': {
-        NODE_ENV: '"production"',
+        'NODE_ENV': '"production"',
+        'BETA': JSON.stringify(!!process.env.BETA),
       },
     }),
   ]);

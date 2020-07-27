@@ -2,7 +2,11 @@
   <div class="header">
     <div class="row mt-2 pb-2" style="border-bottom: 1px #eee solid;">
       <div class="col ml-3">
-        <div v-on:click="navigateBack()" v-bind:class="{ back: canBack }">
+        <div
+          v-on:click="navigateBack()"
+          v-bind:class="{ back: canBack }"
+          style="display: inline-block;"
+        >
           <img
             v-if="canBack"
             src="/images/back-button.svg"
@@ -10,6 +14,7 @@
           />
           <img src="/images/horizontal-logo.svg" style="height: 18px;" />
         </div>
+        <div class="beta-badge" v-if="isBeta">BETA</div>
       </div>
 
       <div v-if="apiKey === ''" class="col mr-2">
@@ -61,6 +66,7 @@ export default {
       apiUrl: "",
       canBack: false,
       showDropdownMenu: false,
+      isBeta: process.env.BETA,
     };
   },
   async mounted() {
