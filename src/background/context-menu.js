@@ -13,7 +13,9 @@ function generateDialogJS(message) {
       slDialog.style.fontSize = "1em";
       slDialog.style.pointerEvents = "none";
       slDialog.style.zIndex = "999999";
-      slDialog.style.background = "rgba(255, 255, 255, 0.7)";
+      slDialog.style.background = "white";
+      slDialog.style.border = "2px solid #777";
+      slDialog.style.borderRadius = "5px";
       slDialog.innerText = ${JSON.stringify(message)};
 
       document.body.appendChild(slDialog);
