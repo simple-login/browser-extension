@@ -1,4 +1,4 @@
-import { handleNewRandomAlias } from './create-alias';
+import { handleNewRandomAlias } from "./create-alias";
 
 function generateDialogJS(message) {
   const content = `
@@ -32,7 +32,9 @@ function generateDialogJS(message) {
 }
 
 function generateAliasHandlerJS(tab, res) {
-  const dialogJS = generateDialogJS(res.alias ? res.alias + ' copied to clipboard' : 'ERROR: ' + res.error);
+  const dialogJS = generateDialogJS(
+    res.alias ? res.alias + " copied to clipboard" : "ERROR: " + res.error
+  );
   const js = `
     function copyTextToClipboard(text) {
       if (!text) return;
@@ -68,6 +70,4 @@ async function handleOnClickContextMenu(info, tab) {
   generateAliasHandlerJS(tab, res);
 }
 
-export {
-  handleOnClickContextMenu,
-};
+export { handleOnClickContextMenu };

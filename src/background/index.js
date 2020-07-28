@@ -1,7 +1,7 @@
 import APIService from "../popup/APIService";
 import SLStorage from "../popup/SLStorage";
 
-import { handleNewRandomAlias } from './create-alias';
+import { handleNewRandomAlias } from "./create-alias";
 import { handleOnClickContextMenu } from "./context-menu";
 
 global.browser = require("webextension-polyfill");
@@ -36,8 +36,8 @@ global.browser.runtime.onMessage.addListener(async function (request, sender) {
  * Register context menu
  */
 global.browser.contextMenus.create({
-  title: 'Create random email alias (copied)',
-  contexts: [ 'all' ],
+  title: "Create random email alias (copied)",
+  contexts: ["all"],
   onclick: handleOnClickContextMenu,
 });
 

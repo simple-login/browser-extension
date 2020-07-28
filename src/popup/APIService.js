@@ -48,7 +48,7 @@ const initService = async () => {
 const reloadSettings = async () => {
   SETTINGS.apiKey = await SLStorage.get(SLStorage.SETTINGS.API_KEY);
   SETTINGS.apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
-}
+};
 
 const callAPI = async function (
   route,

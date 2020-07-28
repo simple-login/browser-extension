@@ -1,9 +1,14 @@
-import { callAPI, API_ROUTE, API_ON_ERR, reloadSettings } from "../popup/APIService";
+import {
+  callAPI,
+  API_ROUTE,
+  API_ON_ERR,
+  reloadSettings,
+} from "../popup/APIService";
 import Utils from "../popup/Utils";
 
 /**
  * Create random alias
- * @param {*} tab 
+ * @param {*} tab
  */
 async function handleNewRandomAlias(tab) {
   await reloadSettings();
@@ -40,6 +45,4 @@ async function handleNewRandomAlias(tab) {
   }
 }
 
-export {
-  handleNewRandomAlias,
-};
+export { handleNewRandomAlias };
