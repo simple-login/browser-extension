@@ -1,4 +1,4 @@
-import { callAPI, API_ROUTE, API_ON_ERR } from "../popup/APIService";
+import { callAPI, API_ROUTE, API_ON_ERR, reloadSettings } from "../popup/APIService";
 import Utils from "../popup/Utils";
 
 /**
@@ -6,6 +6,7 @@ import Utils from "../popup/Utils";
  * @param {*} tab 
  */
 async function handleNewRandomAlias(tab) {
+  await reloadSettings();
   const hostname = await Utils.getHostName(tab);
   try {
     const res = await callAPI(
