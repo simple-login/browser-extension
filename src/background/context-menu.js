@@ -56,7 +56,6 @@ function generateAliasHandlerJS(tab, res) {
 
     copyTextToClipboard(${JSON.stringify(res.alias)});
   `;
-  console.log(js);
   global.browser.tabs.executeScript(tab.id, {
     code: js,
   });

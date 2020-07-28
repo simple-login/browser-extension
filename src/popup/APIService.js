@@ -78,7 +78,7 @@ const callAPI = async function (
       console.error(err);
     }
 
-    if (err.response.status === 401) {
+    if (err.response.status === 401 && !global.isBackgroundJS) {
       handle401Error();
       return null;
     }

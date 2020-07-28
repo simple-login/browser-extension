@@ -5,6 +5,7 @@ import { handleNewRandomAlias } from './create-alias';
 import { handleOnClickContextMenu } from "./context-menu";
 
 global.browser = require("webextension-polyfill");
+global.isBackgroundJS = true;
 
 /**
  * Get app settings
