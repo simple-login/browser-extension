@@ -15,7 +15,7 @@ const config = {
   mode: process.env.NODE_ENV,
   context: __dirname + '/src',
   entry: {
-    'background': './background.js',
+    'background': './background/index.js',
     'popup/popup': './popup/popup.js',
   },
   output: {
