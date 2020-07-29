@@ -17,7 +17,7 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.29",
     "@fortawesome/free-solid-svg-icons": "^5.13.1",
     "@fortawesome/vue-fontawesome": "^0.1.10",
-    "@sentry/browser": "^5.9.1",
+    "@sentry/browser": "^5.19.0",
     "@sentry/integrations": "^5.8.0",
     "axios": "^0.19.2",
     "bootstrap": "^4.4.1",
