@@ -4,7 +4,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtensionReloader = require('webpack-extension-reloader');
 const { VueLoaderPlugin } = require('vue-loader');
-const { version } = require('./package.json');
+const { version, betaRev } = require('./package.json');
 const fs = require('fs');
 
 const devConfig = fs.existsSync('./.dev.json')
@@ -106,6 +106,8 @@ const config = {
               '48': 'icons/icon_beta_48.png',
               '128': 'icons/icon_beta_128.png'
             };
+
+            jsonContent['version'] = version + '.' + betaRev;
           }
 
           return JSON.stringify(jsonContent, null, 2);

@@ -11,19 +11,11 @@ const extractExtensionData = () => {
   const extPackageJson = require('../package.json');
   const distManifestJson = require('../dist/manifest.json');
   const isBeta = distManifestJson.name.match(/beta/i);
-  const verPartsCount = extPackageJson.version.split('.').length;
-
-  if (isBeta && verPartsCount !== 4) {
-    console.error('Invalid Beta version number');
-    process.exit();
-  } else if (!isBeta && verPartsCount !== 3) {
-    console.error('Invalid Release version number');
-    process.exit();
-  }
+  const betaRev = extPackageJson.betaRev;
 
   return {
     name: extPackageJson.name + (isBeta ? '-beta' : '-release'),
-    version: extPackageJson.version
+    version: extPackageJson.version + (isBeta ? ('.' + betaRev) : ''),
   }
 };
 
