@@ -9,6 +9,7 @@ const PATH = {
   LOGIN: "/login",
   API_KEY_SETTING: "/api-key-setting",
   SELF_HOST_SETTING: "/self-host-setting",
+  APP_SETTINGS: "/app-settings",
 };
 
 class Navigation {
@@ -39,6 +40,10 @@ class Navigation {
       {
         path: Navigation.PATH.NEW_ALIAS_RESULT,
         component: components.NewAliasResult,
+      },
+      {
+        path: Navigation.PATH.APP_SETTINGS,
+        component: components.AppSettings,
       },
     ];
   }
