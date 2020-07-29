@@ -3,7 +3,7 @@ import App from "./App";
 import Clipboard from "v-clipboard";
 import Toasted from "vue-toasted";
 import BootstrapVue from "bootstrap-vue";
-import SLStorage from './SLStorage';
+import SLStorage from "./SLStorage";
 
 import * as Sentry from "@sentry/browser";
 import * as Integrations from "@sentry/integrations";
@@ -48,9 +48,8 @@ async function initApp() {
   if (
     // only enable Sentry for non self-hosting users
     apiUrl === SLStorage.DEFAULT_SETTINGS[SLStorage.SETTINGS.API_URL] &&
-
     // and not in development mode
-    process.env.NODE_ENV !== 'development'
+    process.env.NODE_ENV !== "development"
   ) {
     Sentry.init({
       dsn:
@@ -58,7 +57,7 @@ async function initApp() {
       integrations: [
         new Integrations.Vue({ Vue, attachProps: true, logErrors: true }),
       ],
-      environment: process.env.BETA ? 'beta' : 'prod',
+      environment: process.env.BETA ? "beta" : "prod",
     });
   }
 
@@ -70,12 +69,12 @@ async function initApp() {
   Vue.use(ToggleButton);
   Vue.use(TextareaAutosize);
   Vue.component("font-awesome-icon", FontAwesomeIcon);
-  
+
   /* eslint-disable no-new */
   new Vue({
     el: "#app",
     render: (h) => h(App),
-  });  
+  });
 }
 
 initApp();

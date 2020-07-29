@@ -115,8 +115,13 @@ export default {
       const subject = encodeURIComponent("Report an issue on SimpleLogin");
       const hostname = await Utils.getHostName();
       const body = encodeURIComponent(
-        "(Optional) Affected website: " + hostname + "\n" +
-        "(Optional) Browser info: " + navigator.vendor + "; " + navigator.userAgent
+        "(Optional) Affected website: " +
+          hostname +
+          "\n" +
+          "(Optional) Browser info: " +
+          navigator.vendor +
+          "; " +
+          navigator.userAgent
       );
       this.reportBugUri = `mailto:extension@simplelogin.io?subject=${subject}&body=${body}`;
     },
