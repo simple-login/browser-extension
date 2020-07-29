@@ -30,7 +30,8 @@
         <img
           src="/images/icon-settings.svg"
           class="settings-button float-right"
-          @click="toggleDropdownMenu"
+          @click="onClickSettingButton"
+          v-show="canShowSettingsButton"
         />
         <a
           :href="apiUrl + '/dashboard/'"
@@ -40,13 +41,6 @@
         >
           Dashboard <font-awesome-icon icon="external-link-alt" />
         </a>
-
-        <div
-          class="dropdown-menu app-header-menu"
-          v-bind:class="{ show: showDropdownMenu }"
-        >
-          <a class="dropdown-item" @click="handleLogout">Logout</a>
-        </div>
       </div>
     </div>
   </div>
@@ -56,7 +50,6 @@
 import SLStorage from "../SLStorage";
 import EventManager from "../EventManager";
 import Navigation from "../Navigation";
-import { callAPI, API_ROUTE, API_ON_ERR } from "../APIService";
 
 export default {
   name: "sl-header",
@@ -67,6 +60,7 @@ export default {
       canBack: false,
       showDropdownMenu: false,
       isBeta: process.env.BETA,
+      canShowSettingsButton: true,
     };
   },
   async mounted() {
@@ -82,6 +76,7 @@ export default {
     $route(to, from) {
       this.canBack = Navigation.canGoBack();
       this.showDropdownMenu = false;
+      this.canShowSettingsButton = to.path !== Navigation.PATH.APP_SETTINGS;
     },
   },
   methods: {
@@ -95,15 +90,8 @@ export default {
       }
     },
 
-    toggleDropdownMenu: function () {
-      this.showDropdownMenu = !this.showDropdownMenu;
-    },
-
-    handleLogout: async function () {
-      await callAPI(API_ROUTE.LOGOUT, {}, {}, API_ON_ERR.IGNORE);
-      await SLStorage.remove(SLStorage.SETTINGS.API_KEY);
-      EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
-      Navigation.navigateTo(Navigation.PATH.LOGIN);
+    onClickSettingButton: function () {
+      Navigation.navigateTo(Navigation.PATH.APP_SETTINGS, true);
     },
   },
   computed: {},

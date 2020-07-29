@@ -181,3 +181,17 @@ em {
   display: inline-block;
   color: #b02a8f;
 }
+
+/* App Settings */
+table.settings-list > tr {
+  border-bottom: 1px solid #bbb;
+}
+
+table.settings-list > tr > td {
+  vertical-align: top;
+  padding: 6px;
+}
+
+table.settings-list {
+  margin-bottom: 3em;
+}
