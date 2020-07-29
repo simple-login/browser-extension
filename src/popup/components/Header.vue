@@ -32,7 +32,20 @@
           class="settings-button float-right"
           @click="onClickSettingButton"
           v-show="canShowSettingsButton"
+          title="Settings"
+          v-b-tooltip.hover
         />
+
+        <a
+          :href="reportBugUri"
+          target="_blank"
+          class="bug-button float-right"
+          title="Report an issue"
+          v-b-tooltip.hover
+        >
+          <font-awesome-icon icon="bug" />
+        </a>
+
         <a
           :href="apiUrl + '/dashboard/'"
           target="_blank"
@@ -50,6 +63,7 @@
 import SLStorage from "../SLStorage";
 import EventManager from "../EventManager";
 import Navigation from "../Navigation";
+import Utils from "../Utils";
 
 export default {
   name: "sl-header",
@@ -61,6 +75,7 @@ export default {
       showDropdownMenu: false,
       isBeta: process.env.BETA,
       canShowSettingsButton: true,
+      reportBugUri: "",
     };
   },
   async mounted() {
@@ -71,6 +86,8 @@ export default {
       this.apiKey = await SLStorage.get(SLStorage.SETTINGS.API_KEY);
       this.apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
     });
+
+    this.setReportBugUri();
   },
   watch: {
     $route(to, from) {
@@ -92,6 +109,16 @@ export default {
 
     onClickSettingButton: function () {
       Navigation.navigateTo(Navigation.PATH.APP_SETTINGS, true);
+    },
+
+    async setReportBugUri() {
+      const subject = encodeURIComponent("Report an issue on SimpleLogin");
+      const hostname = await Utils.getHostName();
+      const body = encodeURIComponent(
+        "(Optional) Affected website: " + hostname + "\n" +
+        "(Optional) Browser info: " + navigator.vendor + "; " + navigator.userAgent
+      );
+      this.reportBugUri = `mailto:extension@simplelogin.io?subject=${subject}&body=${body}`;
     },
   },
   computed: {},
