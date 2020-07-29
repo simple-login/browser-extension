@@ -45,8 +45,13 @@ Vue.prototype.$browser = global.browser;
 async function initApp() {
   const apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
 
-  // only enable Sentry for non self-hosting users
-  if (apiUrl === SLStorage.DEFAULT_SETTINGS[SLStorage.SETTINGS.API_URL]) {
+  if (
+    // only enable Sentry for non self-hosting users
+    apiUrl === SLStorage.DEFAULT_SETTINGS[SLStorage.SETTINGS.API_URL] &&
+
+    // and not in development mode
+    process.env.NODE_ENV !== 'development'
+  ) {
     Sentry.init({
       dsn:
         "https://0e2d03e61f194df9ba85a791d364088b@o336535.ingest.sentry.io/5341174",
