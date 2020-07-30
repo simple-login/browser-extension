@@ -100,14 +100,14 @@ const config = {
           }
 
           if (process.env.BETA) {
+            const geckoId = jsonContent['browser_specific_settings'].gecko.id;
             jsonContent['name'] = jsonContent['name'].replace('SimpleLogin', 'SimpleLogin (BETA)');
-
             jsonContent['icons'] = {
               '48': 'icons/icon_beta_48.png',
               '128': 'icons/icon_beta_128.png'
             };
-
             jsonContent['version'] = version + '.' + betaRev;
+            jsonContent['browser_specific_settings'].gecko.id = geckoId.replace('@', '-beta@');
           }
 
           return JSON.stringify(jsonContent, null, 2);
