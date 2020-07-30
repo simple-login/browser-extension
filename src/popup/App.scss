@@ -131,6 +131,15 @@ em {
   cursor: pointer;
 }
 
+.bug-button {
+  height: 20px;
+  margin-top: 2px;
+  margin-left: 10px;
+  margin-right: 7px;
+  color: #b02a8f;
+  cursor: pointer;
+}
+
 .app-header-menu {
   left: auto !important;
   float: right !important;
@@ -170,6 +179,16 @@ em {
 .more-options > .action {
   margin-top: 10px;
   min-height: 25px;
+}
+
+/* BETA badge */
+.beta-badge {
+  padding: 0.1em 0.4em;
+  font-size: 0.65em;
+  margin-left: 1em;
+  border: 0.7px solid #b02a8f;
+  display: inline-block;
+  color: #b02a8f;
 }
 
 /* App Settings */
