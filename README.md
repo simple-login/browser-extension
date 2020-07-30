@@ -45,6 +45,13 @@ The code is formatted using `prettier`, make sure to run it before creating the 
 
 ## To build the project
 
-Release verion: build the production version and zip it via `npm run build && npm run build-zip`
+Build the production version and zip it via 
+```bash
+npm run build && npm run build-zip
+```
 
-Beta version: change `betaRev` in `package.json`, then generate zip file using `npm run build:beta && npm run build-zip`
+Build beta version: change `betaRev` in `package.json`, then generate zip file using 
+
+```bash
+npm run build:beta && npm run build-zip
+```
