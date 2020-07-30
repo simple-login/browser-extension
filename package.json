@@ -3,7 +3,7 @@
   "version": "1.10.0",
   "betaRev": "1",
   "description": "SimpleLogin Browser Extension",
-  "author": "son@simplelogin.io",
+  "author": "extension@simplelogin.io",
   "license": "MIT",
   "scripts": {
     "prettier": "prettier \"src/**/*.{js,vue}\"",
