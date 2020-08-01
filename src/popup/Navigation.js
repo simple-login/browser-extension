@@ -68,8 +68,10 @@ class Navigation {
     router.go(-1);
   }
 
-  static clearHistory() {
+  static clearHistoryAndNavigateTo(path) {
+    router.history.stack = [];
     router.history.index = -1;
+    setTimeout(() => router.push(path), 10);
   }
 }
 
