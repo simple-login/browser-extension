@@ -10,7 +10,7 @@ global.isBackgroundJS = true;
 /**
  * Get app settings
  */
-async function handerGetAppSettings() {
+async function handleGetAppSettings() {
   return {
     showSLButton:
       (await SLStorage.get(SLStorage.SETTINGS.API_KEY)) !== "" &&
@@ -28,7 +28,7 @@ global.browser.runtime.onMessage.addListener(async function (request, sender) {
   if (request.tag === "NEW_RANDOM_ALIAS") {
     return await handleNewRandomAlias(sender.tab);
   } else if (request.tag === "GET_APP_SETTINGS") {
-    return await handerGetAppSettings();
+    return await handleGetAppSettings();
   }
 });
 
