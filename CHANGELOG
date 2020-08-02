@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0.0] - 2020-07-30 (Beta version)
+- Create alias via the SimpleLogin button displayed in the email field
+
 ## [1.10.0] - 2020-07-16
 - Able to add and edit alias note
 - Lots of UI touches 🎨

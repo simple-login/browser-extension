@@ -74,8 +74,7 @@ export default {
           EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
 
           Utils.showSuccess(`Hi ${userName}!`);
-          Navigation.clearHistory();
-          Navigation.navigateTo(Navigation.PATH.MAIN);
+          Navigation.clearHistoryAndNavigateTo(Navigation.PATH.MAIN);
         })
         .catch((err) => {
           Utils.showError("Incorrect API Key.");

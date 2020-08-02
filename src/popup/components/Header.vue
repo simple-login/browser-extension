@@ -2,7 +2,11 @@
   <div class="header">
     <div class="row mt-2 pb-2" style="border-bottom: 1px #eee solid;">
       <div class="col ml-3">
-        <div v-on:click="navigateBack()" v-bind:class="{ back: canBack }">
+        <div
+          v-on:click="navigateBack()"
+          v-bind:class="{ back: canBack }"
+          style="display: inline-block;"
+        >
           <img
             v-if="canBack"
             src="/images/back-button.svg"
@@ -10,6 +14,7 @@
           />
           <img src="/images/horizontal-logo.svg" style="height: 18px;" />
         </div>
+        <div class="beta-badge" v-if="isBeta">BETA</div>
       </div>
 
       <div v-if="apiKey === ''" class="col mr-2">
@@ -25,8 +30,22 @@
         <img
           src="/images/icon-settings.svg"
           class="settings-button float-right"
-          @click="toggleDropdownMenu"
+          @click="onClickSettingButton"
+          v-show="canShowSettingsButton"
+          title="Settings"
+          v-b-tooltip.hover
         />
+
+        <a
+          :href="reportBugUri"
+          target="_blank"
+          class="bug-button float-right"
+          title="Report an issue"
+          v-b-tooltip.hover
+        >
+          <font-awesome-icon icon="bug" />
+        </a>
+
         <a
           :href="apiUrl + '/dashboard/'"
           target="_blank"
@@ -35,13 +54,6 @@
         >
           Dashboard <font-awesome-icon icon="external-link-alt" />
         </a>
-
-        <div
-          class="dropdown-menu app-header-menu"
-          v-bind:class="{ show: showDropdownMenu }"
-        >
-          <a class="dropdown-item" @click="handleLogout">Logout</a>
-        </div>
       </div>
     </div>
   </div>
@@ -51,7 +63,7 @@
 import SLStorage from "../SLStorage";
 import EventManager from "../EventManager";
 import Navigation from "../Navigation";
-import { callAPI, API_ROUTE, API_ON_ERR } from "../APIService";
+import Utils from "../Utils";
 
 export default {
   name: "sl-header",
@@ -61,6 +73,9 @@ export default {
       apiUrl: "",
       canBack: false,
       showDropdownMenu: false,
+      isBeta: process.env.BETA,
+      canShowSettingsButton: true,
+      reportBugUri: "",
     };
   },
   async mounted() {
@@ -71,11 +86,14 @@ export default {
       this.apiKey = await SLStorage.get(SLStorage.SETTINGS.API_KEY);
       this.apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
     });
+
+    this.setReportBugUri();
   },
   watch: {
     $route(to, from) {
       this.canBack = Navigation.canGoBack();
       this.showDropdownMenu = false;
+      this.canShowSettingsButton = to.path !== Navigation.PATH.APP_SETTINGS;
     },
   },
   methods: {
@@ -89,15 +107,23 @@ export default {
       }
     },
 
-    toggleDropdownMenu: function () {
-      this.showDropdownMenu = !this.showDropdownMenu;
+    onClickSettingButton: function () {
+      Navigation.navigateTo(Navigation.PATH.APP_SETTINGS, true);
     },
 
-    handleLogout: async function () {
-      await callAPI(API_ROUTE.LOGOUT, {}, {}, API_ON_ERR.IGNORE);
-      await SLStorage.remove(SLStorage.SETTINGS.API_KEY);
-      EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
-      Navigation.navigateTo(Navigation.PATH.LOGIN);
+    async setReportBugUri() {
+      const subject = encodeURIComponent("Report an issue on SimpleLogin");
+      const hostname = await Utils.getHostName();
+      const body = encodeURIComponent(
+        "(Optional) Affected website: " +
+          hostname +
+          "\n" +
+          "(Optional) Browser info: " +
+          navigator.vendor +
+          "; " +
+          navigator.userAgent
+      );
+      this.reportBugUri = `mailto:extension@simplelogin.io?subject=${subject}&body=${body}`;
     },
   },
   computed: {},
