@@ -40,13 +40,14 @@ const SETTINGS = {
 };
 
 const initService = async () => {
+  await reloadSettings();
+
+  EventManager.addListener(EventManager.EVENT.SETTINGS_CHANGED, reloadSettings);
+};
+
+const reloadSettings = async () => {
   SETTINGS.apiKey = await SLStorage.get(SLStorage.SETTINGS.API_KEY);
   SETTINGS.apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
-
-  EventManager.addListener(EventManager.EVENT.SETTINGS_CHANGED, async () => {
-    SETTINGS.apiKey = await SLStorage.get(SLStorage.SETTINGS.API_KEY);
-    SETTINGS.apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
-  });
 };
 
 const callAPI = async function (
@@ -77,8 +78,8 @@ const callAPI = async function (
       console.error(err);
     }
 
-    if (err.response.status === 401) {
-      handle401Error();
+    if (err.response.status === 401 && !global.isBackgroundJS) {
+      await handle401Error();
       return null;
     }
 
@@ -112,5 +113,5 @@ function bindQueryParams(url, params) {
   return url;
 }
 
-export { callAPI, API_ROUTE, API_ON_ERR };
+export { callAPI, API_ROUTE, API_ON_ERR, reloadSettings };
 export default { initService };
