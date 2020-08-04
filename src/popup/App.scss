@@ -78,20 +78,8 @@ em {
   font-weight: lighter;
 }
 
-.copy-btn {
-  font-size: 0.6rem;
-  line-height: 0.75;
-  position: absolute;
-  right: 0;
-  transform: translateX(-50%);
-}
-
 .tooltip-inner {
   max-width: 400px;
-}
-
-.cursor {
-  cursor: pointer;
 }
 
 /* list aliases */
@@ -107,6 +95,7 @@ em {
   margin-right: 30px !important;
   position: relative;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .list-item-email > a {

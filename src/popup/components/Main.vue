@@ -138,16 +138,16 @@
           <div v-for="(alias, index) in aliasArray" v-bind:key="alias.id">
             <div class="p-2 my-2 border-top list-item-alias">
               <div class="d-flex" v-bind:class="{ disabled: !alias.enabled }">
-                <div class="flex-grow-1 list-item-email">
-                  <a
-                    v-clipboard="() => alias.email"
-                    v-clipboard:success="clipboardSuccessHandler"
-                    v-clipboard:error="clipboardErrorHandler"
-                    v-b-tooltip.hover.top="
-                      alias.name ? 'Copy ' + alias.email : 'Click to Copy'
-                    "
-                    class="cursor"
-                  >
+                <div
+                  class="flex-grow-1 list-item-email"
+                  v-clipboard="() => alias.email"
+                  v-clipboard:success="clipboardSuccessHandler"
+                  v-clipboard:error="clipboardErrorHandler"
+                  v-b-tooltip.hover.top="
+                    alias.name ? 'Copy ' + alias.email : 'Click to Copy'
+                  "
+                >
+                  <a class="cursor">
                     {{ alias.name ? alias.name : alias.email }}
                   </a>
                   <div class="email-sub" v-if="alias.name">
