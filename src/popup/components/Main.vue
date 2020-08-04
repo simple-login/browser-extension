@@ -186,6 +186,14 @@
 
               <expand-transition>
                 <div class="more-options" v-if="alias.moreOptions">
+                  <label>Alias Name</label>
+                  <b-input
+                    v-model="alias.moreOptions.name"
+                    placeholder="Alias name"
+                    :disabled="alias.moreOptions.loading"
+                  />
+
+                  <label>Alias Note</label>
                   <textarea-autosize
                     placeholder="Note, can be anything to help you remember why you created this alias. This field is optional."
                     class="form-control"
@@ -194,18 +202,34 @@
                     :disabled="alias.moreOptions.loading"
                   ></textarea-autosize>
 
+                  <div class="advanced-options mt-2" v-if="alias.moreOptions.showAdvanced">
+                    <b-form-checkbox
+                      :checked="!alias.moreOptions.disable_pgp"
+                      @change="toggleAliasPGP(alias)"
+                    >Enable PGP</b-form-checkbox>
+                  </div>
+
                   <div class="action">
                     <button
                       class="btn btn-sm btn-primary"
                       v-on:click="handleClickSave(index)"
                       :disabled="
-                        alias.moreOptions.loading ||
-                        alias.note === alias.moreOptions.note
+                        alias.moreOptions.loading || !canSave(alias)
                       "
                     >
                       <font-awesome-icon icon="save" />
                       Save
                     </button>
+
+                    <button
+                      class="btn btn-sm btn-advanced-toggle ml-2"
+                      v-on:click="showAdvancedOptions(alias)"
+                      v-if="!alias.moreOptions.showAdvanced"
+                      style="border: none;"
+                    >
+                      Advanced options
+                    </button>
+
                     <button
                       class="btn btn-sm btn-delete"
                       style="color: #dc3545;"
@@ -471,6 +495,9 @@ export default {
           : {
               loading: false,
               note: alias.note,
+              name: alias.name,
+              disable_pgp: !!alias.disable_pgp,
+              showAdvanced: false,
             },
       });
     },
@@ -513,6 +540,11 @@ export default {
         alias.moreOptions.loading = false;
       }
     },
+    canSave(alias) {
+      return alias.note !== alias.moreOptions.note ||
+        alias.name !== alias.moreOptions.name ||
+        !!alias.disable_pgp !== alias.moreOptions.disable_pgp
+    },
     async handleClickSave(index) {
       const alias = this.aliasArray[index];
       alias.moreOptions.loading = true;
@@ -523,6 +555,8 @@ export default {
         },
         {
           note: alias.moreOptions.note,
+          name: alias.moreOptions.name,
+          disable_pgp: alias.moreOptions.disable_pgp,
         },
         API_ON_ERR.TOAST
       );
@@ -531,6 +565,12 @@ export default {
         alias.note = alias.moreOptions.note;
       }
       alias.moreOptions.loading = false;
+    },
+    showAdvancedOptions(alias) {
+      alias.moreOptions.showAdvanced = true;
+    },
+    toggleAliasPGP(alias) {
+      alias.moreOptions.disable_pgp = !alias.moreOptions.disable_pgp;
     },
 
     // Clipboard

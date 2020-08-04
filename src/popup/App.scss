@@ -181,6 +181,18 @@ em {
   min-height: 25px;
 }
 
+.more-options .btn-advanced-toggle {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #b02a8f;
+}
+
+.more-options > label {
+  margin-bottom: 0;
+  font-size: 12px;
+}
+
 /* BETA badge */
 .beta-badge {
   padding: 0.1em 0.4em;
