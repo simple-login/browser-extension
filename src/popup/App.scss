@@ -86,6 +86,10 @@ em {
   transform: translateX(-50%);
 }
 
+.tooltip-inner {
+  max-width: 400px;
+}
+
 .cursor {
   cursor: pointer;
 }
@@ -107,6 +111,10 @@ em {
 
 .list-item-email > a {
   white-space: nowrap;
+}
+
+.list-item-email .email-sub {
+  font-size: 12px;
 }
 
 .list-item-email-fade {

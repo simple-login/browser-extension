@@ -143,12 +143,16 @@
                     v-clipboard="() => alias.email"
                     v-clipboard:success="clipboardSuccessHandler"
                     v-clipboard:error="clipboardErrorHandler"
-                    v-b-tooltip.hover
-                    title="Click to Copy"
+                    v-b-tooltip.hover.top="
+                      alias.name ? 'Copy ' + alias.email : 'Click to Copy'
+                    "
                     class="cursor"
                   >
-                    {{ alias.email }}
+                    {{ alias.name ? alias.name : alias.email }}
                   </a>
+                  <div class="email-sub" v-if="alias.name">
+                    {{ alias.email }}
+                  </div>
                   <div class="list-item-email-fade" />
                 </div>
                 <div style="white-space: nowrap;">
@@ -548,21 +552,24 @@ export default {
     async handleClickSave(index) {
       const alias = this.aliasArray[index];
       alias.moreOptions.loading = true;
+      const savedData = {
+        note: alias.moreOptions.note,
+        name: alias.moreOptions.name,
+        disable_pgp: alias.moreOptions.disable_pgp,
+      };
       const res = await callAPI(
         API_ROUTE.EDIT_ALIAS,
         {
           alias_id: alias.id,
         },
-        {
-          note: alias.moreOptions.note,
-          name: alias.moreOptions.name,
-          disable_pgp: alias.moreOptions.disable_pgp,
-        },
+        savedData,
         API_ON_ERR.TOAST
       );
       if (res) {
         Utils.showSuccess("Updated alias");
-        alias.note = alias.moreOptions.note;
+        for (const key in savedData) {
+          alias[key] = savedData[key];
+        }
       }
       alias.moreOptions.loading = false;
     },
