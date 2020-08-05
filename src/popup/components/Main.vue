@@ -143,16 +143,11 @@
                   v-clipboard="() => alias.email"
                   v-clipboard:success="clipboardSuccessHandler"
                   v-clipboard:error="clipboardErrorHandler"
-                  v-b-tooltip.hover.top="
-                    alias.name ? 'Copy ' + alias.email : 'Click to Copy'
-                  "
+                  v-b-tooltip.hover.top="'Click to Copy'"
                 >
                   <a class="cursor">
-                    {{ alias.name ? alias.name : alias.email }}
-                  </a>
-                  <div class="email-sub" v-if="alias.name">
                     {{ alias.email }}
-                  </div>
+                  </a>
                   <div class="list-item-email-fade" />
                 </div>
                 <div style="white-space: nowrap;">
@@ -190,13 +185,6 @@
 
               <expand-transition>
                 <div class="more-options" v-if="alias.moreOptions">
-                  <label>Alias Name</label>
-                  <b-input
-                    v-model="alias.moreOptions.name"
-                    placeholder="Alias name"
-                    :disabled="alias.moreOptions.loading"
-                  />
-
                   <label>Alias Note</label>
                   <textarea-autosize
                     placeholder="Note, can be anything to help you remember why you created this alias. This field is optional."
@@ -205,6 +193,19 @@
                     v-model="alias.moreOptions.note"
                     :disabled="alias.moreOptions.loading"
                   ></textarea-autosize>
+
+                  <label>
+                    From Name
+                    <font-awesome-icon
+                      v-b-tooltip.hover.top="'This name is used when you send or reply from alias'"
+                      icon="question-circle"
+                    />
+                  </label>
+                  <b-input
+                    v-model="alias.moreOptions.name"
+                    placeholder="From name"
+                    :disabled="alias.moreOptions.loading"
+                  />
 
                   <div class="advanced-options mt-2" v-if="alias.moreOptions.showAdvanced">
                     <b-form-checkbox
