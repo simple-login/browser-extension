@@ -207,9 +207,9 @@
                     :disabled="alias.moreOptions.loading"
                   />
 
-                  <div class="advanced-options mt-2" v-if="alias.moreOptions.showAdvanced">
+                  <div class="advanced-options mt-2" v-if="alias.support_pgp">
                     <b-form-checkbox
-                      :checked="!alias.moreOptions.disable_pgp"
+                      :checked="alias.moreOptions.pgp_enabled"
                       @change="toggleAliasPGP(alias)"
                     >Enable PGP</b-form-checkbox>
                   </div>
@@ -224,15 +224,6 @@
                     >
                       <font-awesome-icon icon="save" />
                       Save
-                    </button>
-
-                    <button
-                      class="btn btn-sm btn-advanced-toggle ml-2"
-                      v-on:click="showAdvancedOptions(alias)"
-                      v-if="!alias.moreOptions.showAdvanced"
-                      style="border: none;"
-                    >
-                      Advanced options
                     </button>
 
                     <button
@@ -501,8 +492,7 @@ export default {
               loading: false,
               note: alias.note,
               name: alias.name,
-              disable_pgp: !!alias.disable_pgp,
-              showAdvanced: false,
+              pgp_enabled: !!alias.pgp_enabled,
             },
       });
     },
@@ -548,7 +538,7 @@ export default {
     canSave(alias) {
       return alias.note !== alias.moreOptions.note ||
         alias.name !== alias.moreOptions.name ||
-        !!alias.disable_pgp !== alias.moreOptions.disable_pgp
+        !!alias.pgp_enabled !== alias.moreOptions.pgp_enabled
     },
     async handleClickSave(index) {
       const alias = this.aliasArray[index];
@@ -556,7 +546,7 @@ export default {
       const savedData = {
         note: alias.moreOptions.note,
         name: alias.moreOptions.name,
-        disable_pgp: alias.moreOptions.disable_pgp,
+        pgp_enabled: alias.moreOptions.pgp_enabled,
       };
       const res = await callAPI(
         API_ROUTE.EDIT_ALIAS,
@@ -574,11 +564,8 @@ export default {
       }
       alias.moreOptions.loading = false;
     },
-    showAdvancedOptions(alias) {
-      alias.moreOptions.showAdvanced = true;
-    },
     toggleAliasPGP(alias) {
-      alias.moreOptions.disable_pgp = !alias.moreOptions.disable_pgp;
+      alias.moreOptions.pgp_enabled = !alias.moreOptions.pgp_enabled;
     },
 
     // Clipboard
