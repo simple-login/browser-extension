@@ -209,7 +209,7 @@
 
                   <div class="advanced-options mt-2" v-if="alias.support_pgp">
                     <b-form-checkbox
-                      :checked="alias.moreOptions.pgp_enabled"
+                      :checked="!alias.moreOptions.disable_pgp"
                       @change="toggleAliasPGP(alias)"
                     >Enable PGP</b-form-checkbox>
                   </div>
@@ -492,7 +492,7 @@ export default {
               loading: false,
               note: alias.note,
               name: alias.name,
-              pgp_enabled: !!alias.pgp_enabled,
+              disable_pgp: !!alias.disable_pgp,
             },
       });
     },
@@ -538,7 +538,7 @@ export default {
     canSave(alias) {
       return alias.note !== alias.moreOptions.note ||
         alias.name !== alias.moreOptions.name ||
-        !!alias.pgp_enabled !== alias.moreOptions.pgp_enabled
+        !!alias.disable_pgp !== alias.moreOptions.disable_pgp
     },
     async handleClickSave(index) {
       const alias = this.aliasArray[index];
@@ -546,7 +546,7 @@ export default {
       const savedData = {
         note: alias.moreOptions.note,
         name: alias.moreOptions.name,
-        pgp_enabled: alias.moreOptions.pgp_enabled,
+        disable_pgp: alias.moreOptions.disable_pgp,
       };
       const res = await callAPI(
         API_ROUTE.EDIT_ALIAS,
@@ -565,7 +565,7 @@ export default {
       alias.moreOptions.loading = false;
     },
     toggleAliasPGP(alias) {
-      alias.moreOptions.pgp_enabled = !alias.moreOptions.pgp_enabled;
+      alias.moreOptions.disable_pgp = !alias.moreOptions.disable_pgp;
     },
 
     // Clipboard
