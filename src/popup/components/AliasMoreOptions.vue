@@ -138,7 +138,10 @@ export default {
         API_ON_ERR.TOAST
       );
       if (res) {
-        this.$emit("deleted", this.index);
+        this.$emit("deleted", {
+          index: this.index,
+          data: this.alias,
+        });
       } else {
         this.loading = false;
       }

@@ -443,8 +443,8 @@ export default {
         showMoreOptions: !alias.showMoreOptions,
       });
     },
-    handleAliasDeleted(index) {
-      this.aliasArray.splice(index, 1);
+    handleAliasDeleted(event) {
+      this.aliasArray.splice(event.index, 1);
     },
     handleAliasChanged(event) {
       const alias = this.aliasArray[event.index];
