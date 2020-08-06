@@ -27,7 +27,7 @@
 
       <div class="advanced-options mt-2" v-if="alias.support_pgp">
         <b-form-checkbox
-          :checked="moreOptions.pgp_enabled"
+          :checked="!moreOptions.disable_pgp"
           @change="toggleAliasPGP"
           >Enable PGP</b-form-checkbox
         >
@@ -88,7 +88,7 @@ export default {
       moreOptions: {
         note: "",
         name: "",
-        pgp_enabled: true,
+        disable_pgp: false,
       },
       loading: false,
     };
@@ -99,7 +99,7 @@ export default {
         this.moreOptions = {
           note: this.alias.note,
           name: this.alias.name,
-          pgp_enabled: !!this.alias.pgp_enabled,
+          disable_pgp: !!this.alias.disable_pgp,
         };
       }
     });
@@ -147,7 +147,7 @@ export default {
       return (
         this.alias.note !== this.moreOptions.note ||
         this.alias.name !== this.moreOptions.name ||
-        !!this.alias.pgp_enabled !== this.moreOptions.pgp_enabled
+        !!this.alias.disable_pgp !== this.moreOptions.disable_pgp
       );
     },
     async handleClickSave() {
@@ -155,7 +155,7 @@ export default {
       const savedData = {
         note: this.moreOptions.note,
         name: this.moreOptions.name,
-        pgp_enabled: this.moreOptions.pgp_enabled,
+        disable_pgp: this.moreOptions.disable_pgp,
       };
       const res = await callAPI(
         API_ROUTE.EDIT_ALIAS,
@@ -175,7 +175,7 @@ export default {
       this.loading = false;
     },
     toggleAliasPGP() {
-      this.moreOptions.pgp_enabled = !this.moreOptions.pgp_enabled;
+      this.moreOptions.disable_pgp = !this.moreOptions.disable_pgp;
     },
   },
 };
