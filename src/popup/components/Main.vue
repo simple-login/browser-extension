@@ -138,15 +138,14 @@
           <div v-for="(alias, index) in aliasArray" v-bind:key="alias.id">
             <div class="p-2 my-2 border-top list-item-alias">
               <div class="d-flex" v-bind:class="{ disabled: !alias.enabled }">
-                <div class="flex-grow-1 list-item-email">
-                  <a
-                    v-clipboard="() => alias.email"
-                    v-clipboard:success="clipboardSuccessHandler"
-                    v-clipboard:error="clipboardErrorHandler"
-                    v-b-tooltip.hover
-                    title="Click to Copy"
-                    class="cursor"
-                  >
+                <div
+                  class="flex-grow-1 list-item-email"
+                  v-clipboard="() => alias.email"
+                  v-clipboard:success="clipboardSuccessHandler"
+                  v-clipboard:error="clipboardErrorHandler"
+                  v-b-tooltip.hover.top="'Click to Copy'"
+                >
+                  <a class="cursor">
                     {{ alias.email }}
                   </a>
                   <div class="list-item-email-fade" />
@@ -186,6 +185,7 @@
 
               <expand-transition>
                 <div class="more-options" v-if="alias.moreOptions">
+                  <label>Alias Note</label>
                   <textarea-autosize
                     placeholder="Note, can be anything to help you remember why you created this alias. This field is optional."
                     class="form-control"
@@ -194,18 +194,38 @@
                     :disabled="alias.moreOptions.loading"
                   ></textarea-autosize>
 
+                  <label>
+                    From Name
+                    <font-awesome-icon
+                      v-b-tooltip.hover.top="'This name is used when you send or reply from alias'"
+                      icon="question-circle"
+                    />
+                  </label>
+                  <b-input
+                    v-model="alias.moreOptions.name"
+                    placeholder="From name"
+                    :disabled="alias.moreOptions.loading"
+                  />
+
+                  <div class="advanced-options mt-2" v-if="alias.support_pgp">
+                    <b-form-checkbox
+                      :checked="!alias.moreOptions.disable_pgp"
+                      @change="toggleAliasPGP(alias)"
+                    >Enable PGP</b-form-checkbox>
+                  </div>
+
                   <div class="action">
                     <button
                       class="btn btn-sm btn-primary"
                       v-on:click="handleClickSave(index)"
                       :disabled="
-                        alias.moreOptions.loading ||
-                        alias.note === alias.moreOptions.note
+                        alias.moreOptions.loading || !canSave(alias)
                       "
                     >
                       <font-awesome-icon icon="save" />
                       Save
                     </button>
+
                     <button
                       class="btn btn-sm btn-delete"
                       style="color: #dc3545;"
@@ -471,6 +491,8 @@ export default {
           : {
               loading: false,
               note: alias.note,
+              name: alias.name,
+              disable_pgp: !!alias.disable_pgp,
             },
       });
     },
@@ -513,24 +535,37 @@ export default {
         alias.moreOptions.loading = false;
       }
     },
+    canSave(alias) {
+      return alias.note !== alias.moreOptions.note ||
+        alias.name !== alias.moreOptions.name ||
+        !!alias.disable_pgp !== alias.moreOptions.disable_pgp
+    },
     async handleClickSave(index) {
       const alias = this.aliasArray[index];
       alias.moreOptions.loading = true;
+      const savedData = {
+        note: alias.moreOptions.note,
+        name: alias.moreOptions.name,
+        disable_pgp: alias.moreOptions.disable_pgp,
+      };
       const res = await callAPI(
         API_ROUTE.EDIT_ALIAS,
         {
           alias_id: alias.id,
         },
-        {
-          note: alias.moreOptions.note,
-        },
+        savedData,
         API_ON_ERR.TOAST
       );
       if (res) {
         Utils.showSuccess("Updated alias");
-        alias.note = alias.moreOptions.note;
+        for (const key in savedData) {
+          alias[key] = savedData[key];
+        }
       }
       alias.moreOptions.loading = false;
+    },
+    toggleAliasPGP(alias) {
+      alias.moreOptions.disable_pgp = !alias.moreOptions.disable_pgp;
     },
 
     // Clipboard

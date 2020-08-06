@@ -78,16 +78,8 @@ em {
   font-weight: lighter;
 }
 
-.copy-btn {
-  font-size: 0.6rem;
-  line-height: 0.75;
-  position: absolute;
-  right: 0;
-  transform: translateX(-50%);
-}
-
-.cursor {
-  cursor: pointer;
+.tooltip-inner {
+  max-width: 400px;
 }
 
 /* list aliases */
@@ -103,10 +95,15 @@ em {
   margin-right: 30px !important;
   position: relative;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .list-item-email > a {
   white-space: nowrap;
+}
+
+.list-item-email .email-sub {
+  font-size: 12px;
 }
 
 .list-item-email-fade {
@@ -179,6 +176,11 @@ em {
 .more-options > .action {
   margin-top: 10px;
   min-height: 25px;
+}
+
+.more-options > label {
+  margin-bottom: 0;
+  font-size: 12px;
 }
 
 /* BETA badge */
