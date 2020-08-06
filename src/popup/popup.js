@@ -37,7 +37,7 @@ library.add(
   faStar,
   faSave,
   faBug,
-  faQuestionCircle,
+  faQuestionCircle
 );
 
 global.browser = require("webextension-polyfill");

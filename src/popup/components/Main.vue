@@ -183,61 +183,13 @@
                 {{ alias.nb_block }} blocks.
               </div>
 
-              <expand-transition>
-                <div class="more-options" v-if="alias.moreOptions">
-                  <label>Alias Note</label>
-                  <textarea-autosize
-                    placeholder="Note, can be anything to help you remember why you created this alias. This field is optional."
-                    class="form-control"
-                    style="width: 100%;"
-                    v-model="alias.moreOptions.note"
-                    :disabled="alias.moreOptions.loading"
-                  ></textarea-autosize>
-
-                  <label>
-                    From Name
-                    <font-awesome-icon
-                      v-b-tooltip.hover.top="'This name is used when you send or reply from alias'"
-                      icon="question-circle"
-                    />
-                  </label>
-                  <b-input
-                    v-model="alias.moreOptions.name"
-                    placeholder="From name"
-                    :disabled="alias.moreOptions.loading"
-                  />
-
-                  <div class="advanced-options mt-2" v-if="alias.support_pgp">
-                    <b-form-checkbox
-                      :checked="alias.moreOptions.pgp_enabled"
-                      @change="toggleAliasPGP(alias)"
-                    >Enable PGP</b-form-checkbox>
-                  </div>
-
-                  <div class="action">
-                    <button
-                      class="btn btn-sm btn-primary"
-                      v-on:click="handleClickSave(index)"
-                      :disabled="
-                        alias.moreOptions.loading || !canSave(alias)
-                      "
-                    >
-                      <font-awesome-icon icon="save" />
-                      Save
-                    </button>
-
-                    <button
-                      class="btn btn-sm btn-delete"
-                      style="color: #dc3545;"
-                      v-on:click="handleClickDelete(index)"
-                      :disabled="alias.moreOptions.loading"
-                    >
-                      <font-awesome-icon icon="trash" />
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              </expand-transition>
+              <alias-more-options
+                :alias="alias"
+                :index="index"
+                :show="!!alias.showMoreOptions"
+                @changed="handleAliasChanged"
+                @deleted="handleAliasDeleted"
+              />
             </div>
           </div>
         </div>
@@ -260,11 +212,13 @@ import SLStorage from "../SLStorage";
 import EventManager from "../EventManager";
 import Navigation from "../Navigation";
 import ExpandTransition from "./ExpandTransition";
+import AliasMoreOptions from "./AliasMoreOptions";
 import { callAPI, API_ROUTE, API_ON_ERR } from "../APIService";
 
 export default {
   components: {
     "expand-transition": ExpandTransition,
+    "alias-more-options": AliasMoreOptions,
   },
   data() {
     return {
@@ -486,86 +440,17 @@ export default {
       const alias = this.aliasArray[index];
       this.$set(this.aliasArray, index, {
         ...alias,
-        moreOptions: alias.moreOptions
-          ? null
-          : {
-              loading: false,
-              note: alias.note,
-              name: alias.name,
-              pgp_enabled: !!alias.pgp_enabled,
-            },
+        showMoreOptions: !alias.showMoreOptions,
       });
     },
-    handleClickDelete(index) {
-      this.$modal.show("dialog", {
-        title: `Delete ${this.aliasArray[index].email}`,
-        text: "Do you really want to delete this alias?",
-        buttons: [
-          {
-            title: "Yes",
-            handler: () => {
-              this.$modal.hide("dialog");
-              this.deleteAlias(index);
-            },
-          },
-          {
-            title: "No",
-            default: true,
-            handler: () => {
-              this.$modal.hide("dialog");
-            },
-          },
-        ],
-      });
+    handleAliasDeleted(index) {
+      this.aliasArray.splice(index, 1);
     },
-    async deleteAlias(index) {
-      const alias = this.aliasArray[index];
-      alias.moreOptions.loading = true;
-      const res = await callAPI(
-        API_ROUTE.DELETE_ALIAS,
-        {
-          alias_id: alias.id,
-        },
-        {},
-        API_ON_ERR.TOAST
-      );
-      if (res) {
-        this.aliasArray.splice(index, 1);
-      } else {
-        alias.moreOptions.loading = false;
+    handleAliasChanged(event) {
+      const alias = this.aliasArray[event.index];
+      for (const key in event.data) {
+        alias[key] = event.data[key];
       }
-    },
-    canSave(alias) {
-      return alias.note !== alias.moreOptions.note ||
-        alias.name !== alias.moreOptions.name ||
-        !!alias.pgp_enabled !== alias.moreOptions.pgp_enabled
-    },
-    async handleClickSave(index) {
-      const alias = this.aliasArray[index];
-      alias.moreOptions.loading = true;
-      const savedData = {
-        note: alias.moreOptions.note,
-        name: alias.moreOptions.name,
-        pgp_enabled: alias.moreOptions.pgp_enabled,
-      };
-      const res = await callAPI(
-        API_ROUTE.EDIT_ALIAS,
-        {
-          alias_id: alias.id,
-        },
-        savedData,
-        API_ON_ERR.TOAST
-      );
-      if (res) {
-        Utils.showSuccess("Updated alias");
-        for (const key in savedData) {
-          alias[key] = savedData[key];
-        }
-      }
-      alias.moreOptions.loading = false;
-    },
-    toggleAliasPGP(alias) {
-      alias.moreOptions.pgp_enabled = !alias.moreOptions.pgp_enabled;
     },
 
     // Clipboard
