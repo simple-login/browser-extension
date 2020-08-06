@@ -163,7 +163,7 @@
                     src="/images/icon-dropdown.svg"
                     v-if="alias"
                     v-bind:style="{
-                      transform: alias.moreOptions ? 'rotate(180deg)' : '',
+                      transform: alias.showMoreOptions ? 'rotate(180deg)' : '',
                     }"
                     v-on:click="toggleMoreOptions(index)"
                     class="btn-svg"
