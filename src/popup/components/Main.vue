@@ -212,13 +212,11 @@ import Utils from "../Utils";
 import SLStorage from "../SLStorage";
 import EventManager from "../EventManager";
 import Navigation from "../Navigation";
-import ExpandTransition from "./ExpandTransition";
 import AliasMoreOptions from "./AliasMoreOptions";
 import { callAPI, API_ROUTE, API_ON_ERR } from "../APIService";
 
 export default {
   components: {
-    "expand-transition": ExpandTransition,
     "alias-more-options": AliasMoreOptions,
   },
   data() {
@@ -356,6 +354,7 @@ export default {
           {
             alias_prefix: this.aliasPrefix,
             signed_suffix: this.signedSuffix,
+            note: `Used on ${await Utils.getHostName()}`,
           }
         );
 
@@ -399,7 +398,9 @@ export default {
           {
             hostname: this.hostName,
           },
-          {}
+          {
+            note: `Used on ${await Utils.getHostName()}`,
+          }
         );
 
         if (res.status === 201) {
