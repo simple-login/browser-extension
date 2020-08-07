@@ -1,3 +1,5 @@
+import Utils from "./Utils";
+
 const TEMP = {};
 
 class SLStorage {
@@ -48,7 +50,7 @@ class SLStorage {
   }
 
   static setTemporary(key, value) {
-    TEMP[key] = value;
+    TEMP[key] = Utils.cloneObject(value);
   }
 
   static getTemporary(key) {

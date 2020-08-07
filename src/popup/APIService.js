@@ -13,6 +13,10 @@ const API_ROUTE = {
     method: "GET",
     path: "/api/v4/alias/options?hostname=:hostname",
   },
+  GET_MAILBOXES: {
+    method: "GET",
+    path: "/api/mailboxes",
+  },
   GET_ALIASES: { method: "POST", path: "/api/v2/aliases?page_id=:page_id" },
   NEW_ALIAS: {
     method: "POST",

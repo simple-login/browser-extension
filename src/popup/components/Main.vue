@@ -187,6 +187,7 @@
                 :alias="alias"
                 :index="index"
                 :show="!!alias.showMoreOptions"
+                :mailboxes="mailboxes"
                 @changed="handleAliasChanged"
                 @deleted="handleAliasDeleted"
               />
@@ -236,6 +237,7 @@ export default {
         show: false,
         alias: "",
       },
+      mailboxes: [],
 
       // variables for list alias
       isFetchingAlias: true,
@@ -248,30 +250,37 @@ export default {
     this.apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
     this.apiKey = await SLStorage.get(SLStorage.SETTINGS.API_KEY);
 
-    await this.getAliasOptions();
+    await this.getUserOptions();
   },
   methods: {
-    async getAliasOptions() {
+    // get alias options and mailboxes
+    async getUserOptions() {
       this.loading = true;
 
-      const res = await callAPI(
-        API_ROUTE.GET_ALIAS_OPTIONS,
-        {
-          hostname: this.hostName,
-        },
-        API_ON_ERR.TOAST
-      );
-      const json = res.data;
+      const results = await Promise.all([
+        callAPI(
+          API_ROUTE.GET_ALIAS_OPTIONS,
+          {
+            hostname: this.hostName,
+          },
+          API_ON_ERR.TOAST
+        ),
+        callAPI(API_ROUTE.GET_MAILBOXES, {}, API_ON_ERR.TOAST),
+      ]);
 
-      if (json.recommendation) {
+      const aliasOptions = results[0].data;
+      const { mailboxes } = results[1].data;
+
+      if (aliasOptions.recommendation) {
         this.recommendation.show = true;
-        this.recommendation.alias = json.recommendation.alias;
+        this.recommendation.alias = aliasOptions.recommendation.alias;
       }
 
-      this.aliasSuffixes = json.suffixes;
+      this.aliasSuffixes = aliasOptions.suffixes;
       this.signedSuffix = this.aliasSuffixes[0][1];
-      this.aliasPrefix = json.prefix_suggestion;
-      this.canCreate = json.can_create;
+      this.aliasPrefix = aliasOptions.prefix_suggestion;
+      this.canCreate = aliasOptions.can_create;
+      this.mailboxes = mailboxes;
 
       this.loading = false;
 
@@ -352,6 +361,7 @@ export default {
 
         if (res.status === 201) {
           SLStorage.setTemporary("newAliasData", res.data);
+          SLStorage.setTemporary("userMailboxes", this.mailboxes);
           Navigation.navigateTo(Navigation.PATH.NEW_ALIAS_RESULT);
         } else {
           Utils.showError(res.data.error);
@@ -394,6 +404,7 @@ export default {
 
         if (res.status === 201) {
           SLStorage.setTemporary("newAliasData", res.data);
+          SLStorage.setTemporary("userMailboxes", this.mailboxes);
           Navigation.navigateTo(Navigation.PATH.NEW_ALIAS_RESULT);
         } else {
           Utils.showError(res.data.error);
