@@ -29,28 +29,23 @@
           @deleted="backToMainPage"
         />
 
-        <div
-          class="mt-5 mx-auto bg-light p-3"
-          v-if="showVoteScreen"
-          style="max-width: 90%;"
-        >
-          If you are happy with SimpleLogin, please support us by rating the
-          extension on the store. Thanks!
+        <div class="mt-5 p-3 card-rating" v-if="showVoteScreen">
+          Happy with SimpleLogin?<br />
+          Please support us by
+          <a :href="extensionUrl" target="_blank" rel="noreferrer noopener">
+            <font-awesome-icon icon="star" /> Rating this extension </a
+          ><br />
+          Thank you!
 
           <br />
 
-          <a :href="extensionUrl" target="_blank" class="btn btn-primary mt-3">
-            <font-awesome-icon icon="star" /> Rate Us
-          </a>
-
-          <br />
-
-          <button
+          <a
             @click="doNotAskRateAgain"
-            class="btn btn-sm btn-link text-secondary mt-3"
+            class="text-secondary cursor"
+            style="font-size: 0.7em;"
           >
             Do not ask again
-          </button>
+          </a>
         </div>
       </div>
     </div>
