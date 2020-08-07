@@ -184,12 +184,10 @@ export default {
     canSave() {
       return (
         this.moreOptions.mailboxes.length > 0 &&
-        (
-          this.alias.note !== this.moreOptions.note ||
+        (this.alias.note !== this.moreOptions.note ||
           this.alias.name !== this.moreOptions.name ||
           !!this.alias.disable_pgp !== this.moreOptions.disable_pgp ||
-          this.hasMailboxesChanges
-        )
+          this.hasMailboxesChanges)
       );
     },
 
@@ -199,7 +197,7 @@ export default {
         note: this.moreOptions.note,
         name: this.moreOptions.name,
         disable_pgp: this.moreOptions.disable_pgp,
-        mailbox_ids: this.moreOptions.mailboxes.map(mb => mb.id),
+        mailbox_ids: this.moreOptions.mailboxes.map((mb) => mb.id),
       };
       const res = await callAPI(
         API_ROUTE.EDIT_ALIAS,
@@ -240,7 +238,17 @@ export default {
       } else {
         this.moreOptions.mailboxes.splice(i, 1);
       }
-      this.hasMailboxesChanges = true;
+
+      // check if there are changes
+      const oldMailboxIds = this.alias.mailboxes
+        .map((mb) => mb.id)
+        .sort()
+        .join(",");
+      const newMailboxIds = this.moreOptions.mailboxes
+        .map((mb) => mb.id)
+        .sort()
+        .join(",");
+      this.hasMailboxesChanges = oldMailboxIds !== newMailboxIds;
     },
   },
 };
