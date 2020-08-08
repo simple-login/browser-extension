@@ -64,7 +64,7 @@
           :disabled="loading || !canSave()"
         >
           <font-awesome-icon icon="save" />
-          Save
+          {{ btnSaveLabel || "Save" }}
         </button>
 
         <button
@@ -107,6 +107,9 @@ export default {
       type: Array,
       required: true,
     },
+    btnSaveLabel: {
+      type: String,
+    },
   },
   components: {
     "expand-transition": ExpandTransition,
@@ -121,23 +124,36 @@ export default {
       },
       loading: false,
       hasMailboxesChanges: false, // to be used in canSaved()
+      canAlwaysSave: false, // to be used in canSaved()
     };
   },
   mounted() {
     this.$watch("show", (newValue) => {
       if (newValue) {
-        this.moreOptions = {
-          note: this.alias.note,
-          name: this.alias.name,
-          disable_pgp: !!this.alias.disable_pgp,
-          mailboxes: Utils.cloneObject(this.alias.mailboxes),
-        };
-
-        this.hasMailboxesChanges = false;
+        this.showMoreOptions();
       }
     });
+
+    if (this.show) {
+      this.showMoreOptions();
+    }
+
+    if (this.btnSaveLabel) {
+      this.canAlwaysSave = true;
+    }
   },
   methods: {
+    showMoreOptions() {
+      this.moreOptions = {
+        note: this.alias.note,
+        name: this.alias.name,
+        disable_pgp: !!this.alias.disable_pgp,
+        mailboxes: Utils.cloneObject(this.alias.mailboxes),
+      };
+
+      this.hasMailboxesChanges = false;
+    },
+
     handleClickDelete() {
       this.$modal.show("dialog", {
         title: `Delete ${this.alias.email}`,
@@ -187,7 +203,8 @@ export default {
         (this.alias.note !== this.moreOptions.note ||
           this.alias.name !== this.moreOptions.name ||
           !!this.alias.disable_pgp !== this.moreOptions.disable_pgp ||
-          this.hasMailboxesChanges)
+          this.hasMailboxesChanges ||
+          this.canAlwaysSave)
       );
     },
 

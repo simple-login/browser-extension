@@ -82,6 +82,11 @@ em {
   max-width: 400px;
 }
 
+.card-rating {
+  border-radius: 8px;
+  border: 1px solid #b02a8f;
+}
+
 /* list aliases */
 .vue-js-switch {
   margin-bottom: 0;
@@ -171,6 +176,10 @@ em {
 
 .more-options {
   margin-top: 10px;
+}
+
+.cursor {
+  cursor: pointer;
 }
 
 .more-options > .action {
