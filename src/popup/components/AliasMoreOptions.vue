@@ -255,7 +255,17 @@ export default {
       } else {
         this.moreOptions.mailboxes.splice(i, 1);
       }
-      this.hasMailboxesChanges = true;
+
+      // check if there are changes
+      const oldMailboxIds = this.alias.mailboxes
+        .map((mb) => mb.id)
+        .sort()
+        .join(",");
+      const newMailboxIds = this.moreOptions.mailboxes
+        .map((mb) => mb.id)
+        .sort()
+        .join(",");
+      this.hasMailboxesChanges = oldMailboxIds !== newMailboxIds;
     },
   },
 };
