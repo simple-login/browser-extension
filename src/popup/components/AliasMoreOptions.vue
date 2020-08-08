@@ -1,6 +1,30 @@
 <template>
   <expand-transition>
     <div class="more-options" v-if="show">
+      <label>Mailboxes</label>
+      <div>
+        <b-dropdown size="sm" variant="outline">
+          <b-dropdown-form>
+            <b-form-checkbox
+              v-for="mailbox in mailboxes"
+              :key="mailbox.id"
+              :checked="
+                findIndexOfMailbox(mailbox.id, moreOptions.mailboxes) !== -1
+              "
+              @change="toggleMailbox(mailbox)"
+            >
+              {{ mailbox.email }}
+            </b-form-checkbox>
+          </b-dropdown-form>
+        </b-dropdown>
+
+        {{
+          moreOptions.mailboxes.length > 0
+            ? moreOptions.mailboxes.map((mb) => mb.email).join(", ")
+            : "Please select at least one mailbox"
+        }}
+      </div>
+
       <label>Alias Note</label>
       <textarea-autosize
         placeholder="Note, can be anything to help you remember why you created this alias. This field is optional."
@@ -79,6 +103,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    mailboxes: {
+      type: Array,
+      required: true,
+    },
   },
   components: {
     "expand-transition": ExpandTransition,
@@ -89,8 +117,10 @@ export default {
         note: "",
         name: "",
         disable_pgp: false,
+        mailboxes: [],
       },
       loading: false,
+      hasMailboxesChanges: false, // to be used in canSaved()
     };
   },
   mounted() {
@@ -100,7 +130,10 @@ export default {
           note: this.alias.note,
           name: this.alias.name,
           disable_pgp: !!this.alias.disable_pgp,
+          mailboxes: Utils.cloneObject(this.alias.mailboxes),
         };
+
+        this.hasMailboxesChanges = false;
       }
     });
   },
@@ -127,6 +160,7 @@ export default {
         ],
       });
     },
+
     async deleteAlias() {
       this.loading = true;
       const res = await callAPI(
@@ -146,19 +180,24 @@ export default {
         this.loading = false;
       }
     },
+
     canSave() {
       return (
-        this.alias.note !== this.moreOptions.note ||
-        this.alias.name !== this.moreOptions.name ||
-        !!this.alias.disable_pgp !== this.moreOptions.disable_pgp
+        this.moreOptions.mailboxes.length > 0 &&
+        (this.alias.note !== this.moreOptions.note ||
+          this.alias.name !== this.moreOptions.name ||
+          !!this.alias.disable_pgp !== this.moreOptions.disable_pgp ||
+          this.hasMailboxesChanges)
       );
     },
+
     async handleClickSave() {
       this.loading = true;
       const savedData = {
         note: this.moreOptions.note,
         name: this.moreOptions.name,
         disable_pgp: this.moreOptions.disable_pgp,
+        mailbox_ids: this.moreOptions.mailboxes.map((mb) => mb.id),
       };
       const res = await callAPI(
         API_ROUTE.EDIT_ALIAS,
@@ -177,8 +216,39 @@ export default {
       }
       this.loading = false;
     },
+
     toggleAliasPGP() {
       this.moreOptions.disable_pgp = !this.moreOptions.disable_pgp;
+    },
+
+    findIndexOfMailbox(id, mailboxes) {
+      let index = -1;
+      for (const i in mailboxes) {
+        if (mailboxes[i].id === id) {
+          index = i;
+        }
+      }
+      return index;
+    },
+
+    toggleMailbox(mailbox) {
+      const i = this.findIndexOfMailbox(mailbox.id, this.moreOptions.mailboxes);
+      if (i === -1) {
+        this.moreOptions.mailboxes.push(mailbox);
+      } else {
+        this.moreOptions.mailboxes.splice(i, 1);
+      }
+
+      // check if there are changes
+      const oldMailboxIds = this.alias.mailboxes
+        .map((mb) => mb.id)
+        .sort()
+        .join(",");
+      const newMailboxIds = this.moreOptions.mailboxes
+        .map((mb) => mb.id)
+        .sort()
+        .join(",");
+      this.hasMailboxesChanges = oldMailboxIds !== newMailboxIds;
     },
   },
 };

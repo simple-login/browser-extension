@@ -75,6 +75,7 @@ import { callAPI, API_ROUTE, API_ON_ERR } from "../APIService";
 export default {
   data() {
     return {
+      mailboxes: SLStorage.getTemporary("userMailboxes"),
       newAliasData: SLStorage.getTemporary("newAliasData"),
       showVoteScreen: false,
       extensionUrl: Utils.getExtensionURL(),
