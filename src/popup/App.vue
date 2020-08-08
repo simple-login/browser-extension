@@ -1,7 +1,8 @@
 <template>
   <div class="app">
-    <sl-header></sl-header>
-    <router-view></router-view>
+    <v-dialog />
+    <sl-header />
+    <router-view />
   </div>
 </template>
 
