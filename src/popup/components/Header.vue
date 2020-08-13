@@ -41,6 +41,7 @@
           target="_blank"
           class="bug-button float-right"
           title="Report an issue"
+          v-if="isBeta"
           v-b-tooltip.hover
         >
           <font-awesome-icon icon="bug" />

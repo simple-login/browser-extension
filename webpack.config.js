@@ -129,6 +129,7 @@ if (config.mode === 'development') {
 if (config.mode === 'production') {
   config.plugins = (config.plugins || []).concat([
     new webpack.DefinePlugin({
+      'devConfig': 'null',
       'process.env': {
         'NODE_ENV': '"production"',
         'BETA': JSON.stringify(!!process.env.BETA),
