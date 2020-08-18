@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.0.0] - 2020-08-13 (Beta version)
+- Right click to create alias
+- Able to change alias from name, toggle PGP
+- Able to choose alias's mailbox(es)
+- UI improved
+
 ## [2.0.0.0] - 2020-07-30 (Beta version)
 - Create alias via the SimpleLogin button displayed in the email field
 
