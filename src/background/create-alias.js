@@ -20,7 +20,7 @@ async function handleNewRandomAlias(tab) {
         hostname,
       },
       {
-        note: `Used on ${hostname}`,
+        note: hostname ? `Used on ${hostname}` : '',
       },
       API_ON_ERR.THROW
     );
