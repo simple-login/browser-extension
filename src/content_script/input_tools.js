@@ -218,7 +218,7 @@ function sendMessageToBackground(tag, data = null) {
       );
     } catch (e) {
       // Extension context invalidated.
-      alert("SimpleLogin Error: Please reload the page.");
+      console.error(e);
     }
   });
 }
