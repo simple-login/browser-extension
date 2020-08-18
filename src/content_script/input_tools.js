@@ -59,9 +59,6 @@ const InputTools = {
   addSLButtonToInput(inputElem) {
     // create wrapper for SL button
     const btnWrapper = InputTools.newDiv("sl-button-wrapper");
-    const inputSumHeight = inputElem.getBoundingClientRect().height + "px";
-    btnWrapper.style.height = inputSumHeight;
-    btnWrapper.style.width = inputSumHeight;
     document.body.appendChild(btnWrapper);
 
     // create the SL button
@@ -69,9 +66,24 @@ const InputTools = {
     slButton.addEventListener("click", function () {
       InputTools.handleOnClickSLButton(inputElem, slButton);
     });
-    slButton.style.height = inputSumHeight;
-    slButton.style.width = inputSumHeight;
     btnWrapper.appendChild(slButton);
+
+    // update size periodically
+    let intervalId = 0;
+    function updateSize() {
+      const i = InputTools.trackedElements.indexOf(inputElem);
+      if (i === -1) {
+        clearInterval(intervalId);
+        return;
+      }
+      const inputHeight = inputElem.getBoundingClientRect().height + "px";
+      btnWrapper.style.height = inputHeight;
+      btnWrapper.style.width = inputHeight;
+      slButton.style.height = inputHeight;
+      slButton.style.width = inputHeight;
+    }
+    intervalId = setInterval(updateSize, 200);
+    updateSize();
 
     InputTools.placeBtnToTheRightOfElement(inputElem, btnWrapper);
   },
