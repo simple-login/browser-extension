@@ -72,11 +72,11 @@ const InputTools = {
     let intervalId = 0;
     function updateSize() {
       const i = InputTools.trackedElements.indexOf(inputElem);
-      if (i === -1) {
+      const inputHeight = inputElem.getBoundingClientRect().height + "px";
+      if (i === -1 || inputHeight > 0) {
         clearInterval(intervalId);
         return;
       }
-      const inputHeight = inputElem.getBoundingClientRect().height + "px";
       btnWrapper.style.height = inputHeight;
       btnWrapper.style.width = inputHeight;
       slButton.style.height = inputHeight;
