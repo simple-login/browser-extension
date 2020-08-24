@@ -3,8 +3,6 @@
 @import '~bootstrap-vue/src/index.scss';
 
 body {
-  margin: 0 0;
-  width: 470px;
   box-sizing: content-box !important;
 }
 
@@ -47,6 +45,7 @@ body {
 }
 
 .app {
+  width: 470px;
   box-sizing: content-box !important;
 }
 
@@ -126,20 +125,24 @@ em {
   overflow-y: hidden;
 }
 
-.settings-button {
-  height: 20px;
-  margin-top: 5px;
-  margin-left: 10px;
-  cursor: pointer;
-}
-
-.bug-button {
-  height: 20px;
-  margin-top: 2px;
-  margin-left: 10px;
-  margin-right: 7px;
-  color: #b02a8f;
-  cursor: pointer;
+.header {
+  .settings-button {
+    height: 20px;
+    margin-top: 2px;
+    margin-left: 10px;
+    margin-right: 0px;
+    color: #b02a8f;
+    cursor: pointer;
+  }
+  
+  .bug-button {
+    height: 20px;
+    margin-top: 2px;
+    margin-left: 10px;
+    margin-right: 7px;
+    color: #b02a8f;
+    cursor: pointer;
+  }
 }
 
 .app-header-menu {
@@ -214,4 +217,23 @@ table.settings-list > tr > td {
 
 table.settings-list {
   margin-bottom: 3em;
+}
+
+/* Quick fix for Firefox Overflow Menu */
+.app.ff-overflow-menu {
+  width: auto;
+  max-height: 600px;
+  font-size: 88%;
+
+  textarea, input {
+    font-size: 88%;
+  }
+
+  .header {
+    width: auto;
+
+    .back .sl-logo {
+      display: none;
+    }
+  }
 }

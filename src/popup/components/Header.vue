@@ -1,5 +1,6 @@
 <template>
   <div class="header">
+    <!-- TODO: make beta version header compatible with Firefox Overflow Menu -->
     <div class="row mt-2 pb-2" style="border-bottom: 1px #eee solid;">
       <div class="col ml-3">
         <div
@@ -12,7 +13,11 @@
             src="/images/back-button.svg"
             style="height: 20px;"
           />
-          <img src="/images/horizontal-logo.svg" style="height: 18px;" />
+          <img
+            class="sl-logo"
+            src="/images/horizontal-logo.svg"
+            style="height: 18px;"
+          />
         </div>
         <div class="beta-badge" v-if="isBeta">BETA</div>
       </div>
@@ -27,14 +32,15 @@
       </div>
 
       <div v-if="apiKey !== ''" class="col mr-2">
-        <img
-          src="/images/icon-settings.svg"
+        <span
           class="settings-button float-right"
           @click="onClickSettingButton"
           v-show="canShowSettingsButton"
           title="Settings"
           v-b-tooltip.hover
-        />
+        >
+          <font-awesome-icon icon="cog" />
+        </span>
 
         <a
           :href="reportBugUri"
