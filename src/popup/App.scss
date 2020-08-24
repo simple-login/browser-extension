@@ -19,11 +19,6 @@ body {
   cursor: pointer;
 }
 
-.content {
-  padding-top: 60px;
-  padding-bottom: 10px;
-}
-
 .overlay {
   position: fixed;
   top: 0;
@@ -47,11 +42,16 @@ body {
 .app {
   width: 470px;
   box-sizing: content-box !important;
+  overflow-y: hidden;
 }
 
 .app .content {
   box-sizing: border-box;
-  margin-bottom: 30px; /* reserved space for toast */
+  margin-top: 45px;
+  padding-top: 15px;
+  padding-bottom: 40px;
+  height: 500px;
+  overflow-y: auto;
 }
 
 .splash .logo {
@@ -126,16 +126,12 @@ em {
 }
 
 .header {
-  .settings-button {
-    height: 20px;
-    margin-top: 2px;
-    margin-left: 10px;
-    margin-right: 0px;
-    color: #b02a8f;
-    cursor: pointer;
+  .actions-container {
+    position: absolute;
+    right: 0.5rem;
   }
   
-  .bug-button {
+  .header-button {
     height: 20px;
     margin-top: 2px;
     margin-left: 10px;
@@ -222,18 +218,25 @@ table.settings-list {
 /* Quick fix for Firefox Overflow Menu */
 .app.ff-overflow-menu {
   width: auto;
-  max-height: 600px;
   font-size: 88%;
+
+  .content {
+    max-height: 500px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
 
   textarea, input {
     font-size: 88%;
   }
 
   .header {
-    width: auto;
+    width: 100%;
 
-    .back .sl-logo {
-      display: none;
+    .dashboard-btn {
+      height: 20px;
+      margin-top: 2px;
+      padding: 0 0.5rem !important;
     }
   }
 }

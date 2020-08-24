@@ -1,7 +1,7 @@
 <template>
   <div class="app" :class="{ 'ff-overflow-menu': isInsideOverflowMenu }">
     <v-dialog />
-    <sl-header />
+    <sl-header :useCompactLayout="isInsideOverflowMenu" />
     <router-view />
   </div>
 </template>

@@ -1,8 +1,7 @@
 <template>
   <div class="header">
-    <!-- TODO: make beta version header compatible with Firefox Overflow Menu -->
-    <div class="row mt-2 pb-2" style="border-bottom: 1px #eee solid;">
-      <div class="col ml-3">
+    <div class="row mt-2 pb-2 ml-3 mr-2" style="border-bottom: 1px #eee solid;">
+      <div>
         <div
           v-on:click="navigateBack()"
           v-bind:class="{ back: canBack }"
@@ -22,22 +21,22 @@
         <div class="beta-badge" v-if="isBeta">BETA</div>
       </div>
 
-      <div v-if="apiKey === ''" class="col mr-2">
-        <button
+      <div v-if="apiKey === ''" class="actions-container">
+        <span
           @click="goToSelfHostSetting"
-          class="btn btn-sm btn-outline-success float-right"
+          class="header-button float-right"
         >
           Settings
-        </button>
+        </span>
       </div>
 
-      <div v-if="apiKey !== ''" class="col mr-2">
+      <div v-if="apiKey !== ''" class="actions-container">
         <span
-          class="settings-button float-right"
+          class="header-button float-right"
           @click="onClickSettingButton"
           v-show="canShowSettingsButton"
           title="Settings"
-          v-b-tooltip.hover
+          v-b-tooltip.hover.bottomleft
         >
           <font-awesome-icon icon="cog" />
         </span>
@@ -45,10 +44,10 @@
         <a
           :href="reportBugUri"
           target="_blank"
-          class="bug-button float-right"
+          class="header-button float-right"
           title="Report an issue"
           v-if="isBeta"
-          v-b-tooltip.hover
+          v-b-tooltip.hover.bottomleft
         >
           <font-awesome-icon icon="bug" />
         </a>
@@ -56,10 +55,14 @@
         <a
           :href="apiUrl + '/dashboard/'"
           target="_blank"
-          class="float-right"
+          class="dashboard-btn float-right"
           style="padding: 0.25rem 0.5rem; font-size: 0.875rem;"
+          title="Dashboard"
+          v-b-tooltip.hover
+          :disabled="!useCompactLayout"
         >
-          Dashboard <font-awesome-icon icon="external-link-alt" />
+          <span v-if="!useCompactLayout">Dashboard</span>
+          <font-awesome-icon icon="external-link-alt" />
         </a>
       </div>
     </div>
@@ -74,6 +77,9 @@ import Utils from "../Utils";
 
 export default {
   name: "sl-header",
+  props: {
+    useCompactLayout: Boolean,
+  },
   data() {
     return {
       apiKey: "",

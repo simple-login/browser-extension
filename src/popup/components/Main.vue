@@ -248,6 +248,8 @@ export default {
     this.apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
     this.apiKey = await SLStorage.get(SLStorage.SETTINGS.API_KEY);
 
+    this.contentElem = document.querySelector('.app > .content');
+
     await this.getUserOptions();
   },
   methods: {
@@ -286,6 +288,7 @@ export default {
     },
 
     async loadAlias() {
+      const contentElem = this.contentElem;
       this.aliasArray = [];
       let currentPage = 0;
 
@@ -294,12 +297,16 @@ export default {
       let allAliasesAreLoaded = false;
 
       let that = this;
-      window.onscroll = async function () {
+      if (this.onScrollCallback) {
+        contentElem.removeEventListener('scroll', this.onScrollCallback);
+      }
+
+      this.onScrollCallback = async function () {
         if (that.isFetchingAlias || allAliasesAreLoaded) return;
 
         let bottomOfWindow =
-          document.documentElement.scrollTop + window.innerHeight >
-          document.documentElement.offsetHeight - 200;
+          contentElem.scrollTop + contentElem.clientHeight  >
+          contentElem.scrollHeight - 100;
 
         if (bottomOfWindow) {
           currentPage += 1;
@@ -313,6 +320,8 @@ export default {
           that.aliasArray = mergeAliases(that.aliasArray, newAliases);
         }
       };
+
+      contentElem.addEventListener('scroll', this.onScrollCallback);
     },
 
     async fetchAlias(page, query) {
