@@ -24,7 +24,7 @@ function firePermissionListener() {
 async function havePermission(name) {
   return await browser.permissions.contains({
     permissions: [name],
-    origins: ["http://*/*", "https://*/* "],
+    origins: ["http://*/*", "https://*/*"],
   });
 }
 
@@ -35,7 +35,7 @@ async function havePermission(name) {
 async function requestPermission(name) {
   const result = await browser.permissions.request({
     permissions: [name],
-    origins: ["http://*/*", "https://*/* "],
+    origins: ["http://*/*", "https://*/*"],
   });
   // emit "changed" event to background
   if (result) {
