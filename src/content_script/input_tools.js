@@ -48,6 +48,7 @@ const InputTools = {
       style.visibility !== "hidden" &&
       style.display !== "none" &&
       style.opacity !== "0" &&
+      style.pointerEvents === "auto" &&
       // check if element is not disabled
       !element.disabled &&
       // for example, we must filter out a checkbox with name*=email
