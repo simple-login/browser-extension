@@ -8,9 +8,13 @@
     "128": "icons/icon_128.png"
   },
   "permissions": [
+    "activeTab",
     "storage",
     "cookies",
     "contextMenus",
+    "https://*.simplelogin.io/*"
+  ],
+  "optional_permissions": [
     "tabs",
     "http://*/*",
     "https://*/*"
