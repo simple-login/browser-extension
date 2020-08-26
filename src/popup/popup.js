@@ -25,6 +25,7 @@ import {
   faSave,
   faBug,
   faQuestionCircle,
+  faCog,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -37,7 +38,8 @@ library.add(
   faStar,
   faSave,
   faBug,
-  faQuestionCircle
+  faQuestionCircle,
+  faCog
 );
 
 global.browser = require("webextension-polyfill");
