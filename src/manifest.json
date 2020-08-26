@@ -8,11 +8,12 @@
     "128": "icons/icon_128.png"
   },
   "permissions": [
-    "activeTab",
     "storage",
     "cookies",
     "contextMenus",
-    "https://*.simplelogin.io/*"
+    "tabs",
+    "http://*/*",
+    "https://*/*"
   ],
   "browser_action": {
     "default_title": "simplelogin-extension",
@@ -27,15 +28,5 @@
     "scripts": [
       "background.js"
     ]
-  },
-  "content_scripts": [
-    {
-      "matches": [
-        "<all_urls>"
-      ],
-      "js": ["content_script/input_tools.js"],
-      "css": ["content_script/input_tools.css"],
-      "all_frames": true
-    }
-  ]
+  }
 }

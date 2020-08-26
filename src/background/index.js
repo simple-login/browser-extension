@@ -1,10 +1,11 @@
+import browser from "webextension-polyfill";
 import APIService from "../popup/APIService";
 import SLStorage from "../popup/SLStorage";
+import "./content-script";
 
 import { handleNewRandomAlias } from "./create-alias";
 import { handleOnClickContextMenu } from "./context-menu";
 
-global.browser = require("webextension-polyfill");
 global.isBackgroundJS = true;
 
 /**
@@ -24,7 +25,7 @@ async function handleGetAppSettings() {
 /**
  * Register onMessage listener
  */
-global.browser.runtime.onMessage.addListener(async function (request, sender) {
+browser.runtime.onMessage.addListener(async function (request, sender) {
   if (request.tag === "NEW_RANDOM_ALIAS") {
     return await handleNewRandomAlias(sender.tab);
   } else if (request.tag === "GET_APP_SETTINGS") {
@@ -35,7 +36,7 @@ global.browser.runtime.onMessage.addListener(async function (request, sender) {
 /**
  * Register context menu
  */
-global.browser.contextMenus.create({
+browser.contextMenus.create({
   title: "Create random email alias (copied)",
   contexts: ["all"],
   onclick: handleOnClickContextMenu,
