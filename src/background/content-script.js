@@ -1,8 +1,13 @@
 import browser from "webextension-polyfill";
-import { havePermission } from "./permissions";
+import { havePermission, addPermissionListener } from "./permissions";
 
-async function init() {
+let hasAlreadySetup = false;
+
+async function setupContentScript() {
   if (await havePermission('tabs')) {
+    if (hasAlreadySetup) return;
+    hasAlreadySetup = true;
+
     browser.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
       browser.tabs.executeScript(tabId, {
         file: 'content_script/input_tools.js',
@@ -16,4 +21,5 @@ async function init() {
   }
 }
 
-init();
+addPermissionListener(setupContentScript);
+setupContentScript();
