@@ -1,10 +1,9 @@
 @import './App-color.scss';
+@import './App-scrollbar.scss';
 @import '~bootstrap/scss/bootstrap.scss';
 @import '~bootstrap-vue/src/index.scss';
 
 body {
-  margin: 0 0;
-  width: 470px;
   box-sizing: content-box !important;
 }
 
@@ -19,11 +18,6 @@ body {
 
 .header .back {
   cursor: pointer;
-}
-
-.content {
-  padding-top: 60px;
-  padding-bottom: 10px;
 }
 
 .overlay {
@@ -47,12 +41,18 @@ body {
 }
 
 .app {
+  width: 470px;
   box-sizing: content-box !important;
+  overflow-y: hidden;
 }
 
 .app .content {
   box-sizing: border-box;
-  margin-bottom: 30px; /* reserved space for toast */
+  margin-top: 45px;
+  padding-top: 15px;
+  padding-bottom: 40px;
+  max-height: 500px;
+  overflow-y: auto;
 }
 
 .splash .logo {
@@ -126,20 +126,20 @@ em {
   overflow-y: hidden;
 }
 
-.settings-button {
-  height: 20px;
-  margin-top: 5px;
-  margin-left: 10px;
-  cursor: pointer;
-}
-
-.bug-button {
-  height: 20px;
-  margin-top: 2px;
-  margin-left: 10px;
-  margin-right: 7px;
-  color: #b02a8f;
-  cursor: pointer;
+.header {
+  .actions-container {
+    position: absolute;
+    right: 0.5rem;
+  }
+  
+  .header-button {
+    height: 20px;
+    margin-top: 2px;
+    margin-left: 10px;
+    margin-right: 7px;
+    color: #b02a8f;
+    cursor: pointer;
+  }
 }
 
 .app-header-menu {
@@ -214,4 +214,30 @@ table.settings-list > tr > td {
 
 table.settings-list {
   margin-bottom: 3em;
+}
+
+/* Quick fix for Firefox Overflow Menu */
+.app.ff-overflow-menu {
+  width: auto;
+  font-size: 88%;
+
+  .content {
+    max-height: 500px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+
+  textarea, input {
+    font-size: 88%;
+  }
+
+  .header {
+    width: 100%;
+
+    .dashboard-btn {
+      height: 20px;
+      margin-top: 2px;
+      padding: 0 0.5rem !important;
+    }
+  }
 }
