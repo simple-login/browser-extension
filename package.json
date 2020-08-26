@@ -22,7 +22,7 @@
     "@sentry/browser": "^5.19.2",
     "@sentry/integrations": "^5.19.1",
     "axios": "^0.19.2",
-    "bootstrap": "^4.5.0",
+    "bootstrap": "^4.5.1",
     "bootstrap-vue": "^2.15.0",
     "v-clipboard": "^2.2.3",
     "vue": "^2.6.11",
