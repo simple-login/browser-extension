@@ -248,7 +248,7 @@ export default {
     this.apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
     this.apiKey = await SLStorage.get(SLStorage.SETTINGS.API_KEY);
 
-    this.contentElem = document.querySelector('.app > .content');
+    this.contentElem = document.querySelector(".app > .content");
 
     await this.getUserOptions();
   },
@@ -298,14 +298,14 @@ export default {
 
       let that = this;
       if (this.onScrollCallback) {
-        contentElem.removeEventListener('scroll', this.onScrollCallback);
+        contentElem.removeEventListener("scroll", this.onScrollCallback);
       }
 
       this.onScrollCallback = async function () {
         if (that.isFetchingAlias || allAliasesAreLoaded) return;
 
         let bottomOfWindow =
-          contentElem.scrollTop + contentElem.clientHeight  >
+          contentElem.scrollTop + contentElem.clientHeight >
           contentElem.scrollHeight - 100;
 
         if (bottomOfWindow) {
@@ -321,7 +321,7 @@ export default {
         }
       };
 
-      contentElem.addEventListener('scroll', this.onScrollCallback);
+      contentElem.addEventListener("scroll", this.onScrollCallback);
     },
 
     async fetchAlias(page, query) {

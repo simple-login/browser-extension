@@ -1,4 +1,4 @@
-if (!typeof InputTools !== 'undefined') {
+if (!typeof InputTools !== "undefined") {
   let SLSettings = {};
 
   const InputTools = {

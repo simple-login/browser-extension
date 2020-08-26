@@ -22,10 +22,7 @@
       </div>
 
       <div v-if="apiKey === ''" class="actions-container">
-        <span
-          @click="goToSelfHostSetting"
-          class="header-button float-right"
-        >
+        <span @click="goToSelfHostSetting" class="header-button float-right">
           Settings
         </span>
       </div>
