@@ -86,7 +86,7 @@
       </div>
     </div>
 
-    <div class="arrow-up" v-if="isChrome && step === 4">
+    <div class="arrow-up" v-if="step === 4">
       <img src="../images/arrow-up.png" />
     </div>
   </div>

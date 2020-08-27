@@ -13,7 +13,8 @@ async function setupContentScript() {
 
     browser.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
       if (
-        tab.url.startsWith("chrome") || // chrome protocol
+        tab.url.startsWith("chrome") || // chrome internal pages
+        tab.url.startsWith("about") || // firefox internal pages
         tab.url.startsWith(apiUrl) // app domain
       ) {
         return;

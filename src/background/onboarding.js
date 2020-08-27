@@ -9,7 +9,7 @@ function initService() {
     if (hasFirstRun) return;
 
     browser.tabs.create({
-      url: `chrome-extension://${browser.runtime.id}/onboarding/index.html`,
+      url: browser.runtime.getURL('/onboarding/index.html'),
     });
 
     SLStorage.set(SLStorage.SETTINGS.HAS_FIRST_RUN, true);
@@ -26,7 +26,7 @@ async function listenPostSetup() {
   browser.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     if (tab.url && POST_SETUP_URL && tab.url.startsWith(POST_SETUP_URL)) {
       browser.tabs.update(tab.id, {
-        url: `chrome-extension://${browser.runtime.id}/onboarding/index.html#step3`,
+        url: browser.runtime.getURL('/onboarding/index.html#step3'),
       });
     }
   });
