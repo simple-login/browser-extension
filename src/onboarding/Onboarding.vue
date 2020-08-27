@@ -11,66 +11,74 @@
       <div class="col-6 screen-right">
         <div class="right-content">
           <div class="header">
-            <img
-              class="sl-logo"
-              src="/images/horizontal-logo.svg"
-            />
+            <img class="sl-logo" src="/images/horizontal-logo.svg" />
           </div>
 
           <div class="content" v-if="step === 1">
             <h5>Thank you for installing SimpleLogin</h5>
-            <p>SimpleLogin is an open source email alias solution to protect your email address.</p>
+            <p>
+              SimpleLogin is an open source email alias solution to protect your
+              email address.
+            </p>
             <p>Please follow this guide to step your extension.</p>
-            <br/>
-            <button
-              @click="nextStep()"
-              class="btn btn-primary"
-            >Get started!</button>
+            <br />
+            <button @click="nextStep()" class="btn btn-primary">
+              Get started!
+            </button>
           </div>
 
           <div class="content" v-if="step === 2">
             <h5>Create an account</h5>
-            <p>If you already have an account on SimpleLogin, you can skip this step.</p>
-            <br/>
-            <button
-              @click="goToCreateNewAccount()"
-              class="btn btn-primary"
-            >Create a new account</button>
-            <button
-              @click="nextStep()"
-              class="btn btn-outline-primary"
-            >I already have account</button>
+            <p>
+              If you already have an account on SimpleLogin, you can skip this
+              step.
+            </p>
+            <br />
+            <button @click="goToCreateNewAccount()" class="btn btn-primary">
+              Create a new account
+            </button>
+            <button @click="nextStep()" class="btn btn-outline-primary">
+              I already have account
+            </button>
           </div>
 
           <div class="content" v-if="step === 3">
             <h5>Extra permission</h5>
-            <p>In order to place a button next to the email input fields, SimpleLogin extension requires an extra permission to access websites that you visit.</p>
             <p>
-              <img src="../images/sl-button-demo.jpg" style="width: 400px" />
+              In order to place a button next to the email input fields,
+              SimpleLogin extension requires an extra permission to access
+              websites that you visit.
+            </p>
+            <p>
+              <img src="../images/sl-button-demo.jpg" style="width: 400px;" />
             </p>
             <p>We never use this permission to collect your personal data.</p>
-            <br/>
-            <button
-              @click="askTabsPermission()"
-              class="btn btn-primary"
-            >Approve access permission</button>
+            <br />
+            <button @click="askTabsPermission()" class="btn btn-primary">
+              Approve access permission
+            </button>
             <button
               @click="nextStep()"
               class="btn"
               style="color: #888; font-size: 0.8em;"
-            >Skip</button>
+            >
+              Skip
+            </button>
           </div>
 
           <div class="content" v-if="step === 4">
             <h5>It's all set!</h5>
             <p>
               To start using SimpleLogin, please click on
-              <img src="../images/icon-simplelogin.png" style="height: 1.2em" />
+              <img
+                src="../images/icon-simplelogin.png"
+                style="height: 1.2em;"
+              />
               icon at the corner of your browser.
             </p>
             <p>
               Note: this icon maybe hidden under
-              <img src="../images/icon-puzzle.png" style="height: 1.2em" />
+              <img src="../images/icon-puzzle.png" style="height: 1.2em;" />
               button.
             </p>
           </div>
@@ -86,13 +94,15 @@
 
 <script>
 import { havePermission, requestPermission } from "../background/permissions";
-import SLStorage from '../popup/SLStorage';
+import SLStorage from "../popup/SLStorage";
 
 export default {
   data() {
     return {
       step: window.location.href.match(/#step3/) ? 3 : 1,
-      isChrome: /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor),
+      isChrome:
+        /Chrome/.test(navigator.userAgent) &&
+        /Google Inc/.test(navigator.vendor),
     };
   },
   async mounted() {},
@@ -111,7 +121,9 @@ export default {
       if (await requestPermission("tabs")) {
         this.nextStep();
       } else {
-        alert("Please approve permissions. If you don't want to approve, please click Skip button.");
+        alert(
+          "Please approve permissions. If you don't want to approve, please click Skip button."
+        );
       }
     },
   },
