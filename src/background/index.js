@@ -1,6 +1,7 @@
 import browser from "webextension-polyfill";
 import APIService from "../popup/APIService";
 import SLStorage from "../popup/SLStorage";
+import Onboarding from './onboarding';
 import "./content-script";
 
 import { handleNewRandomAlias } from "./create-alias";
@@ -46,3 +47,4 @@ browser.contextMenus.create({
 });
 
 APIService.initService();
+Onboarding.initService();

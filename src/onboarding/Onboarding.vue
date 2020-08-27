@@ -25,26 +25,26 @@
             <button
               @click="nextStep()"
               class="btn btn-primary"
-            >Next</button>
+            >Get started!</button>
           </div>
 
           <div class="content" v-if="step === 2">
             <h5>Create an account</h5>
-            <p>If you've already have an account on SimpleLogin, you can skip this step.</p>
+            <p>If you already have an account on SimpleLogin, you can skip this step.</p>
             <br/>
             <button
-              @click="askTabsPermission()"
+              @click="goToCreateNewAccount()"
               class="btn btn-primary"
             >Create a new account</button>
             <button
               @click="nextStep()"
               class="btn btn-outline-primary"
-            >Already have account</button>
+            >I already have account</button>
           </div>
 
           <div class="content" v-if="step === 3">
             <h5>Extra permission</h5>
-            <p>In order to place a button next to your email input fields, SimpleLogin extension requires an extra permission to access websites that you visit.</p>
+            <p>In order to place a button next to the email input fields, SimpleLogin extension requires an extra permission to access websites that you visit.</p>
             <p>
               <img src="../images/sl-button-demo.jpg" style="width: 400px" />
             </p>
@@ -66,7 +66,7 @@
             <p>
               To start using SimpleLogin, please click on
               <img src="../images/icon-simplelogin.png" style="height: 1.2em" />
-              at the corner of your browser.
+              icon at the corner of your browser.
             </p>
             <p>
               Note: this icon maybe hidden under
@@ -86,16 +86,21 @@
 
 <script>
 import { havePermission, requestPermission } from "../background/permissions";
+import SLStorage from '../popup/SLStorage';
 
 export default {
   data() {
     return {
-      step: 1,
+      step: window.location.href.match(/#step3/) ? 3 : 1,
       isChrome: /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor),
     };
   },
   async mounted() {},
   methods: {
+    async goToCreateNewAccount() {
+      const apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
+      window.location.href = `${apiUrl}/auth/register?next=%2Fdashboard%2Fsetup_done`;
+    },
     toStep(i) {
       this.step = i;
     },

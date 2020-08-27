@@ -9,6 +9,7 @@ class SLStorage {
     NOT_ASKING_RATE: "notAskingRate",
     SHOW_SL_BUTTON: "showSLButton",
     SL_BUTTON_POSITION: "SLButtonPosition",
+    HAS_FIRST_RUN: "hasFirstRun",
   };
 
   static DEFAULT_SETTINGS = {
@@ -19,6 +20,7 @@ class SLStorage {
     [SLStorage.SETTINGS.NOT_ASKING_RATE]: false,
     [SLStorage.SETTINGS.SHOW_SL_BUTTON]: true,
     [SLStorage.SETTINGS.SL_BUTTON_POSITION]: "right-inside",
+    [SLStorage.SETTINGS.HAS_FIRST_RUN]: false,
   };
 
   static set(key, value) {
