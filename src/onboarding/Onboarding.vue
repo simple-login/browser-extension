@@ -20,7 +20,7 @@
               SimpleLogin is an open source email alias solution to protect your
               email address.
             </p>
-            <p>Please follow this guide to step your extension.</p>
+            <p>Please follow this guide to setup your extension.</p>
             <br />
             <button @click="nextStep()" class="btn btn-primary">
               Get started!
@@ -76,7 +76,7 @@
               />
               icon at the corner of your browser.
             </p>
-            <p>
+            <p v-if="isChrome">
               Note: this icon maybe hidden under
               <img src="../images/icon-puzzle.png" style="height: 1.2em;" />
               button.
