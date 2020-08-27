@@ -4,7 +4,7 @@
       <p class="font-weight-bold align-self-center">App Settings</p>
 
       <table class="settings-list" v-if="isSettingsFetched">
-        <tr :class="{ 'disabled': !hasTabsPermission }">
+        <tr :class="{ disabled: !hasTabsPermission }">
           <td>
             <toggle-button
               :value="showSLButton"
@@ -34,7 +34,7 @@
         <tr v-if="!hasTabsPermission">
           <td>⚠️</td>
           <td>
-            SimpleLogin button requires extra permission<br/>
+            SimpleLogin button requires extra permission<br />
             <span class="link cursor" @click="askTabsPermission()">
               Click here to grant access
             </span>
@@ -80,7 +80,10 @@ import EventManager from "../EventManager";
 import Navigation from "../Navigation";
 import Utils from "../Utils";
 import { callAPI, API_ROUTE, API_ON_ERR } from "../APIService";
-import { havePermission, requestPermission } from '../../background/permissions';
+import {
+  havePermission,
+  requestPermission,
+} from "../../background/permissions";
 
 export default {
   data() {
@@ -97,7 +100,7 @@ export default {
   },
   methods: {
     async fetchSettings() {
-      this.hasTabsPermission = await havePermission('tabs');
+      this.hasTabsPermission = await havePermission("tabs");
       this.showSLButton = this.hasTabsPermission
         ? await SLStorage.get(SLStorage.SETTINGS.SHOW_SL_BUTTON)
         : false;
