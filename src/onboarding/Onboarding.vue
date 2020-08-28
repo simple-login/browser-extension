@@ -27,7 +27,7 @@
             </button>
           </div>
 
-          <div class="content" v-if="step === 2">
+          <div class="content mb-2" v-if="step === 2">
             <h5>Create an account</h5>
             <p>
               If you already have an account on SimpleLogin, you can skip this
