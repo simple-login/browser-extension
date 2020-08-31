@@ -3,7 +3,6 @@ import SLStorage from "../popup/SLStorage";
 
 function initService() {
   browser.runtime.onInstalled.addListener(async function ({ reason }) {
-    console.log(reason)
     if (reason === "install") {
       await SLStorage.clear();
   
