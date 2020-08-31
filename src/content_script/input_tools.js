@@ -1,4 +1,5 @@
-if (!typeof InputTools !== "undefined") {
+if (!window.hasSLButton) {
+  window.hasSLButton = true;
   let SLSettings = {};
 
   const InputTools = {

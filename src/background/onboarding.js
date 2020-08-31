@@ -1,14 +1,12 @@
 import browser from "webextension-polyfill";
 import SLStorage from "../popup/SLStorage";
 
-let POST_SETUP_URL = null;
-
 function initService() {
   browser.runtime.onInstalled.addListener(async function () {
     const hasFirstRun = await SLStorage.get(SLStorage.SETTINGS.HAS_FIRST_RUN);
     if (hasFirstRun) return;
 
-    browser.tabs.create({
+    await browser.tabs.create({
       url: browser.runtime.getURL("/onboarding/index.html"),
     });
 
@@ -19,7 +17,7 @@ function initService() {
 }
 
 async function listenPostSetup() {
-  POST_SETUP_URL = `${await SLStorage.get(
+  const POST_SETUP_URL = `${await SLStorage.get(
     SLStorage.SETTINGS.API_URL
   )}/dashboard/setup_done`;
 

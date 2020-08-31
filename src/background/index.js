@@ -33,7 +33,7 @@ browser.runtime.onMessage.addListener(async function (request, sender) {
   } else if (request.tag === "GET_APP_SETTINGS") {
     return await handleGetAppSettings();
   } else if (request.tag === "PERMISSIONS_CHANGED") {
-    return await firePermissionListener();
+    return firePermissionListener();
   }
 });
 

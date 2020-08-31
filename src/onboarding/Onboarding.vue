@@ -11,7 +11,7 @@
       <div class="col-6 screen-right">
         <div class="right-content">
           <div class="header">
-            <img class="sl-logo" src="/images/horizontal-logo.svg" />
+            <img alt="SimpleLogin logo" class="sl-logo" src="/images/horizontal-logo.svg" />
           </div>
 
           <div class="content" v-if="step === 1">
@@ -50,7 +50,7 @@
               websites that you visit.
             </p>
             <p>
-              <img src="../images/sl-button-demo.jpg" style="width: 400px;" />
+              <img alt="SimpleLogin Button demo" src="../images/sl-button-demo.jpg" style="width: 400px;" />
             </p>
             <p>We never use this permission to collect your personal data.</p>
             <br />
@@ -71,6 +71,7 @@
             <p>
               To start using SimpleLogin, please click on
               <img
+                alt="SimpleLogin"
                 src="../images/icon-simplelogin.png"
                 style="height: 1.2em;"
               />
@@ -78,7 +79,7 @@
             </p>
             <p v-if="isChrome">
               Note: this icon maybe hidden under
-              <img src="../images/icon-puzzle.png" style="height: 1.2em;" />
+              <img alt="Extension Menu" src="../images/icon-puzzle.png" style="height: 1.2em;" />
               button.
             </p>
           </div>
@@ -87,13 +88,13 @@
     </div>
 
     <div class="arrow-up" v-if="step === 4">
-      <img src="../images/arrow-up.png" />
+      <img alt="It is up here" src="../images/arrow-up.png" />
     </div>
   </div>
 </template>
 
 <script>
-import { havePermission, requestPermission } from "../background/permissions";
+import { requestPermission } from "../background/permissions";
 import SLStorage from "../popup/SLStorage";
 
 export default {
