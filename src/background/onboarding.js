@@ -2,15 +2,15 @@ import browser from "webextension-polyfill";
 import SLStorage from "../popup/SLStorage";
 
 function initService() {
-  browser.runtime.onInstalled.addListener(async function () {
-    const hasFirstRun = await SLStorage.get(SLStorage.SETTINGS.HAS_FIRST_RUN);
-    if (hasFirstRun) return;
-
-    await browser.tabs.create({
-      url: browser.runtime.getURL("/onboarding/index.html"),
-    });
-
-    SLStorage.set(SLStorage.SETTINGS.HAS_FIRST_RUN, true);
+  browser.runtime.onInstalled.addListener(async function ({ reason }) {
+    console.log(reason)
+    if (reason === "install") {
+      await SLStorage.clear();
+  
+      await browser.tabs.create({
+        url: browser.runtime.getURL("/onboarding/index.html"),
+      });
+    }
   });
 
   listenPostSetup();
