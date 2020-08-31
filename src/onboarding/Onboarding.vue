@@ -37,7 +37,7 @@
             <button @click="goToCreateNewAccount()" class="btn btn-primary">
               Create a new account
             </button>
-            <button @click="nextStep()" class="btn btn-outline-primary">
+            <button @click="goToLogin()" class="btn btn-outline-primary">
               I already have account
             </button>
           </div>
@@ -56,9 +56,11 @@
             </p>
             <p>
               SimpleLogin code is open-source on
-              <a href="https://github.com/simple-login/browser-extension"
-                >GitHub</a
-              >
+              <a
+                href="https://github.com/simple-login/browser-extension"
+                target="_blank"
+                rel="noopener noreferrer"
+              >GitHub</a>
               if you want to know about what's going behind the scenes.
             </p>
             <p>
@@ -126,6 +128,10 @@ export default {
     async goToCreateNewAccount() {
       const apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
       window.location.href = `${apiUrl}/auth/register?next=%2Fdashboard%2Fsetup_done`;
+    },
+    async goToLogin() {
+      const apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
+      window.location.href = `${apiUrl}/dashboard/setup_done`;
     },
     toStep(i) {
       this.step = i;
