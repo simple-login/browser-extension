@@ -11,7 +11,11 @@
       <div class="col-6 screen-right">
         <div class="right-content">
           <div class="header">
-            <img alt="SimpleLogin logo" class="sl-logo" src="/images/horizontal-logo.svg" />
+            <img
+              alt="SimpleLogin logo"
+              class="sl-logo"
+              src="/images/horizontal-logo.svg"
+            />
           </div>
 
           <div class="content" v-if="step === 1">
@@ -60,11 +64,16 @@
                 href="https://github.com/simple-login/browser-extension"
                 target="_blank"
                 rel="noopener noreferrer"
-              >GitHub</a>
+                >GitHub</a
+              >
               if you want to know about what's going behind the scenes.
             </p>
             <p>
-              <img alt="SimpleLogin Button demo" src="../images/sl-button-demo.jpg" style="width: 400px;" />
+              <img
+                alt="SimpleLogin Button demo"
+                src="../images/sl-button-demo.jpg"
+                style="width: 400px;"
+              />
             </p>
             <br />
             <button @click="askTabsPermission()" class="btn btn-primary">
@@ -96,7 +105,11 @@
               style="border-left: 5px #467fcf solid;"
             >
               Note: this icon maybe hidden under
-              <img alt="Extension Menu" src="../images/icon-puzzle.png" style="height: 1.2em;" />
+              <img
+                alt="Extension Menu"
+                src="../images/icon-puzzle.png"
+                style="height: 1.2em;"
+              />
               button.
             </p>
           </div>
