@@ -1,7 +1,7 @@
 import browser from "webextension-polyfill";
 import SLStorage from "../popup/SLStorage";
 
-async function initService() {
+function initService() {
   browser.runtime.onInstalled.addListener(async function ({ reason }) {
     if (reason === "install") {
       await SLStorage.clear();
@@ -12,17 +12,12 @@ async function initService() {
     }
   });
 
-  await listenPostSetup();
-}
+  // listen for post-setup screen
+  browser.cookies.onChanged.addListener(async function (removed, cookie) {
+    if (!removed && cookie.name === "setup_done") {
+      const currentTab = await browser.tabs.getCurrent();
 
-async function listenPostSetup() {
-  const POST_SETUP_URL = `${await SLStorage.get(
-    SLStorage.SETTINGS.API_URL
-  )}/dashboard/setup_done`;
-
-  browser.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-    if (tab.url && POST_SETUP_URL && tab.url.startsWith(POST_SETUP_URL)) {
-      browser.tabs.update(tab.id, {
+      await browser.tabs.update(currentTab.id, {
         url: browser.runtime.getURL("/onboarding/index.html#step3"),
       });
     }
