@@ -29,7 +29,7 @@ async function handleGetAppSettings() {
  */
 browser.runtime.onMessage.addListener(async function (request, sender) {
   if (request.tag === "NEW_RANDOM_ALIAS") {
-    return await handleNewRandomAlias(sender.tab);
+    return await handleNewRandomAlias(request.currentUrl);
   } else if (request.tag === "GET_APP_SETTINGS") {
     return await handleGetAppSettings();
   } else if (request.tag === "PERMISSIONS_CHANGED") {

@@ -139,7 +139,9 @@ if (!window.hasSLButton) {
       InputTools.isLoading = true;
       slButton.classList.add("loading");
 
-      let res = await sendMessageToBackground("NEW_RANDOM_ALIAS");
+      let res = await sendMessageToBackground("NEW_RANDOM_ALIAS", {
+        currentUrl: window.location.href,
+      });
       if (res.error) {
         alert("SimpleLogin Error: " + res.error);
         res = { alias: "" };
