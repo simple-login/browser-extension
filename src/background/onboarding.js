@@ -1,6 +1,8 @@
 import browser from "webextension-polyfill";
 import SLStorage from "../popup/SLStorage";
 
+const delay = (ms) => new Promise((r) => setTimeout(r, ms));
+
 function initService() {
   browser.runtime.onInstalled.addListener(async function ({ reason }) {
     if (reason === "install") {
@@ -20,6 +22,8 @@ function initService() {
         active: true,
         currentWindow: true,
       });
+
+      await delay(100);
 
       await browser.tabs.update(currentTab[0].id, {
         url: browser.runtime.getURL("/onboarding/index.html#step3"),
