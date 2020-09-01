@@ -13,11 +13,15 @@ function initService() {
   });
 
   // listen for post-setup screen
-  browser.cookies.onChanged.addListener(async function (removed, cookie) {
+  browser.cookies.onChanged.addListener(async function (info) {
+    const { removed, cookie } = info;
     if (!removed && cookie.name === "setup_done") {
-      const currentTab = await browser.tabs.getCurrent();
+      const currentTab = await browser.tabs.query({
+        active: true,
+        currentWindow: true,
+      });
 
-      await browser.tabs.update(currentTab.id, {
+      await browser.tabs.update(currentTab[0].id, {
         url: browser.runtime.getURL("/onboarding/index.html#step3"),
       });
     }
