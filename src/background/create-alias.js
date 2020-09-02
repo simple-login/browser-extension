@@ -10,9 +10,9 @@ import Utils from "../popup/Utils";
  * Create random alias
  * @param {*} tab
  */
-async function handleNewRandomAlias(tab) {
+async function handleNewRandomAlias(currentUrl) {
   await reloadSettings();
-  const hostname = await Utils.getHostName(tab);
+  const hostname = await Utils.getHostName(currentUrl);
   try {
     const res = await callAPI(
       API_ROUTE.NEW_RANDOM_ALIAS,

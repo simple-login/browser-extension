@@ -1,4 +1,5 @@
 import Utils from "./Utils";
+import browser from "webextension-polyfill";
 
 const TEMP = {};
 
@@ -22,31 +23,25 @@ class SLStorage {
   };
 
   static set(key, value) {
-    return new Promise((resolve) => {
-      chrome.storage.sync.set({ [key]: value }, function () {
-        resolve();
-      });
-    });
+    return browser.storage.sync.set({ [key]: value });
   }
 
-  static get(key) {
-    return new Promise((resolve) => {
-      chrome.storage.sync.get(key, function (data) {
-        if (data[key] === undefined || data[key] === null) {
-          resolve(SLStorage.DEFAULT_SETTINGS[key] || "");
-        } else {
-          resolve(data[key]);
-        }
-      });
-    });
+  static async get(key) {
+    const data = await browser.storage.sync.get(key);
+
+    if (data[key] === undefined || data[key] === null) {
+      return SLStorage.DEFAULT_SETTINGS[key] || "";
+    } else {
+      return data[key];
+    }
   }
 
   static remove(key) {
-    return new Promise((resolve) => {
-      chrome.storage.sync.remove(key, function () {
-        resolve();
-      });
-    });
+    return browser.storage.sync.remove(key);
+  }
+
+  static clear() {
+    return browser.storage.sync.clear();
   }
 
   static setTemporary(key, value) {

@@ -6,10 +6,10 @@ class Utils {
     return Math.floor(min + Math.random() * Math.floor(max));
   }
 
-  static async getHostName(currentTab) {
+  static async getHostName(currentUrl) {
     try {
-      if (currentTab) {
-        const url = new URL(currentTab.url);
+      if (currentUrl) {
+        const url = new URL(currentUrl);
         return url.hostname;
       } else {
         const result = await browser.tabs.query({
