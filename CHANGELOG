@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.0] - 2020-09-03
+- Fix Firefox overflow menu
+- Better onboarding process
+- Do not require tabs permission.
+
 ## [2.1.0] - 2020-08-21
 - Improve error alert
 
