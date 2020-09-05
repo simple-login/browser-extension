@@ -47,17 +47,47 @@
           </div>
 
           <div class="content" v-if="step === 3">
+            <div v-if="isAuthenticated">
+              <h1 class="h2 text-primary">Welcome {{ userName }}!</h1>
+              <hr />
+            </div>
+
             <h5>Extra permission</h5>
             <p>
               SimpleLogin extension requires the
-              <b>Read and change all your data on the websites you visit</b>
+              <b v-if="isChrome"
+                >Read and change all your data on the websites you visit</b
+              >
+              <b v-else
+                >Access your data for all websites & access browser tabs</b
+              >
               permission.
             </p>
+
+            <img
+              v-if="isChrome"
+              src="../images/chrome-permission-screenshot.png"
+              style="width: 400px;"
+            />
+            <img
+              v-else
+              src="../images/firefox-permission-screenshot.png"
+              style="width: 400px;"
+            />
+
             <p>
               Though seemingly scary, the only thing SimpleLogin does is to
               detect the email field on a page and display the icon to its
               right.
             </p>
+
+            <img
+              alt="SimpleLogin Button demo"
+              src="../images/sl-button-demo.png"
+              style="width: 400px;"
+              class="mb-3"
+            />
+
             <p>
               SimpleLogin code is open-source on
               <a
@@ -68,13 +98,7 @@
               >
               if you want to know about what's going behind the scenes.
             </p>
-            <p>
-              <img
-                alt="SimpleLogin Button demo"
-                src="../images/sl-button-demo.jpg"
-                style="width: 400px;"
-              />
-            </p>
+
             <br />
             <button @click="askTabsPermission()" class="btn btn-primary">
               Approve access permission
@@ -124,8 +148,11 @@
 </template>
 
 <script>
-import { requestPermission } from "../background/permissions";
+import {requestPermission} from "../background/permissions";
 import SLStorage from "../popup/SLStorage";
+import axios from "axios";
+import {API_ROUTE} from "../popup/APIService";
+import EventManager from "../popup/EventManager";
 
 export default {
   data() {
@@ -134,9 +161,16 @@ export default {
       isChrome:
         /Chrome/.test(navigator.userAgent) &&
         /Google Inc/.test(navigator.vendor),
+      isAuthenticated: false,
+      userName: "",
     };
   },
-  async mounted() {},
+  async mounted() {
+    // maybe user redirected from the setup_done page
+    if (this.step === 3) {
+      await this.tryGetUserInfo();
+    }
+  },
   methods: {
     async goToCreateNewAccount() {
       const apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
@@ -160,6 +194,26 @@ export default {
           "Please approve permissions. If you don't want to approve, please click Skip button."
         );
       }
+    },
+    async tryGetUserInfo() {
+      const apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
+      const that = this;
+
+      // check api key
+      axios
+        .get(apiUrl + API_ROUTE.GET_USER_INFO.path, {
+          headers: { Authentication: this.apiKey },
+        })
+        .then(async (res) => {
+          that.userName = res.data.name || res.data.email;
+          that.isAuthenticated = true;
+
+          await SLStorage.set(SLStorage.SETTINGS.API_KEY, this.apiKey);
+          EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
+        })
+        .catch((err) => {
+          // user isn't authenticated, ignore
+        });
     },
   },
 };
