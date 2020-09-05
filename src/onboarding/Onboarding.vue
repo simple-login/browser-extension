@@ -50,14 +50,39 @@
             <h5>Extra permission</h5>
             <p>
               SimpleLogin extension requires the
-              <b>Read and change all your data on the websites you visit</b>
+              <b v-if="isChrome"
+                >Read and change all your data on the websites you visit</b
+              >
+              <b v-else
+                >Access your data for all websites & access browser tabs</b
+              >
               permission.
             </p>
+
+            <img
+              v-if="isChrome"
+              src="../images/chrome-permission-screenshot.png"
+              style="width: 400px;"
+            />
+            <img
+              v-else
+              src="../images/firefox-permission-screenshot.png"
+              style="width: 400px;"
+            />
+
             <p>
               Though seemingly scary, the only thing SimpleLogin does is to
               detect the email field on a page and display the icon to its
               right.
             </p>
+
+            <img
+              alt="SimpleLogin Button demo"
+              src="../images/sl-button-demo.png"
+              style="width: 400px;"
+              class="mb-3"
+            />
+
             <p>
               SimpleLogin code is open-source on
               <a
@@ -68,13 +93,7 @@
               >
               if you want to know about what's going behind the scenes.
             </p>
-            <p>
-              <img
-                alt="SimpleLogin Button demo"
-                src="../images/sl-button-demo.jpg"
-                style="width: 400px;"
-              />
-            </p>
+
             <br />
             <button @click="askTabsPermission()" class="btn btn-primary">
               Approve access permission
