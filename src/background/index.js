@@ -2,6 +2,7 @@ import browser from "webextension-polyfill";
 import APIService from "../popup/APIService";
 import SLStorage from "../popup/SLStorage";
 import Onboarding from "./onboarding";
+import Utils from "../popup/Utils"
 import "./content-script";
 
 import { handleNewRandomAlias } from "./create-alias";
@@ -44,6 +45,17 @@ browser.contextMenus.create({
   title: "Create random email alias (copied)",
   contexts: ["all"],
   onclick: handleOnClickContextMenu,
+});
+
+/**
+ * Shortcuts and hotkeys listener
+ */
+browser.commands.onCommand.addListener(async (command)  => {
+  if (command === "generate-random-alias") {
+	console.log("generate-random-alias");
+	const currentTab = (await browser.tabs.query({active: true, currentWindow: true}))[0];
+	return await handleNewRandomAlias(currentTab.url);
+  }
 });
 
 APIService.initService();
