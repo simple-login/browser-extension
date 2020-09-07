@@ -2,11 +2,10 @@ import browser from "webextension-polyfill";
 import APIService from "../popup/APIService";
 import SLStorage from "../popup/SLStorage";
 import Onboarding from "./onboarding";
-import Utils from "../popup/Utils"
 import "./content-script";
 
 import { handleNewRandomAlias } from "./create-alias";
-import { handleOnClickContextMenu } from "./context-menu";
+import { handleOnClickContextMenu, generateAliasHandlerJS } from "./context-menu";
 import { firePermissionListener } from "./permissions";
 
 global.isBackgroundJS = true;
@@ -52,9 +51,9 @@ browser.contextMenus.create({
  */
 browser.commands.onCommand.addListener(async (command)  => {
   if (command === "generate-random-alias") {
-	console.log("generate-random-alias");
 	const currentTab = (await browser.tabs.query({active: true, currentWindow: true}))[0];
-	return await handleNewRandomAlias(currentTab.url);
+	const res = await handleNewRandomAlias(currentTab.url);
+	generateAliasHandlerJS(currentTab, res);
   }
 });
 

@@ -70,4 +70,4 @@ async function handleOnClickContextMenu(info, tab) {
   generateAliasHandlerJS(tab, res);
 }
 
-export { handleOnClickContextMenu };
+export { handleOnClickContextMenu, generateAliasHandlerJS };
