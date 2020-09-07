@@ -66,7 +66,7 @@ function generateAliasHandlerJS(tab, res) {
 }
 
 async function handleOnClickContextMenu(info, tab) {
-  const res = await handleNewRandomAlias(tab);
+  const res = await handleNewRandomAlias(info.pageUrl);
   generateAliasHandlerJS(tab, res);
 }
 
