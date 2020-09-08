@@ -5,7 +5,10 @@ import Onboarding from "./onboarding";
 import "./content-script";
 
 import { handleNewRandomAlias } from "./create-alias";
-import { handleOnClickContextMenu, generateAliasHandlerJS } from "./context-menu";
+import {
+  handleOnClickContextMenu,
+  generateAliasHandlerJS,
+} from "./context-menu";
 import { firePermissionListener } from "./permissions";
 
 global.isBackgroundJS = true;
@@ -49,11 +52,13 @@ browser.contextMenus.create({
 /**
  * Shortcuts and hotkeys listener
  */
-browser.commands.onCommand.addListener(async (command)  => {
+browser.commands.onCommand.addListener(async (command) => {
   if (command === "generate-random-alias") {
-	const currentTab = (await browser.tabs.query({active: true, currentWindow: true}))[0];
-	const res = await handleNewRandomAlias(currentTab.url);
-	generateAliasHandlerJS(currentTab, res);
+    const currentTab = (
+      await browser.tabs.query({ active: true, currentWindow: true })
+    )[0];
+    const res = await handleNewRandomAlias(currentTab.url);
+    generateAliasHandlerJS(currentTab, res);
   }
 });
 

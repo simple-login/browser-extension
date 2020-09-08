@@ -41,10 +41,10 @@
 	  "description": "Generate a random email alias"
 	},
 	"_execute_browser_action": {
-		"suggested_key": {
-		  "default": "Ctrl+Alt+S"
-		},
-		"description":"Open the extension action menu"
+	  "suggested_key": {
+		"default": "Ctrl+Alt+S"
+	  },
+	  "description":"Open the extension action menu"
 	}
   }
 }
