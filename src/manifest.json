@@ -1,6 +1,7 @@
 {
-  "name": "SimpleLogin | Your anti-spam superhero",
-  "description": "Open source email alias solution",
+  "name": "SimpleLogin: Open-source Email Protection",
+  "short_name": "SimpleLogin",
+  "description": "Create a different email for each website to hide your real email. Guard your inbox against spams, phishing. Protect your privacy.",
   "version": null,
   "manifest_version": 2,
   "icons": {

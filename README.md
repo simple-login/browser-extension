@@ -37,7 +37,7 @@ To run the extension locally, please follow these steps:
 
 - install all dependencies with `npm install`.
 
-- run `npm run watch:dev` to generate the `/dist` folder that can be installed into Chrome.
+- run `npm start` to generate the `/dist` folder that can be installed into Chrome.
 
 On Firefox, it can be done via `web-ext` tool from within the `/dist` folder: 
 
