@@ -37,13 +37,13 @@
   "commands": {
 	"generate-random-alias": {
 	  "suggested_key": {
-		"default": "Ctrl+Alt+X"
+		"default": "Ctrl+Shift+X"
 	  },
 	  "description": "Generate a random email alias"
 	},
 	"_execute_browser_action": {
 	  "suggested_key": {
-		"default": "Ctrl+Alt+S"
+		"default": "Ctrl+Shift+S"
 	  },
 	  "description":"Open the extension action menu"
 	}
