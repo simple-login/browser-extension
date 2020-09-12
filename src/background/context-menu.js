@@ -2,7 +2,7 @@ import { handleNewRandomAlias } from "./create-alias";
 import browser from "webextension-polyfill";
 
 function generateDialogJS(message) {
-  const content = `
+  return `
     function showSLDialog() {
       let slDialog = document.createElement("div");
       slDialog.style.position = "fixed";
@@ -28,8 +28,6 @@ function generateDialogJS(message) {
 
     showSLDialog();
   `;
-
-  return content;
 }
 
 function generateAliasHandlerJS(tab, res) {

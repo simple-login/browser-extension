@@ -1,5 +1,3 @@
-import EventManager from "./EventManager";
-
 let router = null;
 
 const PATH = {

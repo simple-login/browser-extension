@@ -10,7 +10,6 @@
 import "./App.scss";
 import VueRouter from "vue-router";
 import Navigation from "./Navigation";
-import EventManager from "./EventManager";
 
 import SplashScreen from "./components/SplashScreen";
 import Header from "./components/Header";

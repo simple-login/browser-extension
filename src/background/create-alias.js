@@ -8,7 +8,6 @@ import Utils from "../popup/Utils";
 
 /**
  * Create random alias
- * @param {*} tab
  */
 async function handleNewRandomAlias(currentUrl) {
   await reloadSettings();
