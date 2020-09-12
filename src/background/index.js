@@ -5,7 +5,10 @@ import Onboarding from "./onboarding";
 import "./content-script";
 
 import { handleNewRandomAlias } from "./create-alias";
-import { handleOnClickContextMenu } from "./context-menu";
+import {
+  handleOnClickContextMenu,
+  generateAliasHandlerJS,
+} from "./context-menu";
 import { firePermissionListener } from "./permissions";
 
 global.isBackgroundJS = true;
@@ -44,6 +47,19 @@ browser.contextMenus.create({
   title: "Create random email alias (copied)",
   contexts: ["all"],
   onclick: handleOnClickContextMenu,
+});
+
+/**
+ * Shortcuts and hotkeys listener
+ */
+browser.commands.onCommand.addListener(async (command) => {
+  if (command === "generate-random-alias") {
+    const currentTab = (
+      await browser.tabs.query({ active: true, currentWindow: true })
+    )[0];
+    const res = await handleNewRandomAlias(currentTab.url);
+    generateAliasHandlerJS(currentTab, res);
+  }
 });
 
 APIService.initService();
