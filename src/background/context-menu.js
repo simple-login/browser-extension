@@ -1,4 +1,5 @@
 import { handleNewRandomAlias } from "./create-alias";
+import browser from "webextension-polyfill";
 
 function generateDialogJS(message) {
   const content = `
@@ -60,7 +61,7 @@ function generateAliasHandlerJS(tab, res) {
 
     copyTextToClipboard(${JSON.stringify(res.alias)});
   `;
-  global.browser.tabs.executeScript(tab.id, {
+  browser.tabs.executeScript(tab.id, {
     code: js,
   });
 }
