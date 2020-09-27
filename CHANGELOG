@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.4.0] - 2020-09-26
+- Ctrl+Shift+S (or Cmd+Shift+S on MacOS) to open SimpleLogin pop-up
+- Ctrl+Shift+X (or Cmd+Shift+X on MacOS) to create a random alias
+- Fix window not displayed when a new alias is created
+
 ## [2.3.1] - 2020-09-07
 - Fix the hostname issue
 
