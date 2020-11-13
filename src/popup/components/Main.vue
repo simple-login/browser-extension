@@ -363,7 +363,7 @@ export default {
           {
             alias_prefix: this.aliasPrefix,
             signed_suffix: this.signedSuffix,
-            note: `Used on ${await Utils.getHostName()}`,
+            note: await Utils.getDefaultNote(),
           }
         );
 
@@ -408,7 +408,7 @@ export default {
             hostname: this.hostName,
           },
           {
-            note: `Used on ${await Utils.getHostName()}`,
+            note: await Utils.getDefaultNote(),
           }
         );
 

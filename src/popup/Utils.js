@@ -24,6 +24,18 @@ class Utils {
     }
   }
 
+  static async getDefaultNote(){
+    const hostName = await Utils.getHostName();
+    let note = '';
+
+    // ignore hostName that doesn't look like an url
+    if (hostName && hostName.indexOf(".") > -1){
+      note = `Used on ${hostName}`
+    }
+
+    return note
+  }
+
   static getDeviceName() {
     const isFirefox = typeof InstallTrigger !== "undefined";
     const browserName = isFirefox ? "Firefox" : "Chrome";

@@ -19,7 +19,7 @@ async function handleNewRandomAlias(currentUrl) {
         hostname,
       },
       {
-        note: hostname ? `Used on ${hostname}` : "",
+        note: await Utils.getDefaultNote()
       },
       API_ON_ERR.THROW
     );
