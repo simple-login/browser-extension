@@ -49,7 +49,8 @@ The code is formatted using `prettier`, make sure to run it before creating the 
 
 ## To build the project
 
-Build the production version and zip it via 
+Build the production version and zip it via
+ 
 ```bash
 npm run build && npm run build-zip
 ```
