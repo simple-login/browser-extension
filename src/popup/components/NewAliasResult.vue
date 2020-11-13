@@ -23,7 +23,6 @@
           :index="0"
           :show="true"
           :mailboxes="mailboxes"
-          :prefillNote="prefillNote"
           btnSaveLabel="Save &amp; Back"
           @changed="backToMainPage"
           @deleted="backToMainPage"
@@ -70,12 +69,10 @@ export default {
       newAliasData: SLStorage.getTemporary("newAliasData"),
       showVoteScreen: false,
       extensionUrl: Utils.getExtensionURL(),
-      prefillNote: "",
     };
   },
   async mounted() {
     this.newAlias = this.$route.params.email;
-    this.prefillNote = `Used on ${await Utils.getHostName()}`;
     let notAskingRate = await SLStorage.get(SLStorage.SETTINGS.NOT_ASKING_RATE);
     if (!!notAskingRate) this.showVoteScreen = false;
     // TODO showVoteScreen 1 day after user installed plugin
