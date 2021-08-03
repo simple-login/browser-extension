@@ -45,7 +45,11 @@ On Firefox, it can be done via `web-ext` tool from within the `/dist` folder:
 ( cd dist/ ; web-ext run )
 ```
 
-The code is formatted using `prettier`, make sure to run it before creating the commit :).
+The code is formatted using `prettier`, make sure to run it before creating the commit:
+
+```bash
+npm run prettier:write
+```
 
 ## To build the project
 
