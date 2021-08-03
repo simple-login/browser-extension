@@ -5,6 +5,9 @@
     <!-- Main Page -->
     <div class="container">
       <div v-if="recommendation.show" class="text-center">
+        <div class="" style="font-size: 12px">
+          You created this alias on this website before:
+        </div>
         <div class="flex-grow-1">
           <a
             v-clipboard="() => recommendation.alias"
@@ -16,9 +19,6 @@
           >
             <span class="text-success">{{ recommendation.alias }}</span>
           </a>
-        </div>
-        <div class="small-text">
-          recommended, already used on this website.
         </div>
 
         <hr />
