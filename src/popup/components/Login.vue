@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <!-- Login/register screen -->
-    <div v-if="!isShowMfa" class="p-6 container" style="min-height: 350px;">
+    <div v-if="!isShowMfa" class="p-6 container" style="min-height: 350px">
       <h1 class="h5 mb-3">
         Welcome to
         <a href="https://simplelogin.io" target="_blank"
@@ -30,9 +30,7 @@
           <input v-model="password" type="password" class="form-control" />
         </div>
 
-        <button class="btn btn-primary btn-block mt-2">
-          Login
-        </button>
+        <button class="btn btn-primary btn-block mt-2">Login</button>
       </form>
 
       <div class="text-center">
@@ -54,7 +52,7 @@
     <!-- END Login/register screen -->
 
     <!-- MFA screen -->
-    <div v-else class="p-6 container" style="min-height: 350px;">
+    <div v-else class="p-6 container" style="min-height: 350px">
       <div class="p-3">
         <div class="mb-2">
           Your account is protected with Two Factor Authentication. <br />
@@ -62,12 +60,10 @@
 
         <div>
           <b>Token</b>
-          <p>
-            Please enter the 2FA code from your 2FA authenticator
-          </p>
+          <p>Please enter the 2FA code from your 2FA authenticator</p>
         </div>
 
-        <div style="margin: auto;">
+        <div style="margin: auto">
           <input
             v-model="mfaCode"
             v-on:keyup.enter="submitMfaCode"

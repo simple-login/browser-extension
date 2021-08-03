@@ -30,8 +30,6 @@ function initService() {
       });
     }
   });
-
-
 }
 
 export default { initService };

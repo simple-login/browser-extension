@@ -24,16 +24,16 @@ class Utils {
     }
   }
 
-  static async getDefaultNote(){
+  static async getDefaultNote() {
     const hostName = await Utils.getHostName();
-    let note = '';
+    let note = "";
 
     // ignore hostName that doesn't look like an url
-    if (hostName && hostName.indexOf(".") > -1){
-      note = `Used on ${hostName}`
+    if (hostName && hostName.indexOf(".") > -1) {
+      note = `Used on ${hostName}`;
     }
 
-    return note
+    return note;
   }
 
   static getDeviceName() {

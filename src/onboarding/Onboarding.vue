@@ -67,12 +67,12 @@
             <img
               v-if="isChrome"
               src="../images/chrome-permission-screenshot.png"
-              style="width: 400px;"
+              style="width: 400px"
             />
             <img
               v-else
               src="../images/firefox-permission-screenshot.png"
-              style="width: 400px;"
+              style="width: 400px"
             />
 
             <p>
@@ -84,7 +84,7 @@
             <img
               alt="SimpleLogin Button demo"
               src="../images/sl-button-demo.png"
-              style="width: 400px;"
+              style="width: 400px"
               class="mb-3"
             />
 
@@ -106,7 +106,7 @@
             <button
               @click="nextStep()"
               class="btn"
-              style="color: #888; font-size: 0.8em;"
+              style="color: #888; font-size: 0.8em"
             >
               Skip
             </button>
@@ -119,20 +119,20 @@
               <img
                 alt="SimpleLogin"
                 src="../images/icon-simplelogin.png"
-                style="height: 1.2em;"
+                style="height: 1.2em"
               />
               icon at the corner of your browser.
             </p>
             <p
               v-if="isChrome"
               class="alert alert-primary"
-              style="border-left: 5px #467fcf solid;"
+              style="border-left: 5px #467fcf solid"
             >
               Note: this icon maybe hidden under
               <img
                 alt="Extension Menu"
                 src="../images/icon-puzzle.png"
-                style="height: 1.2em;"
+                style="height: 1.2em"
               />
               button.
             </p>
@@ -148,10 +148,10 @@
 </template>
 
 <script>
-import {requestPermission} from "../background/permissions";
+import { requestPermission } from "../background/permissions";
 import SLStorage from "../popup/SLStorage";
 import axios from "axios";
-import {API_ROUTE} from "../popup/APIService";
+import { API_ROUTE } from "../popup/APIService";
 import EventManager from "../popup/EventManager";
 
 export default {
