@@ -51,16 +51,21 @@ The code is formatted using `prettier`, make sure to run it before creating the 
 npm run prettier:write
 ```
 
-## To build the project
 
-Build the production version and zip it via
+## Release
+
+- Increment the version in `package.json`
+- Update CHANGELOG with the changes
+- Build the production version and zip it via
  
 ```bash
 npm run build && npm run build-zip
 ```
 
-Build beta version: change `betaRev` in `package.json`, then generate zip file using 
+- (Optional, only useful for beta build) Build beta version: change `betaRev` in `package.json`, then generate zip file using 
 
 ```bash
 npm run build:beta && npm run build-zip
 ```
+
+- Upload to Chrome, Firefox, Edge stores.
