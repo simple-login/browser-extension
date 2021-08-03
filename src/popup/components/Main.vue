@@ -73,7 +73,7 @@
                 <option
                   v-for="suffix in aliasSuffixes"
                   v-bind:key="suffix[0]"
-                  :value="suffix[1]"
+                  :value="suffix"
                 >
                   {{ suffix[0] }}
                 </option>
@@ -96,9 +96,8 @@
         </form>
       </div>
 
-      <div class="small-text mb-1" v-if="aliasPrefix">
-        Alias is autofilled by the current website name, please feel free to
-        change it.
+      <div class="mb-1 text-center" v-if="aliasPrefix" style="font-size: 12px">
+        You're about to create alias <span class="text-primary">{{aliasPrefix}}{{signedSuffix[0]}}</span>
       </div>
 
       <div v-if="!canCreate">
@@ -283,7 +282,7 @@ export default {
       }
 
       this.aliasSuffixes = aliasOptions.suffixes;
-      this.signedSuffix = this.aliasSuffixes[0][1];
+      this.signedSuffix = this.aliasSuffixes[0];
       this.aliasPrefix = aliasOptions.prefix_suggestion;
       this.canCreate = aliasOptions.can_create;
       this.mailboxes = mailboxes;
@@ -376,7 +375,7 @@ export default {
           },
           {
             alias_prefix: this.aliasPrefix,
-            signed_suffix: this.signedSuffix,
+            signed_suffix: this.signedSuffix[1],
             note: await Utils.getDefaultNote(),
           }
         );
