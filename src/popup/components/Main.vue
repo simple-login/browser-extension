@@ -218,7 +218,7 @@ import Navigation from "../Navigation";
 import AliasMoreOptions from "./AliasMoreOptions";
 import { callAPI, API_ROUTE, API_ON_ERR } from "../APIService";
 
-const ALIAS_PREFIX_REGEX =/^[0-9a-z-_]+$/
+const ALIAS_PREFIX_REGEX =/^[0-9a-z-_.]+$/
 
 export default {
   components: {
@@ -362,7 +362,7 @@ export default {
       // check aliasPrefix
       this.aliasPrefixError = ""
       if (this.aliasPrefix.match(ALIAS_PREFIX_REGEX) === null){
-        this.aliasPrefixError = "Only letter, number, dash (-), underscore (_) can be used in alias prefix."
+        this.aliasPrefixError = "Only lowercase letters, dots, numbers, dashes (-) and underscores (_) are currently supported."
         return
       }
 
