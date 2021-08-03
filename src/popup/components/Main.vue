@@ -48,14 +48,12 @@
         <form @submit.prevent="createCustomAlias">
           <div class="row mb-2">
             <div
-              class="col align-self-center input-group-sm"
+              class="col align-self-start input-group-sm"
               style="padding-right: 0;"
             >
               <input
                 v-model="aliasPrefix"
                 class="form-control"
-                pattern="[0-9a-z-_]{1,}"
-                title="Only letter, number, dash (-), underscore (_) can be used in alias prefix."
                 placeholder="Alias prefix"
                 :disabled="loading || !canCreate"
                 autofocus
@@ -64,7 +62,7 @@
             </div>
 
             <div
-              class="col align-self-center input-group-sm"
+              class="col align-self-start input-group-sm"
               style="padding-left: 5px; padding-right: 5px;"
             >
               <select
@@ -85,10 +83,15 @@
             <button
               :disabled="loading || !canCreate"
               style="margin-right: 15px;"
-              class="btn btn-primary btn-sm align-self-center"
+              class="btn btn-primary btn-sm align-self-start"
             >
               Create
             </button>
+          </div>
+          <div class="row text-danger" style="font-size: 12px" v-if="aliasPrefixError != ''">
+            <div class="col">
+              {{aliasPrefixError}}
+            </div>
           </div>
         </form>
       </div>
@@ -215,6 +218,8 @@ import Navigation from "../Navigation";
 import AliasMoreOptions from "./AliasMoreOptions";
 import { callAPI, API_ROUTE, API_ON_ERR } from "../APIService";
 
+const ALIAS_PREFIX_REGEX =/^[0-9a-z-_]+$/
+
 export default {
   components: {
     "alias-more-options": AliasMoreOptions,
@@ -230,6 +235,7 @@ export default {
       canCreate: true,
       aliasSuffixes: [],
       aliasPrefix: "",
+      aliasPrefixError: "",
       signedSuffix: "",
       recommendation: {
         show: false,
@@ -352,6 +358,14 @@ export default {
 
     async createCustomAlias() {
       if (this.loading) return;
+
+      // check aliasPrefix
+      this.aliasPrefixError = ""
+      if (this.aliasPrefix.match(ALIAS_PREFIX_REGEX) === null){
+        this.aliasPrefixError = "Only letter, number, dash (-), underscore (_) can be used in alias prefix."
+        return
+      }
+
       this.loading = true;
 
       try {
