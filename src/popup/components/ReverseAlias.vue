@@ -122,7 +122,6 @@ export default {
         API_ON_ERR.TOAST
       );
       this.createdReverseAlias = data;
-      console.log(this.createdReverseAlias);
       this.loading = false;
     },
 
