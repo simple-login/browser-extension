@@ -38,7 +38,7 @@
         From Name
         <font-awesome-icon
           v-b-tooltip.hover.top="
-            'This name is used when you send or reply from alias'
+            'This name is used when you send or reply from alias. You may need to use a pseudonym because the receiver can see it.'
           "
           icon="question-circle"
         />

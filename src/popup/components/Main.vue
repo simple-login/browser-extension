@@ -166,6 +166,10 @@
                     @change="toggleAlias(alias)"
                   />
 
+                  <div class="btn-svg btn-send" @click="goToReverseAlias(alias)">
+                    <font-awesome-icon icon="paper-plane" />
+                  </div>
+
                   <img
                     src="/images/icon-dropdown.svg"
                     v-if="alias"
@@ -491,6 +495,12 @@ export default {
       for (const key in event.data) {
         alias[key] = event.data[key];
       }
+    },
+
+    // Reverse Alias
+    goToReverseAlias(alias) {
+      SLStorage.setTemporary("alias", alias);
+      Navigation.navigateTo(Navigation.PATH.REVERSE_ALIAS, true);
     },
 
     // Clipboard
