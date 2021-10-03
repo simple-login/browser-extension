@@ -53,15 +53,17 @@
           </a>
         </p>
         <small>
-          Emails sent to this address will be forwarded to
-          <b>{{ createdReverseAlias.contact }}</b
-          >. The receiver will see <b>{{ alias.email }}</b> as your email.<br />
-          You can use this reverse-alias from one of these mailbox(es):<br />
-          <ul>
+          You can send email from one of these mailbox(es):
+          <ul style="margin-bottom: 0;">
             <li v-for="mailbox in alias.mailboxes" v-bind:key="mailbox.id">
               {{ mailbox.email }}
             </li>
           </ul>
+          The email will be forwarded to
+          <b>{{ createdReverseAlias.contact }}</b
+          >.<br />
+          The receiver will see <b>{{ alias.email }}</b> as your email
+          address.<br />
         </small>
       </div>
 
