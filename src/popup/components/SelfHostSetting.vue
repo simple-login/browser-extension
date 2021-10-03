@@ -7,7 +7,7 @@
       </div>
       <div class="mb-2">The default API URL is https://app.simplelogin.io</div>
 
-      <div style="margin: auto">
+      <div style="margin: auto;">
         <input
           v-model="apiUrl"
           v-on:keyup.enter="saveApiUrl"

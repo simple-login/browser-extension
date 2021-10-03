@@ -1,21 +1,21 @@
 <template>
   <div class="header">
-    <div class="row mt-2 pb-2 ml-3 mr-2" style="border-bottom: 1px #eee solid">
+    <div class="row mt-2 pb-2 ml-3 mr-2" style="border-bottom: 1px #eee solid;">
       <div>
         <div
           v-on:click="navigateBack()"
           v-bind:class="{ back: canBack }"
-          style="display: inline-block"
+          style="display: inline-block;"
         >
           <img
             v-if="canBack"
             src="/images/back-button.svg"
-            style="height: 20px"
+            style="height: 20px;"
           />
           <img
             class="sl-logo"
             src="/images/horizontal-logo.svg"
-            style="height: 18px"
+            style="height: 18px;"
           />
         </div>
         <div class="beta-badge" v-if="isBeta">BETA</div>
@@ -53,7 +53,7 @@
           :href="apiUrl + '/dashboard/'"
           target="_blank"
           class="dashboard-btn float-right"
-          style="padding: 0.25rem 0.5rem; font-size: 0.875rem"
+          style="padding: 0.25rem 0.5rem; font-size: 0.875rem;"
           title="Dashboard"
           v-b-tooltip.hover
           :disabled="!useCompactLayout"
