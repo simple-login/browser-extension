@@ -38,12 +38,12 @@
               step.
             </p>
             <br />
-            <button @click="goToCreateNewAccount()" class="btn btn-primary">
+            <a :href="url.createNewAccount" class="btn btn-primary">
               Create a new account
-            </button>
-            <button @click="goToLogin()" class="btn btn-outline-primary">
+            </a>
+            <a :href="url.login" class="btn btn-outline-primary">
               I already have account
-            </button>
+            </a>
           </div>
 
           <div class="content" v-if="step === 3">
@@ -157,29 +157,38 @@ import EventManager from "../popup/EventManager";
 export default {
   data() {
     return {
-      step: window.location.href.match(/#step3/) ? 3 : 1,
+      step: 1,
       isChrome:
         /Chrome/.test(navigator.userAgent) &&
         /Google Inc/.test(navigator.vendor),
       isAuthenticated: false,
       userName: "",
+      url: {
+        createNewAccount: "",
+        login: "",
+      },
     };
   },
   async mounted() {
+    // get URL for buttons
+    const apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
+    this.url.createNewAccount = `${apiUrl}/auth/register?next=%2Fdashboard%2Fsetup_done`;
+    this.url.login = `${apiUrl}/dashboard/setup_done`;
+
     // maybe user redirected from the setup_done page
     if (this.step === 3) {
       await this.tryGetUserInfo();
     }
+
+    // update setup step
+    const self = this;
+    const updateStep = function () {
+      self.step = window.location.href.match(/#step3/) ? 3 : 1;
+    };
+    window.addEventListener("hashchange", updateStep, false);
+    updateStep();
   },
   methods: {
-    async goToCreateNewAccount() {
-      const apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
-      window.location.href = `${apiUrl}/auth/register?next=%2Fdashboard%2Fsetup_done`;
-    },
-    async goToLogin() {
-      const apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
-      window.location.href = `${apiUrl}/dashboard/setup_done`;
-    },
     toStep(i) {
       this.step = i;
     },
