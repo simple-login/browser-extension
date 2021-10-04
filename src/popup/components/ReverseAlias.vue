@@ -4,13 +4,13 @@
       <!-- Reverse-alias screen -->
       <div class="m-2 p-2" v-if="!createdReverseAlias">
         <p>
-          Create reverse-alias for
+          Send emails from
           <span class="font-weight-bold">{{ alias.email }}</span>
         </p>
         <small>
           To send an email from your alias to a contact, you need to create a
-          reverse-alias, a special email address. When you send an email to the
-          reverse-alias, the email will be sent from your alias to the
+          <b>reverse-alias</b>, a special email address. When you send an email
+          to the reverse-alias, the email will be sent from your alias to the
           contact.<br /><br />
           This Youtube video can also quickly walk you through the steps:
           <a
@@ -30,6 +30,7 @@
         </label>
         <b-input
           v-model="receiverEmail"
+          v-on:keyup.enter="createReverseAlias"
           placeholder="First Last &lt;email@example.com&gt;"
           :disabled="loading"
         />
@@ -37,10 +38,16 @@
 
       <!-- Created screen -->
       <div class="m-2 p-2" v-else>
-        <p class="font-weight-bold">Reverse-alias is created:</p>
+        <p class="font-weight-bold">
+          {{
+            createdReverseAlias.existed
+              ? "You have created this reverse-alias before:"
+              : "Reverse-alias is created:"
+          }}
+        </p>
         <p>
           <a
-            v-clipboard="() => createdReverseAlias.reverse_alias_address"
+            v-clipboard="() => createdReverseAlias.reverse_alias"
             v-clipboard:success="clipboardSuccessHandler"
             v-clipboard:error="clipboardErrorHandler"
             v-b-tooltip.hover
@@ -48,7 +55,7 @@
             class="cursor"
           >
             <span class="text-success">
-              {{ createdReverseAlias.reverse_alias_address }}
+              {{ createdReverseAlias.reverse_alias }}
             </span>
           </a>
         </p>
@@ -113,7 +120,8 @@ export default {
 
     // Create reverse-alias
     async createReverseAlias() {
-      const { data } = await callAPI(
+      this.loading = true;
+      const response = await callAPI(
         API_ROUTE.CREATE_REVERSE_ALIAS,
         {
           alias_id: this.alias.id,
@@ -123,7 +131,7 @@ export default {
         },
         API_ON_ERR.TOAST
       );
-      this.createdReverseAlias = data;
+      this.createdReverseAlias = response ? response.data : null;
       this.loading = false;
     },
 
