@@ -29,6 +29,10 @@ const API_ROUTE = {
   TOGGLE_ALIAS: { method: "POST", path: "/api/aliases/:alias_id/toggle" },
   EDIT_ALIAS: { method: "PUT", path: "/api/aliases/:alias_id" },
   DELETE_ALIAS: { method: "DELETE", path: "/api/aliases/:alias_id" },
+  CREATE_REVERSE_ALIAS: {
+    method: "POST",
+    path: "/api/aliases/:alias_id/contacts",
+  },
   GET_API_KEY_FROM_COOKIE: { method: "POST", path: "/api/api_key" },
 };
 

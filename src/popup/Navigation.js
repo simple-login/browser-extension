@@ -7,6 +7,7 @@ const PATH = {
   LOGIN: "/login",
   API_KEY_SETTING: "/api-key-setting",
   SELF_HOST_SETTING: "/self-host-setting",
+  REVERSE_ALIAS: "/reverse-alias",
   APP_SETTINGS: "/app-settings",
 };
 
@@ -38,6 +39,10 @@ class Navigation {
       {
         path: Navigation.PATH.NEW_ALIAS_RESULT,
         component: components.NewAliasResult,
+      },
+      {
+        path: Navigation.PATH.REVERSE_ALIAS,
+        component: components.ReverseAlias,
       },
       {
         path: Navigation.PATH.APP_SETTINGS,

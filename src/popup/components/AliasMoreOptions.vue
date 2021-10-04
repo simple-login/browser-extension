@@ -29,7 +29,7 @@
       <textarea-autosize
         placeholder="Note, can be anything to help you remember why you created this alias. This field is optional."
         class="form-control"
-        style="width: 100%"
+        style="width: 100%;"
         v-model="moreOptions.note"
         :disabled="loading"
       ></textarea-autosize>
@@ -38,7 +38,7 @@
         From Name
         <font-awesome-icon
           v-b-tooltip.hover.top="
-            'This name is used when you send or reply from alias'
+            'This name is used when you send or reply from alias. You may need to use a pseudonym because the receiver can see it.'
           "
           icon="question-circle"
         />
@@ -69,7 +69,7 @@
 
         <button
           class="btn btn-sm btn-delete"
-          style="color: #dc3545"
+          style="color: #dc3545;"
           v-on:click="handleClickDelete"
           :disabled="loading"
         >

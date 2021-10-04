@@ -41,7 +41,7 @@
           <a
             @click="doNotAskRateAgain"
             class="text-secondary cursor"
-            style="font-size: 0.7em"
+            style="font-size: 0.7em;"
           >
             Do not ask again
           </a>
