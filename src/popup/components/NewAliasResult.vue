@@ -8,9 +8,7 @@
             v-clipboard="() => newAliasData.alias"
             v-clipboard:success="clipboardSuccessHandler"
             v-clipboard:error="clipboardErrorHandler"
-            v-b-tooltip.hover
-            title="Click to Copy"
-            class="cursor"
+            class="cursor new-alias"
           >
             <span class="text-success">
               {{ newAliasData.alias }}
@@ -58,6 +56,7 @@ import EventManager from "../EventManager";
 import Utils from "../Utils";
 import AliasMoreOptions from "./AliasMoreOptions";
 import { callAPI, API_ROUTE, API_ON_ERR } from "../APIService";
+import tippy from 'tippy.js';
 
 export default {
   components: {
@@ -77,6 +76,12 @@ export default {
     if (!!notAskingRate) this.showVoteScreen = false;
     // TODO showVoteScreen 1 day after user installed plugin
     else this.showVoteScreen = Utils.getRandomIntBetween(0, 10) % 2 === 0;
+
+    tippy('.new-alias', {
+      content: 'Click to copy',
+      trigger: 'manual',
+      showOnCreate: true,
+    });
   },
   methods: {
     // Clipboard
