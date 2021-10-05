@@ -5,7 +5,7 @@
     <!-- Main Page -->
     <div class="container">
       <div v-if="recommendation.show" class="text-center">
-        <div class="" style="font-size: 12px;">
+        <div class="" style="font-size: 14px;">
           You created this alias on this website before:
         </div>
         <div class="flex-grow-1">
@@ -22,25 +22,7 @@
         <hr />
       </div>
 
-      <div>
-        <p
-          class="font-weight-bold mt-2 align-self-center"
-          style="display: inline-block;"
-        >
-          New Alias
-        </p>
 
-        <button
-          :disabled="loading || !canCreate"
-          style="margin-left: 15px;"
-          class="btn btn-outline-primary btn-sm"
-          title="Generate a totally random alias."
-          @click="createRandomAlias"
-          v-b-tooltip.hover
-        >
-          <font-awesome-icon icon="random" /> Random
-        </button>
-      </div>
 
       <div>
         <form @submit.prevent="createCustomAlias">
@@ -98,9 +80,21 @@
         </form>
       </div>
 
-      <div class="mb-1 text-center" v-if="aliasPrefix" style="font-size: 12px;">
+      <div class="mb-1 text-center" v-if="aliasPrefix" style="font-size: 14px;">
         You're about to create alias
         <span class="text-primary">{{ aliasPrefix }}{{ signedSuffix[0] }}</span>
+      </div>
+
+      <hr />
+      <div class="text-center">
+        <button
+            :disabled="loading || !canCreate"
+            style="margin-left: 15px;"
+            class="btn btn-outline-primary btn-sm"
+            @click="createRandomAlias"
+        >
+          <font-awesome-icon icon="random" /> OR create a totally random alias
+        </button>
       </div>
 
       <div v-if="!canCreate">
@@ -113,8 +107,8 @@
       <hr />
 
       <div v-if="aliasArray.length > 0 || searchString !== ''">
-        <div class="mx-auto font-weight-bold text-center">
-          Or use an existing alias
+        <div class="mx-auto font-weight-bold text-center mb-2">
+          OR use an existing alias
         </div>
 
         <div class="mx-auto" style="max-width: 60%;">
@@ -141,7 +135,7 @@
         <!-- list alias -->
         <div v-if="aliasArray.length > 0">
           <div v-for="(alias, index) in aliasArray" v-bind:key="alias.id">
-            <div class="p-2 my-2 border-top list-item-alias">
+            <div class="p-2 my-2 list-item-alias">
               <div class="d-flex" v-bind:class="{ disabled: !alias.enabled }">
                 <div
                   class="flex-grow-1 list-item-email"
