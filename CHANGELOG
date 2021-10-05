@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.5.0] - 2021-10-05
+- Support create reverse-alias
+- Improve UI
+- Update dependencies
+
 ## [2.4.3] - 2021-08-03
 - Support dot sign (.) in alias prefix
 - Update some wordings, improve UI
