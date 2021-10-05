@@ -21,7 +21,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/vue-fontawesome": "^0.1.10",
     "@sentry/browser": "^5.25.0",
-    "@sentry/integrations": "^5.23.0",
+    "@sentry/integrations": "^5.30.0",
     "axios": "^0.21.3",
     "bootstrap": "^4.5.2",
     "bootstrap-vue": "^2.21.2",
