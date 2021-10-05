@@ -150,9 +150,9 @@
                   v-clipboard="() => alias.email"
                   v-clipboard:success="clipboardSuccessHandler"
                   v-clipboard:error="clipboardErrorHandler"
-                  v-b-tooltip.hover.top="'Click to Copy'"
+
                 >
-                  <a class="cursor">
+                  <a class="cursor" v-b-tooltip.hover.top="'Click to Copy'">
                     {{ alias.email }}
                   </a>
                   <div class="list-item-email-fade" />
