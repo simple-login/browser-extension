@@ -1,7 +1,7 @@
 {
   "name": "SimpleLogin: Open-source Email Protection",
   "short_name": "SimpleLogin",
-  "description": "Create a different email for each website to hide your real email. Guard your inbox against spams, phishing. Protect your privacy.",
+  "description": "Receive and send emails anonymously. Easily create a different email for each website to hide your real email. Guard your inbox against spams, phishing and data breaches",
   "version": null,
   "manifest_version": 2,
   "icons": {
