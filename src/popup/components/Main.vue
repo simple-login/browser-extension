@@ -13,11 +13,9 @@
             v-clipboard="() => recommendation.alias"
             v-clipboard:success="clipboardSuccessHandler"
             v-clipboard:error="clipboardErrorHandler"
-            v-b-tooltip.hover
-            title="Click to Copy"
             class="cursor"
           >
-            <span class="text-success">{{ recommendation.alias }}</span>
+            <span class="text-success recommended-alias">{{ recommendation.alias }}</span>
           </a>
         </div>
 
@@ -228,6 +226,7 @@ import EventManager from "../EventManager";
 import Navigation from "../Navigation";
 import AliasMoreOptions from "./AliasMoreOptions";
 import { callAPI, API_ROUTE, API_ON_ERR } from "../APIService";
+import tippy from 'tippy.js';
 
 const ALIAS_PREFIX_REGEX = /^[0-9a-z-_.]+$/;
 
@@ -302,6 +301,11 @@ export default {
       this.loading = false;
 
       await this.loadAlias();
+
+      tippy('.recommended-alias', {
+        content: 'Click to copy',
+        placement: 'bottom',
+      });
     },
 
     async loadAlias() {
