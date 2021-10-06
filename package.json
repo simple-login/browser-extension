@@ -33,7 +33,7 @@
     "vue-router": "^3.5.2",
     "vue-textarea-autosize": "^1.1.1",
     "vue-toasted": "^1.1.28",
-    "webextension-polyfill": "^0.6.0"
+    "webextension-polyfill": "^0.8.0"
   },
   "devDependencies": {
     "@babel/core": "^7.1.2",
