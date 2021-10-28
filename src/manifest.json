@@ -29,7 +29,7 @@
   },
   "browser_specific_settings": {
     "gecko": {
-      "id": "addon@simplelogin"
+      "id": "addon2@simplelogin"
     }
   },
   "background": {
