@@ -62,5 +62,7 @@ browser.commands.onCommand.addListener(async (command) => {
   }
 });
 
+SLStorage.convertFromSyncToLocal(SLStorage.SETTINGS.API_URL);
+SLStorage.convertFromSyncToLocal(SLStorage.SETTINGS.API_KEY);
 APIService.initService();
 Onboarding.initService();
