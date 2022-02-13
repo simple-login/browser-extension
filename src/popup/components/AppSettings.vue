@@ -4,7 +4,7 @@
       <p class="font-weight-bold align-self-center">App Settings</p>
 
       <table class="settings-list" v-if="isSettingsFetched">
-        <tr :class="{ disabled: !hasTabsPermission }">
+        <tr>
           <td>
             <toggle-button
               :value="showSLButton"
@@ -28,16 +28,6 @@
                 <br /><font-awesome-icon icon="bug" /> Report an issue
               </a>
             </small>
-          </td>
-        </tr>
-
-        <tr v-if="!hasTabsPermission">
-          <td>⚠️</td>
-          <td>
-            SimpleLogin button requires extra permission<br />
-            <span class="link cursor" @click="askTabsPermission()">
-              Click here to grant access
-            </span>
           </td>
         </tr>
 
@@ -112,6 +102,9 @@ export default {
     },
 
     async handleToggleSLButton() {
+      if (!this.showSLButton && !this.hasTabsPermission) {
+        await this.askTabsPermission();
+      }
       this.showSLButton = !this.showSLButton;
       await SLStorage.set(SLStorage.SETTINGS.SHOW_SL_BUTTON, this.showSLButton);
       this.fetchSettings();
