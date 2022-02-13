@@ -30,13 +30,17 @@ class SLStorage {
     [SLStorage.SETTINGS.SL_BUTTON_POSITION]: "right-inside",
   };
 
+  static getType(key) {
+    return this.TYPES[key] || "local";
+  }
+
   static set(key, value) {
-    const type = this.TYPES[key];
+    const type = this.getType(key);
     return browser.storage[type].set({ [key]: value });
   }
 
   static async get(key) {
-    const type = this.TYPES[key];
+    const type = this.getType(key);
     const data = await browser.storage[type].get(key);
 
     if (data[key] === undefined || data[key] === null) {
@@ -47,7 +51,7 @@ class SLStorage {
   }
 
   static remove(key) {
-    const type = this.TYPES[key];
+    const type = this.getType(key);
     return browser.storage[type].remove(key);
   }
 
