@@ -17,8 +17,8 @@ class SLStorage {
     apiKey: "local",
     notAskingRate: "sync",
     showSLButton: "sync",
-    SLButtonPosition: "sync"
-  }
+    SLButtonPosition: "sync",
+  };
 
   static DEFAULT_SETTINGS = {
     [SLStorage.SETTINGS.API_URL]: devConfig
@@ -67,7 +67,9 @@ class SLStorage {
   static async convertFromSyncToLocal(key) {
     const data = await browser.storage.sync.get(key);
     if (data[key]) {
-      await browser.storage.local.set({ [key]: data[key] }).then(_ => browser.storage.sync.remove(key));
+      await browser.storage.local
+        .set({ [key]: data[key] })
+        .then((_) => browser.storage.sync.remove(key));
     }
   }
 }
