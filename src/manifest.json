@@ -16,10 +16,8 @@
     "storage",
     "cookies",
     "contextMenus",
-    "https://*.simplelogin.io/*"
-  ],
-  "optional_permissions": [
     "tabs",
+    "https://*.simplelogin.io/*",
     "http://*/*",
     "https://*/*"
   ],
@@ -38,17 +36,17 @@
     ]
   },
   "commands": {
-	"generate-random-alias": {
-	  "suggested_key": {
-		"default": "Ctrl+Shift+X"
-	  },
-	  "description": "Generate a random email alias"
-	},
-	"_execute_browser_action": {
-	  "suggested_key": {
-		"default": "Ctrl+Shift+S"
-	  },
-	  "description":"Open the extension action menu"
-	}
+    "generate-random-alias": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+X"
+      },
+      "description": "Generate a random email alias"
+    },
+    "_execute_browser_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+S"
+      },
+      "description":"Open the extension action menu"
+    }
   }
 }
