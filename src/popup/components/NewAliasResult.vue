@@ -56,7 +56,7 @@ import EventManager from "../EventManager";
 import Utils from "../Utils";
 import AliasMoreOptions from "./AliasMoreOptions";
 import { callAPI, API_ROUTE, API_ON_ERR } from "../APIService";
-import tippy from 'tippy.js';
+import tippy from "tippy.js";
 
 export default {
   components: {
@@ -77,9 +77,9 @@ export default {
     // TODO showVoteScreen 1 day after user installed plugin
     else this.showVoteScreen = Utils.getRandomIntBetween(0, 10) % 2 === 0;
 
-    tippy('.new-alias', {
-      content: 'Click to copy',
-      trigger: 'manual',
+    tippy(".new-alias", {
+      content: "Click to copy",
+      trigger: "manual",
       showOnCreate: true,
     });
   },

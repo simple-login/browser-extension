@@ -9,7 +9,6 @@ import {
   handleOnClickContextMenu,
   generateAliasHandlerJS,
 } from "./context-menu";
-import { firePermissionListener } from "./permissions";
 
 global.isBackgroundJS = true;
 
@@ -35,8 +34,6 @@ browser.runtime.onMessage.addListener(async function (request, sender) {
     return await handleNewRandomAlias(request.currentUrl);
   } else if (request.tag === "GET_APP_SETTINGS") {
     return await handleGetAppSettings();
-  } else if (request.tag === "PERMISSIONS_CHANGED") {
-    return firePermissionListener();
   }
 });
 

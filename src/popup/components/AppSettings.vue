@@ -3,8 +3,8 @@
     <div class="p-3 container">
       <p class="font-weight-bold align-self-center">App Settings</p>
 
-      <table class="settings-list" v-if="isSettingsFetched">
-        <tr :class="{ disabled: !hasTabsPermission }">
+      <table class="settings-list">
+        <tr>
           <td>
             <toggle-button
               :value="showSLButton"
@@ -28,16 +28,6 @@
                 <br /><font-awesome-icon icon="bug" /> Report an issue
               </a>
             </small>
-          </td>
-        </tr>
-
-        <tr v-if="!hasTabsPermission">
-          <td>⚠️</td>
-          <td>
-            SimpleLogin button requires extra permission<br />
-            <span class="link cursor" @click="askTabsPermission()">
-              Click here to grant access
-            </span>
           </td>
         </tr>
 
@@ -74,47 +64,31 @@
 </template>
 
 <script>
-import axios from "axios";
 import SLStorage from "../SLStorage";
 import EventManager from "../EventManager";
 import Navigation from "../Navigation";
 import Utils from "../Utils";
 import { callAPI, API_ROUTE, API_ON_ERR } from "../APIService";
-import {
-  havePermission,
-  requestPermission,
-} from "../../background/permissions";
 
 export default {
   data() {
     return {
-      isSettingsFetched: false,
-      hasTabsPermission: false,
       showSLButton: false,
       positionSLButton: "right-inside",
       reportURISLButton: "",
     };
   },
   async mounted() {
-    this.fetchSettings();
+    this.showSLButton = await SLStorage.get(SLStorage.SETTINGS.SHOW_SL_BUTTON);
+    this.positionSLButton = await SLStorage.get(
+      SLStorage.SETTINGS.SL_BUTTON_POSITION
+    );
+    await this.setMailToUri();
   },
   methods: {
-    async fetchSettings() {
-      this.hasTabsPermission = await havePermission("tabs");
-      this.showSLButton = this.hasTabsPermission
-        ? await SLStorage.get(SLStorage.SETTINGS.SHOW_SL_BUTTON)
-        : false;
-      this.positionSLButton = await SLStorage.get(
-        SLStorage.SETTINGS.SL_BUTTON_POSITION
-      );
-      await this.setMailToUri();
-      this.isSettingsFetched = true;
-    },
-
     async handleToggleSLButton() {
       this.showSLButton = !this.showSLButton;
       await SLStorage.set(SLStorage.SETTINGS.SHOW_SL_BUTTON, this.showSLButton);
-      this.fetchSettings();
       this.showSavedSettingsToast();
     },
 
@@ -133,12 +107,6 @@ export default {
 
     showSavedSettingsToast() {
       Utils.showSuccess("Settings saved");
-    },
-
-    async askTabsPermission() {
-      if (await requestPermission("tabs")) {
-        this.fetchSettings();
-      }
     },
 
     async handleLogout() {

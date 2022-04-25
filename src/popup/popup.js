@@ -60,7 +60,8 @@ async function initApp() {
     process.env.NODE_ENV !== "development"
   ) {
     Sentry.init({
-      dsn: "https://0e2d03e61f194df9ba85a791d364088b@o336535.ingest.sentry.io/5341174",
+      dsn:
+        "https://0e2d03e61f194df9ba85a791d364088b@o336535.ingest.sentry.io/5341174",
       integrations: [
         new Integrations.Vue({ Vue, attachProps: true, logErrors: true }),
       ],

@@ -81,7 +81,6 @@
 </template>
 
 <script>
-import { requestPermission } from "../background/permissions";
 import SLStorage from "../popup/SLStorage";
 import axios from "axios";
 import { API_ROUTE } from "../popup/APIService";
@@ -108,15 +107,15 @@ export default {
     this.url.createNewAccount = `${apiUrl}/auth/register?next=%2Fdashboard%2Fsetup_done`;
     this.url.login = `${apiUrl}/dashboard/setup_done`;
 
-    if (await this.tryGetUserInfo()) {
-      this.step = 3;
-      return;
-    }
+    //Show first step while the request is being executed
+    setTimeout(async () => {
+      if (await this.tryGetUserInfo()) {
+        this.step = 3;
+      }
+    }, 1);
 
-    // update setup step
-    const self = this;
-    const updateStep = function () {
-      self.step = window.location.href.match(/#step3/) ? 3 : 1;
+    const updateStep = () => {
+      this.step = window.location.href.match(/#step3/) ? 3 : 1;
     };
     window.addEventListener("hashchange", updateStep, false);
     updateStep();
@@ -127,15 +126,6 @@ export default {
     },
     nextStep() {
       this.step = this.step + 1;
-    },
-    async askTabsPermission() {
-      if (await requestPermission("tabs")) {
-        this.nextStep();
-      } else {
-        alert(
-          "Please approve permissions. If you don't want to approve, please click Skip button."
-        );
-      }
     },
     async tryGetUserInfo() {
       const apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);

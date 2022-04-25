@@ -15,14 +15,14 @@
             v-clipboard:error="clipboardErrorHandler"
             class="cursor"
           >
-            <span class="text-success recommended-alias">{{ recommendation.alias }}</span>
+            <span class="text-success recommended-alias">{{
+              recommendation.alias
+            }}</span>
           </a>
         </div>
 
         <hr />
       </div>
-
-
 
       <div>
         <form @submit.prevent="createCustomAlias">
@@ -88,10 +88,10 @@
       <hr />
       <div class="text-center">
         <button
-            :disabled="loading || !canCreate"
-            style="margin-left: 15px;"
-            class="btn btn-outline-primary btn-sm"
-            @click="createRandomAlias"
+          :disabled="loading || !canCreate"
+          style="margin-left: 15px;"
+          class="btn btn-outline-primary btn-sm"
+          @click="createRandomAlias"
         >
           <font-awesome-icon icon="random" /> OR create a totally random alias
         </button>
@@ -142,7 +142,6 @@
                   v-clipboard="() => alias.email"
                   v-clipboard:success="clipboardSuccessHandler"
                   v-clipboard:error="clipboardErrorHandler"
-
                 >
                   <a class="cursor" v-b-tooltip.hover.top="'Click to Copy'">
                     {{ alias.email }}
@@ -220,7 +219,7 @@ import EventManager from "../EventManager";
 import Navigation from "../Navigation";
 import AliasMoreOptions from "./AliasMoreOptions";
 import { callAPI, API_ROUTE, API_ON_ERR } from "../APIService";
-import tippy from 'tippy.js';
+import tippy from "tippy.js";
 
 const ALIAS_PREFIX_REGEX = /^[0-9a-z-_.]+$/;
 
@@ -296,9 +295,9 @@ export default {
 
       await this.loadAlias();
 
-      tippy('.recommended-alias', {
-        content: 'Click to copy',
-        placement: 'bottom',
+      tippy(".recommended-alias", {
+        content: "Click to copy",
+        placement: "bottom",
       });
     },
 
