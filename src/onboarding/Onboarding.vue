@@ -4,8 +4,7 @@
       <div class="col-3 screen-left">
         <div class="left-content">
           <p :class="{ active: step === 2 }" @click="toStep(2)">Account</p>
-          <p :class="{ active: step === 3 }" @click="toStep(3)">Permission</p>
-          <p :class="{ active: step === 4 }" @click="toStep(4)">Done</p>
+          <p :class="{ active: step === 3 }" @click="toStep(3)">Done</p>
         </div>
       </div>
       <div class="col-6 screen-right">
@@ -47,72 +46,6 @@
           </div>
 
           <div class="content" v-if="step === 3">
-            <div v-if="isAuthenticated">
-              <h1 class="h2 text-primary">Welcome {{ userName }}!</h1>
-              <hr />
-            </div>
-
-            <h5>Extra permission</h5>
-            <p>
-              SimpleLogin extension requires the
-              <b v-if="isChrome"
-                >Read and change all your data on the websites you visit</b
-              >
-              <b v-else
-                >Access your data for all websites & access browser tabs</b
-              >
-              permission.
-            </p>
-
-            <img
-              v-if="isChrome"
-              src="../images/chrome-permission-screenshot.png"
-              style="width: 400px;"
-            />
-            <img
-              v-else
-              src="../images/firefox-permission-screenshot.png"
-              style="width: 400px;"
-            />
-
-            <p>
-              Though seemingly scary, the only thing SimpleLogin does is to
-              detect the email field on a page and display the icon to its
-              right.
-            </p>
-
-            <img
-              alt="SimpleLogin Button demo"
-              src="../images/sl-button-demo.png"
-              style="width: 400px;"
-              class="mb-3"
-            />
-
-            <p>
-              SimpleLogin code is open-source on
-              <a
-                href="https://github.com/simple-login/browser-extension"
-                target="_blank"
-                rel="noopener noreferrer"
-                >GitHub</a
-              >
-              if you want to know about what's going behind the scenes.
-            </p>
-
-            <br />
-            <button @click="askTabsPermission()" class="btn btn-primary">
-              Approve access permission
-            </button>
-            <button
-              @click="nextStep()"
-              class="btn"
-              style="color: #888; font-size: 0.8em;"
-            >
-              Skip
-            </button>
-          </div>
-
-          <div class="content" v-if="step === 4">
             <h5>It's all set!</h5>
             <p>
               To start using SimpleLogin, please click on
@@ -148,7 +81,6 @@
 </template>
 
 <script>
-import { requestPermission } from "../background/permissions";
 import SLStorage from "../popup/SLStorage";
 import axios from "axios";
 import { API_ROUTE } from "../popup/APIService";
@@ -175,15 +107,15 @@ export default {
     this.url.createNewAccount = `${apiUrl}/auth/register?next=%2Fdashboard%2Fsetup_done`;
     this.url.login = `${apiUrl}/dashboard/setup_done`;
 
-    // maybe user redirected from the setup_done page
-    if (this.step === 3) {
-      await this.tryGetUserInfo();
-    }
+    //Show first step while the request is being executed
+    setTimeout(async () => {
+      if (await this.tryGetUserInfo()) {
+        this.step = 3;
+      }
+    }, 1);
 
-    // update setup step
-    const self = this;
-    const updateStep = function () {
-      self.step = window.location.href.match(/#step3/) ? 3 : 1;
+    const updateStep = () => {
+      this.step = window.location.href.match(/#step3/) ? 3 : 1;
     };
     window.addEventListener("hashchange", updateStep, false);
     updateStep();
@@ -195,34 +127,24 @@ export default {
     nextStep() {
       this.step = this.step + 1;
     },
-    async askTabsPermission() {
-      if (await requestPermission("tabs")) {
-        this.nextStep();
-      } else {
-        alert(
-          "Please approve permissions. If you don't want to approve, please click Skip button."
-        );
-      }
-    },
     async tryGetUserInfo() {
       const apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
-      const that = this;
 
-      // check api key
-      axios
-        .get(apiUrl + API_ROUTE.GET_USER_INFO.path, {
-          headers: { Authentication: this.apiKey },
-        })
-        .then(async (res) => {
-          that.userName = res.data.name || res.data.email;
-          that.isAuthenticated = true;
+      try {
+        // check api key
+        const response = await axios.get(
+          apiUrl + API_ROUTE.GET_USER_INFO.path,
+          { headers: { Authentication: this.apiKey } }
+        );
+        this.userName = response.data.name || response.data.email;
+        this.isAuthenticated = true;
 
-          await SLStorage.set(SLStorage.SETTINGS.API_KEY, this.apiKey);
-          EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
-        })
-        .catch((err) => {
-          // user isn't authenticated, ignore
-        });
+        await SLStorage.set(SLStorage.SETTINGS.API_KEY, this.apiKey);
+        EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
+        return true;
+      } catch (err) {
+        return false;
+      }
     },
   },
 };
