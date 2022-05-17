@@ -17,7 +17,6 @@ const config = {
   entry: {
     'background': './background/index.js',
     'popup/popup': './popup/popup.js',
-    'onboarding/index': './onboarding/index.js',
   },
   output: {
     path: __dirname + '/dist',
@@ -88,7 +87,6 @@ const config = {
       { from: 'images', to: 'images' },
       { from: 'content_script', to: 'content_script' },
       { from: 'popup/popup.html', to: 'popup/popup.html', transform: transformHtml },
-      { from: 'onboarding/index.html', to: 'onboarding/index.html' },
       {
         from: 'manifest.json',
         to: 'manifest.json',
