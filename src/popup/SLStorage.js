@@ -23,7 +23,7 @@ class SLStorage {
     [SLStorage.SETTINGS.SL_BUTTON_POSITION]: "right-inside",
     [SLStorage.SETTINGS.EXTRA_ALLOWED_DOMAINS]: devConfig
       ? devConfig.EXTRA_ALLOWED_DOMAINS
-      : []
+      : [],
   };
 
   static set(key, value) {

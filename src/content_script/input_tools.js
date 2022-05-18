@@ -90,7 +90,8 @@ if (!window._hasExecutedSlExtension) {
         addSLButtonToInput(inputElem) {
           // create wrapper for SL button
           const btnWrapper = InputTools.newDiv("sl-button-wrapper");
-          const inputSumHeight = inputElem.getBoundingClientRect().height + "px";
+          const inputSumHeight =
+            inputElem.getBoundingClientRect().height + "px";
           btnWrapper.style.height = inputSumHeight;
           btnWrapper.style.width = inputSumHeight;
           document.body.appendChild(btnWrapper);
@@ -145,7 +146,8 @@ if (!window._hasExecutedSlExtension) {
                 -inputStyle.paddingRight,
               ]) + "px";
 
-            const top = InputTools.sumPixel([inputCoords.top, pageYOffset]) + "px";
+            const top =
+              InputTools.sumPixel([inputCoords.top, pageYOffset]) + "px";
 
             if (btnWrapper.style.left !== left) {
               btnWrapper.style.left = left;

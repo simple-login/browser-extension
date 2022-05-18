@@ -64,9 +64,10 @@ async function handleExtensionSetup() {
  * @returns boolean
  */
 const isMessageAllowed = (url) => {
-  console.log("Received message from " + url);
   const requestUrl = new URL(url);
-  const apiUrl = new URL(SLStorage.DEFAULT_SETTINGS[SLStorage.SETTINGS.API_URL]);
+  const apiUrl = new URL(
+    SLStorage.DEFAULT_SETTINGS[SLStorage.SETTINGS.API_URL]
+  );
 
   let allowedSources = [
     new RegExp(apiUrl.hostname),
@@ -75,7 +76,8 @@ const isMessageAllowed = (url) => {
     new RegExp("^.*\\.protonmail\\.com$"),
   ];
 
-  const extraAllowedDomains = SLStorage.DEFAULT_SETTINGS[SLStorage.SETTINGS.EXTRA_ALLOWED_DOMAINS];
+  const extraAllowedDomains =
+    SLStorage.DEFAULT_SETTINGS[SLStorage.SETTINGS.EXTRA_ALLOWED_DOMAINS];
   for (const extra of extraAllowedDomains) {
     allowedSources.push(new RegExp(extra));
   }
