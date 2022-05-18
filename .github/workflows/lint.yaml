@@ -1,0 +1,20 @@
+name: Lint
+on:
+  push:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14
+
+      - name: Perform linting
+        run: |
+          npm install
+          npm run prettier:check
