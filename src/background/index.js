@@ -59,9 +59,35 @@ async function handleExtensionSetup() {
 }
 
 /**
+ * Check if a message comes from an authorized source
+ * @param {string} url
+ * @returns {Promise<boolean>}
+ */
+const isMessageAllowed = async (url) => {
+  const requestUrl = new URL(url);
+  const apiUrl = new URL(SLStorage.DEFAULT_SETTINGS[SLStorage.SETTINGS.API_URL]);
+
+  const ALLOWED_SOURCES = [
+    new RegExp(apiUrl.hostname),
+    new RegExp("^app\\.simplelogin\\.io$"),
+    new RegExp("^.*\\.proton\\.ch$"),
+    new RegExp("^.*\\.protonmail\\.ch$"),
+    new RegExp("^.*\\.protonmail\\.com$"),
+  ];
+
+  for (const source of ALLOWED_SOURCES) {
+    if (source.test(requestUrl.host)) return true;
+  }
+  return false;
+};
+
+/**
  * Register onMessage listener
  */
 browser.runtime.onMessage.addListener(async function (request, sender) {
+  const isAllowed = await isMessageAllowed(sender.url);
+  if (!isAllowed) return;
+
   if (request.tag === "NEW_RANDOM_ALIAS") {
     return await handleNewRandomAlias(request.currentUrl);
   } else if (request.tag === "GET_APP_SETTINGS") {
