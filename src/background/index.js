@@ -61,21 +61,26 @@ async function handleExtensionSetup() {
 /**
  * Check if a message comes from an authorized source
  * @param {string} url
- * @returns {Promise<boolean>}
+ * @returns boolean
  */
-const isMessageAllowed = async (url) => {
+const isMessageAllowed = (url) => {
+  console.log("Received message from " + url);
   const requestUrl = new URL(url);
   const apiUrl = new URL(SLStorage.DEFAULT_SETTINGS[SLStorage.SETTINGS.API_URL]);
 
-  const ALLOWED_SOURCES = [
+  let allowedSources = [
     new RegExp(apiUrl.hostname),
     new RegExp("^app\\.simplelogin\\.io$"),
-    new RegExp("^.*\\.proton\\.ch$"),
     new RegExp("^.*\\.protonmail\\.ch$"),
     new RegExp("^.*\\.protonmail\\.com$"),
   ];
 
-  for (const source of ALLOWED_SOURCES) {
+  const extraAllowedDomains = SLStorage.DEFAULT_SETTINGS[SLStorage.SETTINGS.EXTRA_ALLOWED_DOMAINS];
+  for (const extra of extraAllowedDomains) {
+    allowedSources.push(new RegExp(extra));
+  }
+
+  for (const source of allowedSources) {
     if (source.test(requestUrl.host)) return true;
   }
   return false;
@@ -85,14 +90,17 @@ const isMessageAllowed = async (url) => {
  * Register onMessage listener
  */
 browser.runtime.onMessage.addListener(async function (request, sender) {
-  const isAllowed = await isMessageAllowed(sender.url);
-  if (!isAllowed) return;
-
+  // Check messages allowed from everywhere
   if (request.tag === "NEW_RANDOM_ALIAS") {
     return await handleNewRandomAlias(request.currentUrl);
   } else if (request.tag === "GET_APP_SETTINGS") {
     return await handleGetAppSettings();
-  } else if (request.tag === "EXTENSION_SETUP") {
+  }
+
+  // Check messages allowed only from authorized sources
+  if (!isMessageAllowed(sender.url)) return;
+
+  if (request.tag === "EXTENSION_SETUP") {
     return await handleExtensionSetup();
   }
 });
