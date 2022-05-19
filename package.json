@@ -8,6 +8,7 @@
   "scripts": {
     "prettier": "prettier \"src/**/*.{js,vue}\"",
     "prettier:write": "npm run prettier -- --write",
+    "prettier:check": "prettier --check \"src/**/*.{js,vue}\"",
     "build": "cross-env NODE_ENV=production webpack --hide-modules",
     "build:beta": "cross-env NODE_ENV=production BETA=1 webpack --hide-modules",
     "build:dev": "cross-env NODE_ENV=development BETA=1 webpack --hide-modules",
