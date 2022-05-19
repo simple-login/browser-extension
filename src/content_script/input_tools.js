@@ -245,6 +245,8 @@ if (!window._hasExecutedSlExtension) {
     if (!window.hasSlListenerRegistered) {
       window.hasSlListenerRegistered = true;
 
+      let hasProcessedSetup = false;
+
       /**
        * Callback called for every event
        * @param {MessageEvent<any>} event
@@ -253,7 +255,15 @@ if (!window._hasExecutedSlExtension) {
         if (event.source !== window) return;
         if (!event.data.tag) return;
         if (event.data.tag === "PERFORM_EXTENSION_SETUP") {
-          await sendMessageToBackground("EXTENSION_SETUP");
+          if (!hasProcessedSetup) {
+            hasProcessedSetup = true;
+            await sendMessageToBackground("EXTENSION_SETUP");
+          }
+        } else if (event.data.tag === "EXTENSION_INSTALLED_QUERY") {
+          const res = await sendMessageToBackground(
+            "EXTENSION_INSTALLED_QUERY"
+          );
+          window.postMessage(res);
         }
       };
 

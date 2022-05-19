@@ -89,6 +89,20 @@ const isMessageAllowed = (url) => {
 };
 
 /**
+ * Handle the event of a page querying if the SL extension is installed
+ * @return {{data: {version: string}, tag: string}}
+ */
+const handleExtensionInstalledQuery = () => {
+  const manifest = browser.runtime.getManifest();
+  return {
+    tag: "EXTENSION_INSTALLED_RESPONSE",
+    data: {
+      version: manifest.version,
+    },
+  };
+};
+
+/**
  * Register onMessage listener
  */
 browser.runtime.onMessage.addListener(async function (request, sender) {
@@ -104,6 +118,8 @@ browser.runtime.onMessage.addListener(async function (request, sender) {
 
   if (request.tag === "EXTENSION_SETUP") {
     return await handleExtensionSetup();
+  } else if (request.tag === "EXTENSION_INSTALLED_QUERY") {
+    return handleExtensionInstalledQuery();
   }
 });
 
