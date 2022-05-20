@@ -60,8 +60,11 @@
         Logout
       </button>
 
-      <div class="font-weight-light" style="position: fixed; bottom: 0; right: 2px; font-size: 0.8rem">
-        Version: {{extension_version}}
+      <div
+        class="font-weight-light"
+        style="position: fixed; bottom: 0; right: 2px; font-size: 0.8rem;"
+      >
+        Version: {{ extension_version }}
       </div>
     </div>
   </div>
@@ -80,7 +83,7 @@ export default {
       showSLButton: false,
       positionSLButton: "right-inside",
       reportURISLButton: "",
-      extension_version: ""
+      extension_version: "",
     };
   },
   async mounted() {
