@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.1] - 2022-05-20
+
+- Add version to settings page
+- Improve the CI
+
 ## [2.6.0] - 2022-05-20
 
 - Require previously optional permissions on install
