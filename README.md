@@ -21,13 +21,17 @@ More info on our website at https://simplelogin.io
 
 The extension uses VueJS with https://github.com/Kocal/vue-web-extension boilerplate.
 
-## General information
+## How to get the extension
 
-The extension consists of 3 main screens:
+You can directly install the extension by visiting the store page for your browser:
 
-- setup screen for first-time user. Here user can create and paste the `API Key` that's stored in `chrome.storage`.
-- main screen: displays email alias recommendation, alias creation and existing alias.
-- new alias screen: when a new alias is created, user is redirected to this screen so they can copy it.
+- [Google Chrome / Brave / Opera / Chromium-based](https://chrome.google.com/webstore/detail/simpleloginreceive-send-e/dphilobhebphkdjbpfohgikllaljmgbn) 
+- [Mozilla Firefox](https://addons.mozilla.org/firefox/addon/simplelogin/) 
+- [Microsoft Edge](https://microsoftedge.microsoft.com/addons/detail/simpleloginreceive-sen/diacfpipniklenphgljfkmhinphjlfff)
+
+## Development information
+
+You can find more information about how the extension works and which parts it has in [DEVELOPMENT.md](./DEVELOPMENT.md)
 
 ## Contributing Guide
 
@@ -36,7 +40,6 @@ All work on SimpleLogin Chrome/Firefox extension happens directly on GitHub.
 To run the extension locally, please follow these steps:
 
 - install all dependencies with `npm install`.
-
 - run `npm start` to generate the `/dist` folder that can be installed into Chrome.
 
 On Firefox, it can be done via `web-ext` tool from within the `/dist` folder: 
@@ -45,27 +48,32 @@ On Firefox, it can be done via `web-ext` tool from within the `/dist` folder:
 ( cd dist/ ; web-ext run )
 ```
 
-The code is formatted using `prettier`, make sure to run it before creating the commit:
+The code is formatted using `prettier`, make sure to run it before creating the commit, otherwise the GitHub lint workflow will mark the check as not passing:
 
 ```bash
 npm run prettier:write
 ```
 
+## How to generate a release
 
-## Release
+1. Increment the version in `package.json`.
+2. Update CHANGELOG with the changes.
+3. Create a tag and push it to the repository. The tag name must match the version set in `package.json`.
+4. Wait until the CI process generates the extension ZIP and uploads it to GitHub. You will be able to find the generated zip as an artifact attached to the [GitHub release](https://github.com/simple-login/browser-extension/releases).
+5. Upload the extension to the Chrome, Firefox and Edge stores.
 
-- Increment the version in `package.json`
-- Update CHANGELOG with the changes
-- Build the production version and zip it via
- 
-```bash
-npm run build && npm run build-zip
-```
 
-- (Optional, only useful for beta build) Build beta version: change `betaRev` in `package.json`, then generate zip file using 
+## How to build the extension locally
+
+In order to build the extension yourself, please follow these steps:
+
+- Make sure you have the dependencies installed and up-to-date with `npm install`.
+- Run the build process with `npm run build`.
+- Create the zip package with `npm run build-zip`. You will find the extension in the `dist-zip/` directory.
+- If you want to use it on Firefox you will need to enter the `dist/` directory and run `web-ext build`. You will find the extension in the `dist/web-ext-artifacts/` directory.  
+
+- (Optional, only useful for beta build) Build beta version: change `betaRev` in `package.json`, then generate zip file using
 
 ```bash
 npm run build:beta && npm run build-zip
 ```
-
-- Upload to Chrome, Firefox, Edge stores.
