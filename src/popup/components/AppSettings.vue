@@ -59,6 +59,10 @@
       >
         Logout
       </button>
+
+      <div class="font-weight-light" style="position: fixed; bottom: 0; right: 2px; font-size: 0.8rem">
+        Version: {{extension_version}}
+      </div>
     </div>
   </div>
 </template>
@@ -76,6 +80,7 @@ export default {
       showSLButton: false,
       positionSLButton: "right-inside",
       reportURISLButton: "",
+      extension_version: ""
     };
   },
   async mounted() {
@@ -84,6 +89,7 @@ export default {
       SLStorage.SETTINGS.SL_BUTTON_POSITION
     );
     await this.setMailToUri();
+    this.extension_version = browser.runtime.getManifest().version;
   },
   methods: {
     async handleToggleSLButton() {
