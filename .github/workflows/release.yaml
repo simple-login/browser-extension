@@ -47,7 +47,7 @@ jobs:
           messageWithoutDoubleQuotes=$(echo "${messageWithoutNewlines}" | sed "s/\"/'/g")
           echo "${messageWithoutDoubleQuotes}"
           
-          echo "SLACK_CHANGELOG=${messageWithoutDoubleQuotes}" > artifacts/slack-changelog
+          echo "${messageWithoutDoubleQuotes}" > artifacts/slack-changelog
 
       - name: Create GitHub release
         id: release
