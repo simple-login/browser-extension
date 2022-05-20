@@ -9,6 +9,11 @@ jobs:
     name: create-release
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+
       - name: Install dependencies and check tag format
         run: |
           sudo apt update && sudo apt install -y jq
