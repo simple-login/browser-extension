@@ -83,7 +83,7 @@ export default {
       showSLButton: false,
       positionSLButton: "right-inside",
       reportURISLButton: "",
-      extension_version: "",
+      extension_version: "development",
     };
   },
   async mounted() {
