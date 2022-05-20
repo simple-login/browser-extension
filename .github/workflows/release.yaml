@@ -126,8 +126,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ env.RELEASE_UPLOAD_URL }}
-          asset_path: ${{ env.ASSET }}
-          asset_name: ${{ env.ASSET }}
+          asset_path: ${{ env.ASSET_PATH }}
+          asset_name: ${{ env.ASSET_NAME }}
           asset_content_type: application/octet-stream
 
       - name: Post notification to Slack
