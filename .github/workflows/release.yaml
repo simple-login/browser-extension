@@ -84,7 +84,7 @@ jobs:
       - name: Install NodeJS
         uses: actions/setup-node@v3
         with:
-          node-version: 14
+          node-version: 16
 
       - name: Get release download URL
         uses: actions/download-artifact@v1
