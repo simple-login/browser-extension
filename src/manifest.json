@@ -15,7 +15,6 @@
     "activeTab",
     "storage",
     "contextMenus",
-    "tabs",
     "https://*.simplelogin.io/*",
     "http://*/*",
     "https://*/*"
