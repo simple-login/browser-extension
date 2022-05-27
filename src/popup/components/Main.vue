@@ -5,7 +5,7 @@
     <!-- Main Page -->
     <div class="container">
       <div v-if="recommendation.show" class="text-center">
-        <div class="" style="font-size: 14px;">
+        <div class="" style="font-size: 14px">
           You created this alias on this website before:
         </div>
         <div class="flex-grow-1">
@@ -29,7 +29,7 @@
           <div class="row mb-2">
             <div
               class="col align-self-start input-group-sm"
-              style="padding-right: 0;"
+              style="padding-right: 0"
             >
               <input
                 v-model="aliasPrefix"
@@ -43,7 +43,7 @@
 
             <div
               class="col align-self-start input-group-sm"
-              style="padding-left: 5px; padding-right: 5px;"
+              style="padding-left: 5px; padding-right: 5px"
             >
               <select
                 v-model="signedSuffix"
@@ -62,7 +62,7 @@
 
             <button
               :disabled="loading || !canCreate"
-              style="margin-right: 15px;"
+              style="margin-right: 15px"
               class="btn btn-primary btn-sm align-self-start"
             >
               Create
@@ -70,7 +70,7 @@
           </div>
           <div
             class="row text-danger"
-            style="font-size: 12px;"
+            style="font-size: 12px"
             v-if="aliasPrefixError != ''"
           >
             <div class="col">
@@ -80,7 +80,7 @@
         </form>
       </div>
 
-      <div class="mb-1 text-center" v-if="aliasPrefix" style="font-size: 14px;">
+      <div class="mb-1 text-center" v-if="aliasPrefix" style="font-size: 14px">
         You're about to create alias
         <span class="text-primary">{{ aliasPrefix }}{{ signedSuffix[0] }}</span>
       </div>
@@ -89,7 +89,7 @@
       <div class="text-center">
         <button
           :disabled="loading || !canCreate"
-          style="margin-left: 15px;"
+          style="margin-left: 15px"
           class="btn btn-outline-primary btn-sm"
           @click="createRandomAlias"
         >
@@ -98,7 +98,7 @@
       </div>
 
       <div v-if="!canCreate">
-        <p class="text-danger" style="font-size: 14px;">
+        <p class="text-danger" style="font-size: 14px">
           You have reached limit number of email aliases in free plan, please
           <a :href="apiUrl + '/dashboard/pricing'" target="_blank">upgrade</a>
           or reuse one of the existing aliases.
@@ -111,7 +111,7 @@
           OR use an existing alias
         </div>
 
-        <div class="mx-auto" style="max-width: 60%;">
+        <div class="mx-auto" style="max-width: 60%">
           <input
             v-model="searchString"
             v-on:keyup.enter="loadAlias"
@@ -125,7 +125,7 @@
               v-if="searchString"
               @click="resetSearch"
               class="float-right"
-              style="color: blue; border: none; padding: 0; background: none;"
+              style="color: blue; border: none; padding: 0; background: none"
             >
               Reset
             </button>
@@ -148,7 +148,7 @@
                   </a>
                   <div class="list-item-email-fade" />
                 </div>
-                <div style="white-space: nowrap;">
+                <div style="white-space: nowrap">
                   <toggle-button
                     :value="alias.enabled"
                     color="#b02a8f"
@@ -183,7 +183,7 @@
                 {{ alias.note }}
               </div>
 
-              <div class="font-weight-lighter" style="font-size: 11px;">
+              <div class="font-weight-lighter" style="font-size: 11px">
                 {{ alias.nb_forward }} forwards, {{ alias.nb_reply }} replies,
                 {{ alias.nb_block }} blocks.
               </div>
@@ -204,7 +204,7 @@
       <div v-if="isFetchingAlias" class="text-secondary mx-auto text-center">
         <img
           src="/images/loading-three-dots.svg"
-          style="width: 80px; margin: 20px;"
+          style="width: 80px; margin: 20px"
         />
       </div>
     </div>
