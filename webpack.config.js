@@ -7,9 +7,16 @@ const { VueLoaderPlugin } = require('vue-loader');
 const { version, betaRev } = require('./package.json');
 const fs = require('fs');
 
-const devConfig = fs.existsSync('./.dev.json')
-  ? JSON.parse(fs.readFileSync('./.dev.json').toString())
-  : JSON.parse(fs.readFileSync('./.dev.sample.json').toString());
+
+const loadDevConfig = () => {
+  if (fs.existsSync('./.dev.json')) {
+    return JSON.parse(fs.readFileSync('./.dev.json').toString());
+  } else {
+    return JSON.parse(fs.readFileSync('./.dev.sample.json').toString());
+  }
+};
+
+const devConfig = loadDevConfig();
 
 const config = {
   mode: process.env.NODE_ENV,
@@ -29,7 +36,7 @@ const config = {
     rules: [
       {
         test: /\.vue$/,
-        loaders: 'vue-loader',
+        use: 'vue-loader',
       },
       {
         test: /\.js$/,
@@ -82,38 +89,40 @@ const config = {
     new MiniCssExtractPlugin({
       filename: '[name].css',
     }),
-    new CopyWebpackPlugin([
-      { from: 'icons', to: 'icons', ignore: ['icon.xcf'] },
-      { from: 'images', to: 'images' },
-      { from: 'content_script', to: 'content_script' },
-      { from: 'popup/popup.html', to: 'popup/popup.html', transform: transformHtml },
-      {
-        from: 'manifest.json',
-        to: 'manifest.json',
-        transform: (content) => {
-          const jsonContent = JSON.parse(content);
-          jsonContent.version = version;
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: 'icons', to: 'icons', globOptions: { ignoreFiles: ['icon.xcf'] } },
+        { from: 'images', to: 'images' },
+        { from: 'content_script', to: 'content_script' },
+        { from: 'popup/popup.html', to: 'popup/popup.html', transform: transformHtml },
+        {
+          from: 'manifest.json',
+          to: 'manifest.json',
+          transform: (content) => {
+            const jsonContent = JSON.parse(content);
+            jsonContent.version = version;
 
-          if (config.mode === 'development') {
-            jsonContent['content_security_policy'] = "script-src 'self' 'unsafe-eval'; object-src 'self'";
-            jsonContent['permissions'] = jsonContent['permissions'].concat(devConfig.permissions);
-          }
+            if (config.mode === 'development') {
+              jsonContent.content_security_policy = "script-src 'self' 'unsafe-eval'; object-src 'self'";
+              jsonContent.permissions = jsonContent.permissions.concat(devConfig.permissions);
+            }
 
-          if (process.env.BETA) {
-            const geckoId = jsonContent['browser_specific_settings'].gecko.id;
-            jsonContent['name'] = jsonContent['name'].replace('SimpleLogin', 'SimpleLogin (BETA)');
-            jsonContent['icons'] = {
-              '48': 'icons/icon_beta_48.png',
-              '128': 'icons/icon_beta_128.png'
-            };
-            jsonContent['version'] = version + '.' + betaRev;
-            jsonContent['browser_specific_settings'].gecko.id = geckoId.replace('@', '-beta@');
-          }
+            if (process.env.BETA) {
+              const geckoId = jsonContent.browser_specific_settings.gecko.id;
+              jsonContent.name = jsonContent.name.replace('SimpleLogin', 'SimpleLogin (BETA)');
+              jsonContent.icons = {
+                '48': 'icons/icon_beta_48.png',
+                '128': 'icons/icon_beta_128.png'
+              };
+              jsonContent.version = version + '.' + betaRev;
+              jsonContent.browser_specific_settings.gecko.id = geckoId.replace('@', '-beta@');
+            }
 
-          return JSON.stringify(jsonContent, null, 2);
+            return JSON.stringify(jsonContent, null, 2);
+          },
         },
-      },
-    ]),
+      ]
+    }),
   ],
 };
 
