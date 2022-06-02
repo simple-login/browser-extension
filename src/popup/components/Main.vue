@@ -428,7 +428,7 @@ export default {
         const res = await callAPI(
           API_ROUTE.NEW_RANDOM_ALIAS,
           {
-            hostname: this.hostName,
+            hostname: "",
           },
           {
             note: await Utils.getDefaultNote(),
