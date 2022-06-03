@@ -1,5 +1,5 @@
 <template>
-  <div v-if="show" style="height: 400px;">
+  <div v-if="show" style="height: 400px">
     <div class="splash overlay">
       <div class="overlay-content">
         <img class="logo" src="/images/horizontal-logo.svg" /><br />

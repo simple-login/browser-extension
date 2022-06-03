@@ -62,7 +62,7 @@
 
       <div
         class="font-weight-light"
-        style="position: fixed; bottom: 0; right: 2px; font-size: 0.8rem;"
+        style="position: fixed; bottom: 0; right: 2px; font-size: 0.8rem"
       >
         Version: {{ extension_version }}
       </div>

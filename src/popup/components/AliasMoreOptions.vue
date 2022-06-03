@@ -1,3 +1,10 @@
+<!--
+Original implementation:
+https://github.com/devstark-com/vue-textarea-autosize/blob/8e767ea21863b3e8607b1808b89e7b5a0e3aa98c/src/components/TextareaAutosize.vue
+
+MIT License
+-->
+
 <template>
   <expand-transition>
     <div class="more-options" v-if="show">
@@ -26,13 +33,13 @@
       </div>
 
       <label>Alias Note</label>
-      <textarea-autosize
+      <TextareaAutosize
         placeholder="Note, can be anything to help you remember why you created this alias. This field is optional."
         class="form-control"
-        style="width: 100%;"
+        style="width: 100%"
         v-model="moreOptions.note"
         :disabled="loading"
-      ></textarea-autosize>
+      ></TextareaAutosize>
 
       <label>
         From Name
@@ -69,7 +76,7 @@
 
         <button
           class="btn btn-sm btn-delete"
-          style="color: #dc3545;"
+          style="color: #dc3545"
           v-on:click="handleClickDelete"
           :disabled="loading"
         >
@@ -83,10 +90,8 @@
 
 <script>
 import Utils from "../Utils";
-import SLStorage from "../SLStorage";
-import EventManager from "../EventManager";
-import Navigation from "../Navigation";
 import ExpandTransition from "./ExpandTransition";
+import TextareaAutosize from "./TextareaAutosize";
 import { callAPI, API_ROUTE, API_ON_ERR } from "../APIService";
 
 export default {
@@ -112,6 +117,7 @@ export default {
     },
   },
   components: {
+    TextareaAutosize,
     "expand-transition": ExpandTransition,
   },
   data() {

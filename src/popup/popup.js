@@ -10,7 +10,6 @@ import * as Integrations from "@sentry/integrations";
 import VModal from "vue-js-modal";
 import VueRouter from "vue-router";
 import ToggleButton from "vue-js-toggle-button";
-import TextareaAutosize from "vue-textarea-autosize";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -60,8 +59,7 @@ async function initApp() {
     process.env.NODE_ENV !== "development"
   ) {
     Sentry.init({
-      dsn:
-        "https://0e2d03e61f194df9ba85a791d364088b@o336535.ingest.sentry.io/5341174",
+      dsn: "https://0e2d03e61f194df9ba85a791d364088b@o336535.ingest.sentry.io/5341174",
       integrations: [
         new Integrations.Vue({ Vue, attachProps: true, logErrors: true }),
       ],
@@ -75,7 +73,6 @@ async function initApp() {
   Vue.use(VModal, { dialog: true });
   Vue.use(VueRouter);
   Vue.use(ToggleButton);
-  Vue.use(TextareaAutosize);
   Vue.component("font-awesome-icon", FontAwesomeIcon);
 
   /* eslint-disable no-new */

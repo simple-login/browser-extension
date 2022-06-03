@@ -61,7 +61,7 @@
         </p>
         <small>
           You can send email from one of these mailbox(es):
-          <ul style="margin-bottom: 0;">
+          <ul style="margin-bottom: 0">
             <li v-for="mailbox in alias.mailboxes" v-bind:key="mailbox.id">
               {{ mailbox.email }}
             </li>
