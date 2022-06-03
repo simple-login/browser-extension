@@ -44,7 +44,7 @@
       "suggested_key": {
         "default": "Ctrl+Shift+S"
       },
-      "description":"Open the extension action menu"
+      "description": "Open the extension action menu"
     }
   }
 }

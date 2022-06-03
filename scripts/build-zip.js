@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+const process = require('process');
 const fs = require('fs');
 const path = require('path');
 const archiver = require('archiver');
@@ -42,9 +43,17 @@ const buildZip = (src, dist, zipFilename) => {
   });
 };
 
+const extractSuffix = () => {
+  if (process.env.SUFFIX) {
+    return `-${process.env.SUFFIX}`;
+  }
+  return '';
+};
+
 const main = () => {
   const {name, version} = extractExtensionData();
-  const zipFilename = `${name}-v${version}.zip`;
+  const suffix = extractSuffix();
+  const zipFilename = `${name}${suffix}-v${version}.zip`;
   
   makeDestZipDirIfNotExists();
 
