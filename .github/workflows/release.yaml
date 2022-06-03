@@ -75,6 +75,11 @@ jobs:
     name: build-release
     needs: ['create-release']
     runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        variant: ['full', 'lite']
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -104,16 +109,25 @@ jobs:
           release_version="$(cat artifacts/release-version)"
           echo "RELEASE_VERSION=$release_version" >> $GITHUB_ENV
           echo "release version: $RELEASE_VERSION"
-          
-          # Set the slack-changelog
-          slack_changelog=$(cat artifacts/slack-changelog)
-          echo "SLACK_CHANGELOG=$slack_changelog" >> $GITHUB_ENV
-          echo "slack changelog: $SLACK_CHANGELOG"
 
-      - name: Build extension
+      - name: Build lite version
+        if: ${{ matrix.variant }} == 'lite'
+        shell: bash
         run: |
           npm install
-          npm run build && npm run build-zip
+          npm run build:lite
+          SUFFIX=lite npm run build-zip
+
+      - name: Build full version
+        if: ${{ matrix.variant }} == 'full'
+        shell: bash
+        run: |
+          npm install
+          npm run build
+          npm run build-zip
+
+      - name: Package extension
+        run: |
           ZIP_NAME=$(find dist-zip -type f -name '*.zip' | head -n 1)
           ASSET_NAME=$(basename "${ZIP_NAME}")
           
@@ -129,6 +143,25 @@ jobs:
           asset_path: ${{ env.ASSET_PATH }}
           asset_name: ${{ env.ASSET_NAME }}
           asset_content_type: application/octet-stream
+
+  notify:
+    name: notify
+    needs: ['create-release', 'build-release']
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get artifacts
+        uses: actions/download-artifact@v1
+        with:
+          name: artifacts
+          path: artifacts
+
+      - name: Read artifacts
+        shell: bash
+        run: |
+          # Set the slack-changelog
+          slack_changelog=$(cat artifacts/slack-changelog)
+          echo "SLACK_CHANGELOG=$slack_changelog" >> $GITHUB_ENV
+          echo "slack changelog: $SLACK_CHANGELOG"
 
       - name: Post notification to Slack
         uses: slackapi/slack-github-action@v1.19.0

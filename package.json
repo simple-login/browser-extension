@@ -10,6 +10,7 @@
     "prettier:write": "npm run prettier -- --write",
     "prettier:check": "prettier --check \"src/**/*.{js,vue}\"",
     "build": "cross-env NODE_ENV=production webpack",
+    "build:lite": "cross-env NODE_ENV=production LITE=1 webpack",
     "build:beta": "cross-env NODE_ENV=production BETA=1 webpack",
     "build:dev": "cross-env NODE_ENV=development BETA=1 webpack",
     "build-zip": "node scripts/build-zip.js",
