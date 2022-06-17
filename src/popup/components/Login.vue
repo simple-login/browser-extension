@@ -33,22 +33,6 @@
         <button class="btn btn-primary btn-block mt-2">Login</button>
       </form>
 
-      <div class="text-center">
-        <a
-          :href="apiUrl + '/auth/register?next=%2Fdashboard%2Fsetup_done'"
-          target="_blank"
-          class="mt-2 btn btn-outline-success btn-block"
-        >
-          Sign Up <font-awesome-icon icon="external-link-alt" />
-        </a>
-      </div>
-
-      <div class="text-center">
-        <button @click="showApiKeySetup" class="mt-2 btn btn-link text-center">
-          Sign in with API Key
-        </button>
-      </div>
-
       <!-- Login with Proton -->
       <div v-if="loginWithProtonEnabled">
         <div class="text-center my-2 text-gray"><span>or</span></div>
@@ -60,6 +44,22 @@
         >
           <img class="mr-2" src="/images/proton.svg" />
           Login with Proton
+        </a>
+      </div>
+
+      <div class="text-center mt-2">
+        <button @click="showApiKeySetup" class="mt-2 btn btn-link text-center">
+          Sign in with API Key
+        </button>
+      </div>
+
+      <div class="text-center">
+        Don't have an account yet?
+        <a
+          :href="apiUrl + '/auth/register?next=%2Fdashboard%2Fsetup_done'"
+          target="_blank"
+        >
+          Sign Up
         </a>
       </div>
     </div>
