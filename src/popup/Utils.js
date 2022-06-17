@@ -1,4 +1,6 @@
 const browser = require("webextension-polyfill");
+const buildConfig = require("./buildConfig.json");
+
 let toasted = null;
 
 class Utils {
@@ -81,6 +83,10 @@ class Utils {
 
   static cloneObject(obj) {
     return JSON.parse(JSON.stringify(obj));
+  }
+
+  static getBuildConfig() {
+    return buildConfig;
   }
 }
 

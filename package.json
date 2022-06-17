@@ -14,6 +14,7 @@
     "build:beta": "cross-env NODE_ENV=production BETA=1 webpack",
     "build:dev": "cross-env NODE_ENV=development BETA=1 webpack",
     "build-zip": "node scripts/build-zip.js",
+    "generate:buildconfig": "node scripts/generateBuildConfig.js",
     "watch": "npm run build -- --watch",
     "watch:dev": "cross-env HMR=true npm run build:dev -- --watch",
     "start": "cross-env HMR=true npm run build:dev -- --watch"

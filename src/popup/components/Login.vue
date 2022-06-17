@@ -48,6 +48,20 @@
           Sign in with API Key
         </button>
       </div>
+
+      <!-- Login with Proton -->
+      <div v-if="loginWithProtonEnabled">
+        <div class="text-center my-2 text-gray"><span>or</span></div>
+
+        <a
+          class="btn btn-primary btn-block mt-2 proton-button"
+          target="_blank"
+          :href="apiUrl + '/auth/proton/login?next=/onboarding/setup_done'"
+        >
+          <img class="mr-2" src="/images/proton.svg" />
+          Login with Proton
+        </a>
+      </div>
     </div>
     <!-- END Login/register screen -->
 
@@ -97,6 +111,8 @@ export default {
       mfaCode: "",
       isShowMfa: false,
       apiUrl: "",
+      loginWithProtonEnabled:
+        Utils.getBuildConfig().features.loginWithProtonEnabled,
     };
   },
   async mounted() {
@@ -171,3 +187,17 @@ export default {
   computed: {},
 };
 </script>
+
+<style lang="css">
+.proton-button {
+  border-color: #6d4aff;
+  background-color: white;
+  color: #6d4aff;
+}
+.proton-button:hover {
+  background-color: #6d4aff;
+}
+.text-gray {
+  color: #868e96;
+}
+</style>
