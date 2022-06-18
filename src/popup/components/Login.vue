@@ -33,20 +33,34 @@
         <button class="btn btn-primary btn-block mt-2">Login</button>
       </form>
 
-      <div class="text-center">
+      <!-- Login with Proton -->
+      <div v-if="loginWithProtonEnabled">
+        <div class="text-center my-2 text-gray"><span>or</span></div>
+
         <a
-          :href="apiUrl + '/auth/register?next=%2Fdashboard%2Fsetup_done'"
+          class="btn btn-primary btn-block mt-2 proton-button"
           target="_blank"
-          class="mt-2 btn btn-outline-success btn-block"
+          :href="apiUrl + '/auth/proton/login?next=/onboarding/setup_done'"
         >
-          Sign Up <font-awesome-icon icon="external-link-alt" />
+          <img class="mr-2" src="/images/proton.svg" />
+          Login with Proton
         </a>
       </div>
 
-      <div class="text-center">
+      <div class="text-center mt-2">
         <button @click="showApiKeySetup" class="mt-2 btn btn-link text-center">
           Sign in with API Key
         </button>
+      </div>
+
+      <div class="text-center">
+        Don't have an account yet?
+        <a
+          :href="apiUrl + '/auth/register?next=%2Fdashboard%2Fsetup_done'"
+          target="_blank"
+        >
+          Sign Up
+        </a>
       </div>
     </div>
     <!-- END Login/register screen -->
@@ -97,6 +111,8 @@ export default {
       mfaCode: "",
       isShowMfa: false,
       apiUrl: "",
+      loginWithProtonEnabled:
+        Utils.getBuildConfig().features.loginWithProtonEnabled,
     };
   },
   async mounted() {
@@ -171,3 +187,17 @@ export default {
   computed: {},
 };
 </script>
+
+<style lang="css">
+.proton-button {
+  border-color: #6d4aff;
+  background-color: white;
+  color: #6d4aff;
+}
+.proton-button:hover {
+  background-color: #1b1340;
+}
+.text-gray {
+  color: #868e96;
+}
+</style>

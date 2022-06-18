@@ -110,6 +110,13 @@ jobs:
           echo "RELEASE_VERSION=$release_version" >> $GITHUB_ENV
           echo "release version: $RELEASE_VERSION"
 
+      - name: Generate buildConfig
+        shell: bash
+        env:
+          ENABLE_LOGIN_WITH_PROTON: false
+        run: |
+          npm run generate:buildconfig
+
       - name: Build lite version
         if: ${{ matrix.variant }} == 'lite'
         shell: bash
