@@ -113,7 +113,7 @@ jobs:
       - name: Generate buildConfig
         shell: bash
         env:
-          ENABLE_LOGIN_WITH_PROTON: false
+          ENABLE_LOGIN_WITH_PROTON: true
         run: |
           npm run generate:buildconfig
 
