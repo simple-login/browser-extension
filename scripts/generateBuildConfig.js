@@ -3,9 +3,17 @@ const path = require('path');
 
 const PATH = path.join(__dirname, '../src', 'popup', 'buildConfig.json');
 
+const isLoginWithProtonEnabled = () => {
+    const enableLoginWithProton = process.env.ENABLE_LOGIN_WITH_PROTON;
+    if (enableLoginWithProton == undefined || enableLoginWithProton === 'true') {
+        return true;
+    }
+    return false;
+};
+
 const config = {
   features: {
-    loginWithProtonEnabled: process.env.ENABLE_LOGIN_WITH_PROTON === 'true'
+    loginWithProtonEnabled: isLoginWithProtonEnabled()
   },
   buildTime: new Date().getTime()
 };
