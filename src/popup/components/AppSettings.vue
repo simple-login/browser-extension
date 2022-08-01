@@ -1,7 +1,9 @@
 <template>
   <div class="content">
     <div class="p-3 container">
-      <p class="font-weight-bold align-self-center">App Settings</p>
+      <p class="font-weight-bold align-self-center">
+        App Settings ({{ userEmail }})
+      </p>
 
       <table class="settings-list">
         <tr>
@@ -84,6 +86,7 @@ export default {
       positionSLButton: "right-inside",
       reportURISLButton: "",
       extension_version: "development",
+      userEmail: "",
     };
   },
   async mounted() {
@@ -93,6 +96,15 @@ export default {
     );
     await this.setMailToUri();
     this.extension_version = browser.runtime.getManifest().version;
+
+    // check api key
+    let userInfo = await callAPI(
+      API_ROUTE.GET_USER_INFO,
+      {},
+      {},
+      API_ON_ERR.TOAST
+    );
+    this.userEmail = userInfo.data.email;
   },
   methods: {
     async handleToggleSLButton() {
