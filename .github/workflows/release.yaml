@@ -81,6 +81,9 @@ jobs:
         variant: ['full', 'lite']
 
     steps:
+      - name: Build info
+        run: echo "Starting build process for variant = ${{ matrix.variant }}"
+
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
@@ -118,7 +121,7 @@ jobs:
           npm run generate:buildconfig
 
       - name: Build lite version
-        if: ${{ matrix.variant }} == 'lite'
+        if: matrix.variant == 'lite'
         shell: bash
         run: |
           npm install
@@ -126,7 +129,7 @@ jobs:
           SUFFIX=lite npm run build-zip
 
       - name: Build full version
-        if: ${{ matrix.variant }} == 'full'
+        if: matrix.variant == 'full'
         shell: bash
         run: |
           npm install
