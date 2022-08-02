@@ -1,6 +1,6 @@
 {
   "features": {
-    "loginWithProtonEnabled": false
+    "loginWithProtonEnabled": true
   },
   "buildTime": 1655462531232
 }
