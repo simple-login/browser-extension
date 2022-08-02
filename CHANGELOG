@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.7.0] - 2022-08-02
+
+- Add "Login with Proton"
+- Show user info on app settings page
+- Remove tabs permission
+- Fix the "create totally random alias" button includes hostname in alias
+- Upgrade dependencies
+
+
 ## [2.6.3] - 2022-05-20
 
 - Remove cookies permission
