@@ -60,7 +60,7 @@ npm run prettier:write
 2. Update CHANGELOG with the changes.
 3. Create a tag and push it to the repository. The tag name must match the version set in `package.json`.
 4. Wait until the CI process generates the extension ZIP and uploads it to GitHub. You will be able to find the generated zip as an artifact attached to the [GitHub release](https://github.com/simple-login/browser-extension/releases).
-5. Upload the extension to the Chrome, Firefox and Edge stores.
+5. Upload the extension to the Chrome, Firefox, and Edge stores.
 
 
 ## How to build the extension locally
