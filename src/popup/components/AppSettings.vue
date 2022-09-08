@@ -122,7 +122,6 @@ export default {
         SLStorage.SETTINGS.SL_BUTTON_POSITION,
         this.positionSLButton
       );
-      this.fetchSettings();
       this.showSavedSettingsToast();
     },
 
