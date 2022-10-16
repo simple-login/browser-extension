@@ -66,17 +66,13 @@
               class="input-group-sm w-50"
               style="padding-top: 6px; padding-bottom: 6px"
             >
-              <select
-                v-model="theme"
-                class="form-control"
-                @change="handleThemeChange"
-              >
+              <select v-model="theme" class="form-control">
                 <option
-                  v-for="theme in THEMES"
-                  v-bind:key="theme"
-                  :value="theme"
+                  v-for="themeOption in THEMES"
+                  :key="themeOption"
+                  :value="themeOption"
                 >
-                  {{ THEME_LABELS[theme] }}
+                  {{ THEME_LABELS[themeOption] }}
                 </option>
               </select>
             </div>
@@ -107,7 +103,7 @@ import EventManager from "../EventManager";
 import Navigation from "../Navigation";
 import Utils from "../Utils";
 import { callAPI, API_ROUTE, API_ON_ERR } from "../APIService";
-import { THEME_LABELS, THEMES } from "../theme";
+import { setThemeClass, THEME_LABELS, THEMES } from "../theme";
 
 export default {
   data() {
@@ -159,11 +155,6 @@ export default {
       this.showSavedSettingsToast();
     },
 
-    async handleThemeChange() {
-      await SLStorage.set(SLStorage.SETTINGS.THEME, this.theme);
-      this.showSavedSettingsToast();
-    },
-
     showSavedSettingsToast() {
       Utils.showSuccess("Settings saved");
     },
@@ -185,5 +176,16 @@ export default {
     },
   },
   computed: {},
+  watch: {
+    theme: async function (newTheme, oldTheme) {
+      if (!oldTheme) {
+        return
+      }
+
+      await SLStorage.set(SLStorage.SETTINGS.THEME, newTheme)
+      setThemeClass(oldTheme, newTheme)
+      this.showSavedSettingsToast();
+    },
+  },
 };
 </script>

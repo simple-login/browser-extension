@@ -1,5 +1,6 @@
 @import './App-color.scss';
 @import './App-scrollbar.scss';
+@import './Theme.scss';
 @import '~bootstrap/scss/bootstrap.scss';
 @import '~bootstrap-vue/src/index.scss';
 @import '~tippy.js/dist/tippy.css';
@@ -7,6 +8,26 @@
 body {
   box-sizing: content-box !important;
   width: 470px;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+select.form-control {
+  color: var(--text-color);
+  background-color: var(--input-bg-color);
+  border-color: var(--input-border-color);
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+select.form-control:focus {
+  color: var(--text-color);
+  background-color: var(--input-bg-focus);
+  border-color: var(--input-border-color);
 }
 
 .header {
@@ -30,7 +51,7 @@ body {
   height: 100vh;
   width: 100vw;
   min-height: 350px;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: var(--overlay-background-color);
 }
 
 .overlay-content {
@@ -67,7 +88,7 @@ body {
 }
 
 .splash.overlay {
-  background-color: white;
+  background-color: var(--background-color);
 }
 
 em {
@@ -86,7 +107,7 @@ em {
 
 .card-rating {
   border-radius: 8px;
-  border: 1px solid #b02a8f;
+  border: 1px solid var(--brand-color);
 }
 
 /* list aliases */
@@ -133,13 +154,13 @@ em {
     position: absolute;
     right: 0.5rem;
   }
-  
+
   .header-button {
     height: 20px;
     margin-top: 2px;
     margin-left: 10px;
     margin-right: 7px;
-    color: #b02a8f;
+    color: var(--brand-color);
     cursor: pointer;
   }
 }
@@ -167,12 +188,13 @@ em {
 .btn-send {
   width: 14px;
   height: 14px;
-  color: #b02a8f;
+  color: var(--brand-color);
 }
 
 /* more options */
-.btn-delete:hover, .btn-svg:hover {
-  background-color: rgba(0, 0, 0, 0.1);
+.btn-delete:hover,
+.btn-svg:hover {
+  background-color: var(--delete-button-hover-color);
 }
 
 .btn-delete {
@@ -193,7 +215,7 @@ em {
 }
 
 span.link {
-  color: #b02a8f;
+  color: var(--brand-color);
 }
 
 .more-options > .action {
@@ -211,14 +233,14 @@ span.link {
   padding: 0.1em 0.4em;
   font-size: 0.65em;
   margin-left: 1em;
-  border: 0.7px solid #b02a8f;
+  border: 0.7px solid var(--brand-color);
   display: inline-block;
-  color: #b02a8f;
+  color: var(--brand-color);
 }
 
 /* App Settings */
 table.settings-list > tr {
-  border-bottom: 1px solid #bbb;
+  border-bottom: 1px solid var(--delimiter-color);
 }
 
 table.settings-list > tr > td {

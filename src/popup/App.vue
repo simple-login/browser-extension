@@ -20,6 +20,7 @@ import Main from "./components/Main";
 import NewAliasResult from "./components/NewAliasResult";
 import ReverseAlias from "./components/ReverseAlias";
 import AppSettings from "./components/AppSettings";
+import SLStorage from "./SLStorage";
 import Utils from "./Utils";
 import APIService from "./APIService";
 
@@ -53,6 +54,7 @@ export default {
   },
   async mounted() {
     await APIService.initService();
+    await this.setSavedTheme();
     Utils.setToasted(this.$toasted);
     Navigation.setRouter(this.$router);
     Navigation.navigateTo(Navigation.PATH.ROOT);
@@ -66,6 +68,10 @@ export default {
       if (windowWidth < appWidth) {
         this.isInsideOverflowMenu = true;
       }
+    },
+    async setSavedTheme() {
+      const theme = await SLStorage.get(SLStorage.SETTINGS.THEME);
+      document.body.classList.add(theme);
     },
   },
 };
