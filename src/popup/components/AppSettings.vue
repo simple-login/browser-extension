@@ -53,6 +53,35 @@
             </small>
           </td>
         </tr>
+
+        <tr>
+          <td></td>
+          <td>
+            SimpleLogin extension Theme<br />
+            <small>
+              System theme automatically switches between Light and Dark -
+              according to system preference.
+            </small>
+            <div
+              class="input-group-sm w-50"
+              style="padding-top: 6px; padding-bottom: 6px"
+            >
+              <select
+                v-model="theme"
+                class="form-control"
+                @change="handleThemeChange"
+              >
+                <option
+                  v-for="theme in THEMES"
+                  v-bind:key="theme"
+                  :value="theme"
+                >
+                  {{ THEME_LABELS[theme] }}
+                </option>
+              </select>
+            </div>
+          </td>
+        </tr>
       </table>
 
       <button
@@ -78,6 +107,7 @@ import EventManager from "../EventManager";
 import Navigation from "../Navigation";
 import Utils from "../Utils";
 import { callAPI, API_ROUTE, API_ON_ERR } from "../APIService";
+import { THEME_LABELS, THEMES } from "../theme";
 
 export default {
   data() {
@@ -87,6 +117,9 @@ export default {
       reportURISLButton: "",
       extension_version: "development",
       userEmail: "",
+      theme: "",
+      THEMES: THEMES,
+      THEME_LABELS: THEME_LABELS,
     };
   },
   async mounted() {
@@ -94,6 +127,7 @@ export default {
     this.positionSLButton = await SLStorage.get(
       SLStorage.SETTINGS.SL_BUTTON_POSITION
     );
+    this.theme = await SLStorage.get(SLStorage.SETTINGS.THEME);
     await this.setMailToUri();
     this.extension_version = browser.runtime.getManifest().version;
 
@@ -122,6 +156,11 @@ export default {
         SLStorage.SETTINGS.SL_BUTTON_POSITION,
         this.positionSLButton
       );
+      this.showSavedSettingsToast();
+    },
+
+    async handleThemeChange() {
+      await SLStorage.set(SLStorage.SETTINGS.THEME, this.theme);
       this.showSavedSettingsToast();
     },
 
