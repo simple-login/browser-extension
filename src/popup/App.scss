@@ -15,8 +15,7 @@ body {
 input.form-control,
 select.form-control,
 textarea.form-control,
-.v--modal-box.v--modal.vue-dialog div,
-.v--modal-box.v--modal.vue-dialog button {
+.dropdown-menu.show {
   color: var(--text-color);
   background-color: var(--input-bg-color);
   border-color: var(--input-border-color);
@@ -32,10 +31,17 @@ textarea.form-control:disabled {
 
 input.form-control:focus,
 select.form-control:focus,
-textarea.form-control:disabled {
+textarea.form-control:focus {
   color: var(--text-color);
   background-color: var(--input-bg-focus);
   border-color: var(--input-border-color);
+}
+
+.v--modal-box.v--modal.vue-dialog div,
+.v--modal-box.v--modal.vue-dialog button {
+  color: var(--text-color);
+  background-color: var(--input-bg-color);
+  border-color: var(--delimiter-color);
 }
 
 .header {
