@@ -1,9 +1,9 @@
-@import './App-color.scss';
-@import './App-scrollbar.scss';
-@import './Theme.scss';
-@import '~bootstrap/scss/bootstrap.scss';
-@import '~bootstrap-vue/src/index.scss';
-@import '~tippy.js/dist/tippy.css';
+@import "./App-color.scss";
+@import "./App-scrollbar.scss";
+@import "./Theme.scss";
+@import "~bootstrap/scss/bootstrap.scss";
+@import "~bootstrap-vue/src/index.scss";
+@import "~tippy.js/dist/tippy.css";
 
 body {
   box-sizing: content-box !important;
@@ -12,19 +12,26 @@ body {
   color: var(--text-color);
 }
 
-input[type="text"],
-input[type="email"],
-input[type="password"],
-select.form-control {
+input.form-control,
+select.form-control,
+textarea.form-control,
+#modals-container {
   color: var(--text-color);
   background-color: var(--input-bg-color);
   border-color: var(--input-border-color);
 }
 
-input[type="text"]:focus,
-input[type="email"]:focus,
-input[type="password"]:focus,
-select.form-control:focus {
+input.form-control:disabled,
+select.form-control:disabled,
+textarea.form-control:disabled {
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  border-color: var(--input-border-color);
+}
+
+input.form-control:focus,
+select.form-control:focus,
+textarea.form-control:disabled {
   color: var(--text-color);
   background-color: var(--input-bg-focus);
   border-color: var(--input-border-color);
@@ -138,7 +145,7 @@ em {
   right: 0;
   width: 30px;
   height: 100%;
-  background: linear-gradient(to right, transparent, white);
+  background: linear-gradient(to right, transparent, var(--bg-color));
   top: 0;
   position: absolute;
 }
@@ -268,7 +275,8 @@ table.settings-list {
     scrollbar-width: thin;
   }
 
-  textarea, input {
+  textarea,
+  input {
     font-size: 88%;
   }
 
