@@ -15,7 +15,8 @@ body {
 input.form-control,
 select.form-control,
 textarea.form-control,
-#modals-container {
+.v--modal-box.v--modal.vue-dialog div,
+.v--modal-box.v--modal.vue-dialog button {
   color: var(--text-color);
   background-color: var(--input-bg-color);
   border-color: var(--input-border-color);
