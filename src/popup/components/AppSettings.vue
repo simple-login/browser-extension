@@ -114,8 +114,8 @@ export default {
       extension_version: "development",
       userEmail: "",
       theme: "",
-      THEMES: THEMES,
-      THEME_LABELS: THEME_LABELS,
+      THEMES,
+      THEME_LABELS,
     };
   },
   async mounted() {
@@ -177,13 +177,12 @@ export default {
   },
   computed: {},
   watch: {
-    theme: async function (newTheme, oldTheme) {
-      if (!oldTheme) {
-        return
+    theme: async function (nextTheme, prevTheme) {
+      if (!prevTheme) {
+        return;
       }
 
-      await SLStorage.set(SLStorage.SETTINGS.THEME, newTheme)
-      setThemeClass(oldTheme, newTheme)
+      setThemeClass(nextTheme, prevTheme);
       this.showSavedSettingsToast();
     },
   },
