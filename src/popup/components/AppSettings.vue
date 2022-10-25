@@ -103,7 +103,7 @@ import EventManager from "../EventManager";
 import Navigation from "../Navigation";
 import Utils from "../Utils";
 import { callAPI, API_ROUTE, API_ON_ERR } from "../APIService";
-import { setThemeClass, THEME_LABELS, THEMES } from "../theme";
+import { setThemeClass, THEME_LABELS, THEMES, getSavedTheme } from "../theme";
 
 export default {
   data() {
@@ -120,10 +120,9 @@ export default {
   },
   async mounted() {
     this.showSLButton = await SLStorage.get(SLStorage.SETTINGS.SHOW_SL_BUTTON);
-    this.positionSLButton = await SLStorage.get(
-      SLStorage.SETTINGS.SL_BUTTON_POSITION
-    );
-    this.theme = await SLStorage.get(SLStorage.SETTINGS.THEME);
+    this.positionSLButton = await SLStorage.get(SLStorage.SETTINGS.SL_BUTTON_POSITION);
+    this.theme = await getSavedTheme();
+
     await this.setMailToUri();
     this.extension_version = browser.runtime.getManifest().version;
 
