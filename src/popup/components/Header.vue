@@ -1,6 +1,9 @@
 <template>
   <div class="header">
-    <div class="row mt-2 pb-2 ml-3 mr-2" style="border-bottom: 1px var(--delimiter-color) solid">
+    <div
+      class="row mt-2 pb-2 ml-3 mr-2"
+      style="border-bottom: 1px var(--delimiter-color) solid"
+    >
       <div>
         <div
           v-on:click="navigateBack()"

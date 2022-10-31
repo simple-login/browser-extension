@@ -1,4 +1,4 @@
-import SLStorage from './SLStorage';
+import SLStorage from "./SLStorage";
 
 export const THEME_LIGHT = "theme-light";
 export const THEME_DARK = "theme-dark";

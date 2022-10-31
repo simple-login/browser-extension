@@ -120,7 +120,9 @@ export default {
   },
   async mounted() {
     this.showSLButton = await SLStorage.get(SLStorage.SETTINGS.SHOW_SL_BUTTON);
-    this.positionSLButton = await SLStorage.get(SLStorage.SETTINGS.SL_BUTTON_POSITION);
+    this.positionSLButton = await SLStorage.get(
+      SLStorage.SETTINGS.SL_BUTTON_POSITION
+    );
     this.theme = await getSavedTheme();
 
     await this.setMailToUri();
