@@ -78,7 +78,8 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        variant: ['full', 'lite']
+#        variant: ['full', 'lite']
+        variant: ['full']
 
     steps:
       - name: Build info
