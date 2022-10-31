@@ -1,15 +1,16 @@
 <template>
   <div class="header">
-    <div class="row mt-2 pb-2 ml-3 mr-2" style="border-bottom: 1px #eee solid">
+    <div class="row mt-2 pb-2 ml-3 mr-2" style="border-bottom: 1px var(--delimiter-color) solid">
       <div>
         <div
           v-on:click="navigateBack()"
           v-bind:class="{ back: canBack }"
-          style="display: inline-block"
+          style="display: inline-block; color: var(--text-color)"
         >
           <img
             v-if="canBack"
             src="/images/back-button.svg"
+            class="invertable"
             style="height: 20px"
           />
           <img

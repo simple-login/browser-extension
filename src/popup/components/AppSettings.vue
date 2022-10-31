@@ -53,6 +53,31 @@
             </small>
           </td>
         </tr>
+
+        <tr>
+          <td></td>
+          <td>
+            SimpleLogin extension Theme<br />
+            <small>
+              System theme automatically switches between Light and Dark -
+              according to system preference.
+            </small>
+            <div
+              class="input-group-sm w-50"
+              style="padding-top: 6px; padding-bottom: 6px"
+            >
+              <select v-model="theme" class="form-control">
+                <option
+                  v-for="themeOption in THEMES"
+                  :key="themeOption"
+                  :value="themeOption"
+                >
+                  {{ THEME_LABELS[themeOption] }}
+                </option>
+              </select>
+            </div>
+          </td>
+        </tr>
       </table>
 
       <button
@@ -78,6 +103,7 @@ import EventManager from "../EventManager";
 import Navigation from "../Navigation";
 import Utils from "../Utils";
 import { callAPI, API_ROUTE, API_ON_ERR } from "../APIService";
+import { setThemeClass, THEME_LABELS, THEMES, getSavedTheme } from "../theme";
 
 export default {
   data() {
@@ -87,13 +113,16 @@ export default {
       reportURISLButton: "",
       extension_version: "development",
       userEmail: "",
+      theme: "",
+      THEMES,
+      THEME_LABELS,
     };
   },
   async mounted() {
     this.showSLButton = await SLStorage.get(SLStorage.SETTINGS.SHOW_SL_BUTTON);
-    this.positionSLButton = await SLStorage.get(
-      SLStorage.SETTINGS.SL_BUTTON_POSITION
-    );
+    this.positionSLButton = await SLStorage.get(SLStorage.SETTINGS.SL_BUTTON_POSITION);
+    this.theme = await getSavedTheme();
+
     await this.setMailToUri();
     this.extension_version = browser.runtime.getManifest().version;
 
@@ -146,5 +175,15 @@ export default {
     },
   },
   computed: {},
+  watch: {
+    theme: async function (nextTheme, prevTheme) {
+      if (!prevTheme) {
+        return;
+      }
+
+      setThemeClass(nextTheme, prevTheme);
+      this.showSavedSettingsToast();
+    },
+  },
 };
 </script>

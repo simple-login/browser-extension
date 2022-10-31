@@ -1,0 +1,68 @@
+:root {
+  --brand-color: #b02a8f;
+  --muted-brand-color: rgba(176, 42, 143, 0.7);
+}
+
+.theme-light {
+  --bg-color: white;
+  --input-bg-color: white;
+  --overlay-bg-color: rgba(255, 255, 255, 0.8);
+  --text-color: black;
+  --delimiter-color: #bbb;
+  --delete-button-hover-color: rgba(0, 0, 0, 0.1);
+}
+
+.theme-dark {
+  --bg-color: #222;
+  --input-bg-color: #333;
+  --input-bg-focus: #444;
+  --input-border-color: black;
+  --overlay-bg-color: rgba(0, 0, 0, 0.8);
+  --text-color: #ddd;
+  --delimiter-color: #555;
+  --delete-button-hover-color: rgba(255, 255, 255, 0.1);
+
+  // For switching colors of monochrome images
+  .invertable, .btn.dropdown-toggle {
+    filter: invert(0.8);
+  }
+
+  .btn-primary.btn-primary-muted {
+    background-color: var(--muted-brand-color);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  // copy of .theme-light
+  .theme-system {
+    --bg-color: white;
+    --input-bg-color: white;
+    --overlay-bg-color: rgba(255, 255, 255, 0.8);
+    --text-color: black;
+    --delimiter-color: #bbb;
+    --delete-button-hover-color: rgba(0, 0, 0, 0.1);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  // copy of .theme-dark
+  .theme-system {
+    --bg-color: #222;
+    --input-bg-color: #333;
+    --input-bg-focus: #444;
+    --input-border-color: black;
+    --overlay-bg-color: rgba(0, 0, 0, 0.8);
+    --text-color: #ddd;
+    --delimiter-color: #555;
+    --delete-button-hover-color: rgba(255, 255, 255, 0.1);
+
+    // For switching colors of monochrome images
+    .invertable, .btn.dropdown-toggle {
+      filter: invert(0.8);
+    }
+
+    .btn-primary.btn-primary-muted {
+      background-color: var(--muted-brand-color);
+    }
+  }
+}

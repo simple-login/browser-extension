@@ -20,8 +20,10 @@ import Main from "./components/Main";
 import NewAliasResult from "./components/NewAliasResult";
 import ReverseAlias from "./components/ReverseAlias";
 import AppSettings from "./components/AppSettings";
+import SLStorage from "./SLStorage";
 import Utils from "./Utils";
 import APIService from "./APIService";
+import { getSavedTheme, setThemeClass } from "./theme";
 
 const components = {
   "sl-header": Header,
@@ -53,6 +55,7 @@ export default {
   },
   async mounted() {
     await APIService.initService();
+    await setThemeClass(await getSavedTheme());
     Utils.setToasted(this.$toasted);
     Navigation.setRouter(this.$router);
     Navigation.navigateTo(Navigation.PATH.ROOT);

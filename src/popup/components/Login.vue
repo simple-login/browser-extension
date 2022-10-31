@@ -191,11 +191,13 @@ export default {
 <style lang="css">
 .proton-button {
   border-color: #6d4aff;
-  background-color: white;
+  background-color: var(--bg-color);
   color: #6d4aff;
 }
 .proton-button:hover {
+  border-color: #6d4aff;
   background-color: #1b1340;
+  color: var(--text-color);
 }
 .text-gray {
   color: #868e96;
