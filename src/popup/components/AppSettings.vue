@@ -103,7 +103,7 @@ import EventManager from "../EventManager";
 import Navigation from "../Navigation";
 import Utils from "../Utils";
 import { callAPI, API_ROUTE, API_ON_ERR } from "../APIService";
-import { setThemeClass, THEME_LABELS, THEMES, getSavedTheme } from "../theme";
+import { setThemeClass, THEME_LABELS, THEMES, getSavedTheme } from "../Theme";
 
 export default {
   data() {

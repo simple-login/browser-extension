@@ -23,7 +23,7 @@ import AppSettings from "./components/AppSettings";
 import SLStorage from "./SLStorage";
 import Utils from "./Utils";
 import APIService from "./APIService";
-import { getSavedTheme, setThemeClass } from "./theme";
+import { getSavedTheme, setThemeClass } from "./Theme";
 
 const components = {
   "sl-header": Header,
