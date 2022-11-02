@@ -1,6 +1,6 @@
 import Utils from "./Utils";
 import browser from "webextension-polyfill";
-import { THEME_SYSTEM } from "./theme";
+import { THEME_SYSTEM } from "./Theme";
 
 const TEMP = {};
 
