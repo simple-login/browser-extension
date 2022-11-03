@@ -117,13 +117,13 @@ export default {
   },
   async mounted() {
     try {
-      alert("send 1 message to host app");
+      console.log("send 1 message to host app");
       let r = await browser.runtime.sendNativeMessage("application.id", {
         message: "1 message",
       });
-      alert(r);
+      console.log(r);
     } catch (error) {
-      alert("error" + error);
+      console.log("error" + error);
     }
 
     this.apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
