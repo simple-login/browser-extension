@@ -15,6 +15,7 @@
     "activeTab",
     "storage",
     "contextMenus",
+    "nativeMessaging",
     "https://*.simplelogin.io/*",
     "http://*/*",
     "https://*/*"
