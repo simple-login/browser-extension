@@ -257,12 +257,15 @@ export default {
     this.apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
     this.apiKey = await SLStorage.get(SLStorage.SETTINGS.API_KEY);
 
-    if (this.apiKey){
-      alert("send to host app")
-      browser.runtime.sendNativeMessage("application.id", {message: "Hello from background page"}, function(response) {
-    console.log("Received sendNativeMessage response:");
-    console.log(response);
-});
+    if (this.apiKey) {
+      alert("send to host app");
+      browser.runtime.sendNativeMessage(
+        "application.id",
+        { message: "Hello from background page", apiKey: this.apiKey },
+        function (response) {
+          alert(response);
+        }
+      );
     }
 
     this.contentElem = document.querySelector(".app > .content");
