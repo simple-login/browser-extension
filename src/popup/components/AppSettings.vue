@@ -27,7 +27,9 @@
                 v-show="showSLButton"
                 target="_blank"
               >
-                <br /><font-awesome-icon icon="bug" /> Report an issue
+                <br />
+                <font-awesome-icon icon="bug" />
+                Report an issue
               </a>
             </small>
           </td>
@@ -165,6 +167,17 @@ export default {
       await SLStorage.remove(SLStorage.SETTINGS.API_KEY);
       EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
       Navigation.clearHistoryAndNavigateTo(Navigation.PATH.LOGIN);
+
+      try {
+        console.log("send log out event to host app");
+        let r = await browser.runtime.sendNativeMessage("application.id", {
+          message: {
+            logged_out: {},
+          },
+        });
+      } catch (error) {
+        console.info("can't send data to native app", error);
+      }
     },
 
     async setMailToUri() {
