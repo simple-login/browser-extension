@@ -101,7 +101,11 @@
       <div v-if="!canCreate">
         <p class="text-danger" style="font-size: 14px">
           You have reached limit number of email aliases in free plan, please
-          <a :href="apiUrl + '/dashboard/pricing'" target="_blank">upgrade</a>
+          <span
+            @click="upgrade"
+            style="cursor: pointer; color: blue; text-decoration: underline"
+            >upgrade</span
+          >
           or reuse one of the existing aliases.
         </p>
       </div>
@@ -520,6 +524,21 @@ export default {
     goToReverseAlias(alias) {
       SLStorage.setTemporary("alias", alias);
       Navigation.navigateTo(Navigation.PATH.REVERSE_ALIAS, true);
+    },
+
+    async upgrade() {
+      try {
+        console.log("send upgrade event to host app");
+        let r = await browser.runtime.sendNativeMessage("application.id", {
+          message: {
+            upgrade: {},
+          },
+        });
+      } catch (error) {
+        console.info("can't send data to native app", error);
+        let upgradeURL = this.apiUrl + "/dashboard/pricing";
+        browser.tabs.create({ url: upgradeURL });
+      }
     },
 
     // Clipboard
