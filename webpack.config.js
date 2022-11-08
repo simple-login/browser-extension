@@ -140,10 +140,6 @@ const config = {
 
             if (process.env.MAC) {
               jsonContent.permissions.push("nativeMessaging");
-
-              // Change metadata
-              jsonContent.name = "SimpleLogin Mac App";
-              jsonContent.short_name = "SimpleLogin Mac App";
             }
 
             return JSON.stringify(jsonContent, null, 2);
