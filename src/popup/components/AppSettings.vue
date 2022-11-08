@@ -186,16 +186,14 @@ export default {
       EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
       Navigation.clearHistoryAndNavigateTo(Navigation.PATH.LOGIN);
 
-      try {
+      if (process.env.MAC) {
         console.log("send log out event to host app");
-        let r = await browser.runtime.sendNativeMessage(
+        await browser.runtime.sendNativeMessage(
           "application.id",
           JSON.stringify({
             logged_out: {},
           })
         );
-      } catch (error) {
-        console.info("can't send data to native app", error);
       }
     },
 
@@ -208,15 +206,15 @@ export default {
       this.reportURISLButton = `mailto:extension@simplelogin.io?subject=${subject}&body=${body}`;
     },
     async upgrade() {
-      try {
+      if (process.env.MAC) {
         console.log("send upgrade event to host app");
-        let r = await browser.runtime.sendNativeMessage(
+        await browser.runtime.sendNativeMessage(
           "application.id",
           JSON.stringify({
             upgrade: {},
           })
         );
-      } catch (error) {
+      } else {
         console.info("can't send data to native app", error);
         let apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
         let upgradeURL = apiUrl + "/dashboard/pricing";

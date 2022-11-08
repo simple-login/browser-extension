@@ -78,7 +78,7 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        variant: ['full', 'lite']
+        variant: ['full', 'lite', 'mac']
 
     steps:
       - name: Build info
@@ -134,6 +134,14 @@ jobs:
         run: |
           npm install
           npm run build
+          npm run build-zip
+
+      - name: Build Mac version
+        if: matrix.variant == 'mac'
+        shell: bash
+        run: |
+          npm install
+          npm run build:mac
           npm run build-zip
 
       - name: Package extension

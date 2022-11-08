@@ -262,23 +262,19 @@ export default {
     this.apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
     this.apiKey = await SLStorage.get(SLStorage.SETTINGS.API_KEY);
 
-    if (this.apiKey) {
-      try {
-        console.log("send api key to host app");
-        let r = await browser.runtime.sendNativeMessage(
-          "application.id",
-          JSON.stringify({
-            logged_in: {
-              data: {
-                api_key: this.apiKey,
-                api_url: this.apiUrl,
-              },
+    if (this.apiKey && process.env.MAC) {
+      console.log("send api key to host app");
+      await browser.runtime.sendNativeMessage(
+        "application.id",
+        JSON.stringify({
+          logged_in: {
+            data: {
+              api_key: this.apiKey,
+              api_url: this.apiUrl,
             },
-          })
-        );
-      } catch (error) {
-        console.info("can't send data to native app", error);
-      }
+          },
+        })
+      );
     }
 
     this.contentElem = document.querySelector(".app > .content");
@@ -528,15 +524,15 @@ export default {
     },
 
     async upgrade() {
-      try {
+      if (process.env.MAC) {
         console.log("send upgrade event to host app");
-        let r = await browser.runtime.sendNativeMessage(
+        await browser.runtime.sendNativeMessage(
           "application.id",
           JSON.stringify({
             upgrade: {},
           })
         );
-      } catch (error) {
+      } else {
         console.info("can't send data to native app", error);
         let upgradeURL = this.apiUrl + "/dashboard/pricing";
         browser.tabs.create({ url: upgradeURL });
