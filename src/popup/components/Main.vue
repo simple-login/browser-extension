@@ -266,12 +266,10 @@ export default {
       try {
         console.log("send api key to host app");
         let r = await browser.runtime.sendNativeMessage("application.id", {
-          message: {
-            logged_in: {
-              data: {
-                api_key: this.apiKey,
-                api_url: this.apiUrl,
-              },
+          logged_in: {
+            data: {
+              api_key: this.apiKey,
+              api_url: this.apiUrl,
             },
           },
         });
@@ -530,9 +528,7 @@ export default {
       try {
         console.log("send upgrade event to host app");
         let r = await browser.runtime.sendNativeMessage("application.id", {
-          message: {
-            upgrade: {},
-          },
+          upgrade: {},
         });
       } catch (error) {
         console.info("can't send data to native app", error);
