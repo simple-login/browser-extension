@@ -265,14 +265,17 @@ export default {
     if (this.apiKey) {
       try {
         console.log("send api key to host app");
-        let r = await browser.runtime.sendNativeMessage("application.id", {
-          logged_in: {
-            data: {
-              api_key: this.apiKey,
-              api_url: this.apiUrl,
+        let r = await browser.runtime.sendNativeMessage(
+          "application.id",
+          JSON.stringify({
+            logged_in: {
+              data: {
+                api_key: this.apiKey,
+                api_url: this.apiUrl,
+              },
             },
-          },
-        });
+          })
+        );
       } catch (error) {
         console.info("can't send data to native app", error);
       }
@@ -527,9 +530,12 @@ export default {
     async upgrade() {
       try {
         console.log("send upgrade event to host app");
-        let r = await browser.runtime.sendNativeMessage("application.id", {
-          upgrade: {},
-        });
+        let r = await browser.runtime.sendNativeMessage(
+          "application.id",
+          JSON.stringify({
+            upgrade: {},
+          })
+        );
       } catch (error) {
         console.info("can't send data to native app", error);
         let upgradeURL = this.apiUrl + "/dashboard/pricing";

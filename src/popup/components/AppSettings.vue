@@ -170,9 +170,12 @@ export default {
 
       try {
         console.log("send log out event to host app");
-        let r = await browser.runtime.sendNativeMessage("application.id", {
-          logged_out: {},
-        });
+        let r = await browser.runtime.sendNativeMessage(
+          "application.id",
+          JSON.stringify({
+            logged_out: {},
+          })
+        );
       } catch (error) {
         console.info("can't send data to native app", error);
       }
