@@ -74,6 +74,12 @@ In order to build the extension yourself, please follow these steps:
 
 - (Optional, only useful for beta build) Build beta version: change `betaRev` in `package.json`, then generate zip file using
 
+## How to build a version for Mac
+
+For the development, you can run `npm run start:mac` for the Mac app.
+
+For the production release, `npm run build:mac`
+
 ```bash
 npm run build:beta && npm run build-zip
 ```

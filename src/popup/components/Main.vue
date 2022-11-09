@@ -93,14 +93,19 @@
           class="btn btn-outline-primary btn-sm"
           @click="createRandomAlias"
         >
-          <font-awesome-icon icon="random" /> OR create a totally random alias
+          <font-awesome-icon icon="random" />
+          OR create a totally random alias
         </button>
       </div>
 
       <div v-if="!canCreate">
         <p class="text-danger" style="font-size: 14px">
           You have reached limit number of email aliases in free plan, please
-          <a :href="apiUrl + '/dashboard/pricing'" target="_blank">upgrade</a>
+          <span
+            @click="upgrade"
+            style="cursor: pointer; color: blue; text-decoration: underline"
+            >upgrade</span
+          >
           or reuse one of the existing aliases.
         </p>
       </div>
@@ -256,6 +261,21 @@ export default {
     this.hostName = await Utils.getHostName();
     this.apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
     this.apiKey = await SLStorage.get(SLStorage.SETTINGS.API_KEY);
+
+    if (this.apiKey && process.env.MAC) {
+      console.log("send api key to host app");
+      await browser.runtime.sendNativeMessage(
+        "application.id",
+        JSON.stringify({
+          logged_in: {
+            data: {
+              api_key: this.apiKey,
+              api_url: this.apiUrl,
+            },
+          },
+        })
+      );
+    }
 
     this.contentElem = document.querySelector(".app > .content");
 
@@ -501,6 +521,22 @@ export default {
     goToReverseAlias(alias) {
       SLStorage.setTemporary("alias", alias);
       Navigation.navigateTo(Navigation.PATH.REVERSE_ALIAS, true);
+    },
+
+    async upgrade() {
+      if (process.env.MAC) {
+        console.log("send upgrade event to host app");
+        await browser.runtime.sendNativeMessage(
+          "application.id",
+          JSON.stringify({
+            upgrade: {},
+          })
+        );
+      } else {
+        console.info("can't send data to native app", error);
+        let upgradeURL = this.apiUrl + "/dashboard/pricing";
+        browser.tabs.create({ url: upgradeURL });
+      }
     },
 
     // Clipboard

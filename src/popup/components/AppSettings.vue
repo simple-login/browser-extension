@@ -5,6 +5,18 @@
         App Settings ({{ userEmail }})
       </p>
 
+      <div v-if="freeAccount">
+        <small>
+          Currently you have a free SimpleLogin account. Upgrade your account to
+          create unlimited aliases, add more mailboxes, create aliases
+          on-the-fly with your domain or SimpleLogin subdomain and more.
+        </small>
+        <button @click="upgrade" class="btn btn-primary btn-sm">
+          Upgrade your SimpleLogin account
+        </button>
+        <hr />
+      </div>
+
       <table class="settings-list">
         <tr>
           <td>
@@ -27,7 +39,9 @@
                 v-show="showSLButton"
                 target="_blank"
               >
-                <br /><font-awesome-icon icon="bug" /> Report an issue
+                <br />
+                <font-awesome-icon icon="bug" />
+                Report an issue
               </a>
             </small>
           </td>
@@ -114,6 +128,7 @@ export default {
       extension_version: "development",
       userEmail: "",
       theme: "",
+      freeAccount: false,
       THEMES,
       THEME_LABELS,
     };
@@ -136,6 +151,11 @@ export default {
       API_ON_ERR.TOAST
     );
     this.userEmail = userInfo.data.email;
+    if (userInfo.data.in_trial) {
+      this.freeAccount = true;
+    } else {
+      this.freeAccount = !userInfo.data.is_premium;
+    }
   },
   methods: {
     async handleToggleSLButton() {
@@ -165,6 +185,16 @@ export default {
       await SLStorage.remove(SLStorage.SETTINGS.API_KEY);
       EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
       Navigation.clearHistoryAndNavigateTo(Navigation.PATH.LOGIN);
+
+      if (process.env.MAC) {
+        console.log("send log out event to host app");
+        await browser.runtime.sendNativeMessage(
+          "application.id",
+          JSON.stringify({
+            logged_out: {},
+          })
+        );
+      }
     },
 
     async setMailToUri() {
@@ -174,6 +204,22 @@ export default {
         "(Optional) Affected website: " + hostname
       );
       this.reportURISLButton = `mailto:extension@simplelogin.io?subject=${subject}&body=${body}`;
+    },
+    async upgrade() {
+      if (process.env.MAC) {
+        console.log("send upgrade event to host app");
+        await browser.runtime.sendNativeMessage(
+          "application.id",
+          JSON.stringify({
+            upgrade: {},
+          })
+        );
+      } else {
+        console.info("can't send data to native app", error);
+        let apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
+        let upgradeURL = apiUrl + "/dashboard/pricing";
+        browser.tabs.create({ url: upgradeURL });
+      }
     },
   },
   computed: {},

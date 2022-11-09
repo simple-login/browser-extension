@@ -138,6 +138,10 @@ const config = {
               jsonContent.short_name = "SimpleLogin Without SL icon";
             }
 
+            if (process.env.MAC) {
+              jsonContent.permissions.push("nativeMessaging");
+            }
+
             return JSON.stringify(jsonContent, null, 2);
           },
         },
@@ -151,6 +155,14 @@ if (config.mode === 'development') {
     new webpack.DefinePlugin({
       'devConfig': JSON.stringify(devConfig),
       'process.env.BETA': JSON.stringify(!!process.env.BETA),
+    }),
+  ]);
+}
+
+if (process.env.MAC){
+  config.plugins = (config.plugins || []).concat([
+    new webpack.DefinePlugin({
+      'process.env.MAC': JSON.stringify(!!process.env.MAC),
     }),
   ]);
 }
