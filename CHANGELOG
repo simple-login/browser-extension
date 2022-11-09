@@ -7,9 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.8.2] - 2022-11-3
+## [2.9.0] - 2022-11-9
 
 - Support dark and OS theme
+- Support communication with future Mac app
 
 ## [2.7.0] - 2022-08-02
 
