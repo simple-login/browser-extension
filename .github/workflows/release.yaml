@@ -142,7 +142,7 @@ jobs:
         run: |
           npm install
           npm run build:mac
-          npm run build-zip
+          SUFFIX=mac npm run build-zip
 
       - name: Package extension
         run: |
