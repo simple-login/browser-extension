@@ -253,6 +253,7 @@ if (!window._hasExecutedSlExtension) {
        */
       const onEvent = async (event) => {
         if (event.source !== window) return;
+        if (!event.data) return;
         if (!event.data.tag) return;
         if (event.data.tag === "PERFORM_EXTENSION_SETUP") {
           if (!hasProcessedSetup) {
