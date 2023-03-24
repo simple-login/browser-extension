@@ -88,11 +88,8 @@ if (!window._hasExecutedSlExtension) {
         },
 
         addSLButtonToInput(inputElem) {
-          const CSS_CLASS_PREFIX = "simplelogin-extension--";
-          const prefixClassName = (classname) => `${CSS_CLASS_PREFIX}${classname}`;
-
           // create wrapper for SL button
-          const btnWrapper = InputTools.newDiv(prefixClassName("button-wrapper"));
+          const btnWrapper = InputTools.newDiv("simplelogin-extension--button-wrapper");
           const inputSumHeight =
             inputElem.getBoundingClientRect().height + "px";
           btnWrapper.style.height = inputSumHeight;
@@ -100,7 +97,7 @@ if (!window._hasExecutedSlExtension) {
           document.body.appendChild(btnWrapper);
 
           // create the SL button
-          const slButton = InputTools.newDiv(prefixClassName("button"));
+          const slButton = InputTools.newDiv("simplelogin-extension--button");
           slButton.addEventListener("click", function () {
             InputTools.handleOnClickSLButton(inputElem, slButton);
           });
