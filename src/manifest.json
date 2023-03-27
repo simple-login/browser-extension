@@ -20,7 +20,7 @@
     "https://*/*"
   ],
   "browser_action": {
-    "default_title": "simplelogin-extension",
+    "default_title": "SimpleLogin",
     "default_popup": "popup/popup.html"
   },
   "browser_specific_settings": {
