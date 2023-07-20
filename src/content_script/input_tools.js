@@ -89,7 +89,9 @@ if (!window._hasExecutedSlExtension) {
 
         addSLButtonToInput(inputElem) {
           // create wrapper for SL button
-          const btnWrapper = InputTools.newDiv("simplelogin-extension--button-wrapper");
+          const btnWrapper = InputTools.newDiv(
+            "simplelogin-extension--button-wrapper"
+          );
           const inputSumHeight =
             inputElem.getBoundingClientRect().height + "px";
           btnWrapper.style.height = inputSumHeight;
