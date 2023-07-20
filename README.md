@@ -37,6 +37,8 @@ You can find more information about how the extension works and which parts it h
 
 All work on SimpleLogin Chrome/Firefox extension happens directly on GitHub.
 
+This project has been tested with Node v20.2.0 and NPM 9.6.6
+
 To run the extension locally, please follow these steps:
 
 - install all dependencies with `npm install`.
