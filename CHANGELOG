@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.10.2] - 2023-09-18
+
+- Use internal Sentry
+
+## [2.10.0] - 2023-07-05
+
+- Fix sl-button class conflict
+
 ## [2.9.2] - 2022-11-10
 - Updated gecko ID for Firefox
 
