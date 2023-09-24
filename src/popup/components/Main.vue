@@ -1,5 +1,5 @@
 <template>
-  <div class="content">
+  <div ref="contentElem" class="content">
     <v-dialog />
 
     <!-- Main Page -->
@@ -10,9 +10,7 @@
         </div>
         <div class="flex-grow-1">
           <a
-            v-clipboard="() => recommendation.alias"
-            v-clipboard:success="clipboardSuccessHandler"
-            v-clipboard:error="clipboardErrorHandler"
+            @click="copyToClipboard(recommendation.alias)"
             class="cursor"
           >
             <span class="text-success recommended-alias">{{
@@ -144,9 +142,7 @@
               <div class="d-flex" v-bind:class="{ disabled: !alias.enabled }">
                 <div
                   class="flex-grow-1 list-item-email"
-                  v-clipboard="() => alias.email"
-                  v-clipboard:success="clipboardSuccessHandler"
-                  v-clipboard:error="clipboardErrorHandler"
+                  @click="copyToClipboard(alias.email)"
                 >
                   <a class="cursor" v-b-tooltip.hover.top="'Click to Copy'">
                     {{ alias.email }}
@@ -217,342 +213,125 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import {ref, reactive, onMounted, set, onBeforeUnmount} from 'vue'
 import Utils from "../Utils";
 import SLStorage from "../SLStorage";
 import EventManager from "../EventManager";
 import Navigation from "../Navigation";
-import AliasMoreOptions from "./AliasMoreOptions";
+import AliasMoreOptions from "./AliasMoreOptions.vue";
 import { callAPI, API_ROUTE, API_ON_ERR } from "../APIService";
 import tippy from "tippy.js";
+import {useClipboard} from '@vueuse/core'
 
 const ALIAS_PREFIX_REGEX = /^[0-9a-z-_.]+$/;
 
-export default {
-  components: {
-    "alias-more-options": AliasMoreOptions,
-  },
-  data() {
-    return {
-      apiUrl: "",
-      apiKey: "",
-      loading: true,
+const {copy} = useClipboard()
 
-      // variables for creating alias
-      hostName: "", // hostName obtained from chrome tabs query
-      canCreate: true,
-      aliasSuffixes: [],
-      aliasPrefix: "",
-      aliasPrefixError: "",
-      signedSuffix: "",
-      recommendation: {
-        show: false,
-        alias: "",
-      },
-      mailboxes: [],
+const loading = ref(true)
+const apiUrl = ref("")
+const apiKey = ref("")
 
-      // variables for list alias
-      isFetchingAlias: true,
-      searchString: "",
-      aliasArray: [], // array of existing alias
-    };
-  },
-  async mounted() {
-    this.hostName = await Utils.getHostName();
-    this.apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
-    this.apiKey = await SLStorage.get(SLStorage.SETTINGS.API_KEY);
+/**
+ * variables for creating alias
+ * 
+ * hostName obtained from chrome tabs query
+ */
+const hostName = ref("")
+const canCreate = ref(true)
+const aliasSuffixes = ref([])
+const aliasPrefix = ref("")
+const aliasPrefixError = ref("")
+const signedSuffix = ref("")
+const recommendation = reactive({
+  show: false,
+  alias: "",
+})
+const mailboxes = ref([])
 
-    if (this.apiKey && process.env.MAC) {
-      console.log("send api key to host app");
-      await browser.runtime.sendNativeMessage(
-        "application.id",
-        JSON.stringify({
-          logged_in: {
-            data: {
-              api_key: this.apiKey,
-              api_url: this.apiUrl,
-            },
+/**
+ * variables for list alias
+ */
+const isFetchingAlias = ref(true)
+const searchString = ref("")
+/**
+ * array of existing alias
+ */
+const aliasArray = ref([])
+
+const onScrollCallback = ref<null | (() => Promise<void>)>(null)
+
+const contentElem = ref<HTMLElement | null>(null)
+
+onMounted(async () => {
+  hostName.value = await Utils.getHostName();
+  apiUrl.value = await SLStorage.get(SLStorage.SETTINGS.API_URL);
+  apiKey.value = await SLStorage.get(SLStorage.SETTINGS.API_KEY);
+
+  if (apiKey.value && process.env.MAC) {
+    console.log("send api key to host app");
+    await browser.runtime.sendNativeMessage(
+      "application.id",
+      JSON.stringify({
+        logged_in: {
+          data: {
+            api_key: apiKey.value,
+            api_url: apiUrl.value,
           },
-        })
-      );
-    }
-
-    this.contentElem = document.querySelector(".app > .content");
-
-    await this.getUserOptions();
-  },
-  methods: {
-    // get alias options and mailboxes
-    async getUserOptions() {
-      this.loading = true;
-
-      const results = await Promise.all([
-        callAPI(
-          API_ROUTE.GET_ALIAS_OPTIONS,
-          {
-            hostname: this.hostName,
-          },
-          API_ON_ERR.TOAST
-        ),
-        callAPI(API_ROUTE.GET_MAILBOXES, {}, API_ON_ERR.TOAST),
-      ]);
-
-      const aliasOptions = results[0].data;
-      const { mailboxes } = results[1].data;
-
-      if (aliasOptions.recommendation) {
-        this.recommendation.show = true;
-        this.recommendation.alias = aliasOptions.recommendation.alias;
-      }
-
-      this.aliasSuffixes = aliasOptions.suffixes;
-      this.signedSuffix = this.aliasSuffixes[0];
-      this.aliasPrefix = aliasOptions.prefix_suggestion;
-      this.canCreate = aliasOptions.can_create;
-      this.mailboxes = mailboxes;
-
-      this.loading = false;
-
-      await this.loadAlias();
-
-      tippy(".recommended-alias", {
-        content: "Click to copy",
-        placement: "bottom",
-      });
-    },
-
-    async loadAlias() {
-      const contentElem = this.contentElem;
-      this.aliasArray = [];
-      let currentPage = 0;
-
-      this.aliasArray = await this.fetchAlias(currentPage, this.searchString);
-
-      let allAliasesAreLoaded = false;
-
-      let that = this;
-      if (this.onScrollCallback) {
-        contentElem.removeEventListener("scroll", this.onScrollCallback);
-      }
-
-      this.onScrollCallback = async function () {
-        if (that.isFetchingAlias || allAliasesAreLoaded) return;
-
-        let bottomOfWindow =
-          contentElem.scrollTop + contentElem.clientHeight >
-          contentElem.scrollHeight - 100;
-
-        if (bottomOfWindow) {
-          currentPage += 1;
-
-          let newAliases = await that.fetchAlias(
-            currentPage,
-            that.searchString
-          );
-
-          allAliasesAreLoaded = newAliases.length === 0;
-          that.aliasArray = mergeAliases(that.aliasArray, newAliases);
-        }
-      };
-
-      contentElem.addEventListener("scroll", this.onScrollCallback);
-    },
-
-    async fetchAlias(page, query) {
-      this.isFetchingAlias = true;
-      try {
-        const { data } = await callAPI(
-          API_ROUTE.GET_ALIASES,
-          {
-            page_id: page,
-          },
-          {
-            query,
-          }
-        );
-        this.isFetchingAlias = false;
-        return data.aliases;
-      } catch (e) {
-        Utils.showError("Cannot fetch list alias");
-        this.isFetchingAlias = false;
-        return [];
-      }
-    },
-
-    async resetSearch() {
-      this.searchString = "";
-      await this.loadAlias();
-    },
-
-    async createCustomAlias() {
-      if (this.loading) return;
-
-      // check aliasPrefix
-      this.aliasPrefixError = "";
-      if (this.aliasPrefix.match(ALIAS_PREFIX_REGEX) === null) {
-        this.aliasPrefixError =
-          "Only lowercase letters, dots, numbers, dashes (-) and underscores (_) are currently supported.";
-        return;
-      }
-
-      this.loading = true;
-
-      try {
-        const res = await callAPI(
-          API_ROUTE.NEW_ALIAS,
-          {
-            hostname: this.hostName,
-          },
-          {
-            alias_prefix: this.aliasPrefix,
-            signed_suffix: this.signedSuffix[1],
-            note: await Utils.getDefaultNote(),
-          }
-        );
-
-        if (res.status === 201) {
-          SLStorage.setTemporary("newAliasData", res.data);
-          SLStorage.setTemporary("userMailboxes", this.mailboxes);
-          Navigation.navigateTo(Navigation.PATH.NEW_ALIAS_RESULT);
-        } else {
-          Utils.showError(res.data.error);
-        }
-      } catch (err) {
-        // rate limit reached
-        if (err.response.status === 429) {
-          Utils.showError(
-            "Rate limit exceeded - please wait 60s before creating new alias"
-          );
-        } else if (err.response.status === 409) {
-          Utils.showError("Alias already chosen, please select another one");
-        } else if (err.response.status === 412) {
-          // can happen when the alias creation time slot is expired,
-          // i.e user waits for too long before creating the alias
-          Utils.showError(err.response.data.error);
-
-          // get new aliasSuffixes
-          this.getAliasOptions();
-        } else {
-          Utils.showError("Unknown error");
-        }
-      }
-
-      this.loading = false;
-    },
-
-    async createRandomAlias() {
-      if (this.loading) return;
-      this.loading = true;
-
-      try {
-        const res = await callAPI(
-          API_ROUTE.NEW_RANDOM_ALIAS,
-          {
-            hostname: "",
-          },
-          {
-            note: await Utils.getDefaultNote(),
-          }
-        );
-
-        if (res.status === 201) {
-          SLStorage.setTemporary("newAliasData", res.data);
-          SLStorage.setTemporary("userMailboxes", this.mailboxes);
-          Navigation.navigateTo(Navigation.PATH.NEW_ALIAS_RESULT);
-        } else {
-          Utils.showError(res.data.error);
-        }
-      } catch (err) {
-        // rate limit reached
-        if (err.response.status === 429) {
-          Utils.showError(
-            "Rate limit exceeded - please wait 60s before creating new alias"
-          );
-        } else {
-          Utils.showError("Unknown error");
-        }
-      }
-
-      this.loading = false;
-    },
-    async toggleAlias(alias) {
-      const lastState = alias.enabled;
-      alias.loading = true;
-      const res = await callAPI(
-        API_ROUTE.TOGGLE_ALIAS,
-        {
-          alias_id: alias.id,
         },
-        {},
-        API_ON_ERR.TOAST
-      );
+      })
+    );
+  }
 
-      if (res) {
-        alias.enabled = res.data.enabled;
-        Utils.showSuccess(
-          alias.email + " is " + (alias.enabled ? "enabled" : "disabled")
-        );
-      } else {
-        alias.enabled = lastState;
-      }
+  await getUserOptions();
+})
 
-      alias.loading = false;
-    },
+// get alias options and mailboxes
+const getUserOptions = async () => {
+  loading.value = true;
 
-    // More options
-    toggleMoreOptions(index) {
-      const alias = this.aliasArray[index];
-      this.$set(this.aliasArray, index, {
-        ...alias,
-        showMoreOptions: !alias.showMoreOptions,
-      });
-    },
-    handleAliasDeleted(event) {
-      this.aliasArray.splice(event.index, 1);
-    },
-    handleAliasChanged(event) {
-      const alias = this.aliasArray[event.index];
-      for (const key in event.data) {
-        alias[key] = event.data[key];
-      }
-    },
+  const results = await Promise.all([
+    callAPI(
+      API_ROUTE.GET_ALIAS_OPTIONS,
+      {
+        hostname: hostName.value,
+      },
+      API_ON_ERR.TOAST
+    ),
+    callAPI(API_ROUTE.GET_MAILBOXES, {}, API_ON_ERR.TOAST),
+  ]);
 
-    // Reverse Alias
-    goToReverseAlias(alias) {
-      SLStorage.setTemporary("alias", alias);
-      Navigation.navigateTo(Navigation.PATH.REVERSE_ALIAS, true);
-    },
+  const aliasOptions = results[0].data;
+  const mailboxesData = results[1].data;
 
-    async upgrade() {
-      if (process.env.MAC) {
-        console.log("send upgrade event to host app");
-        await browser.runtime.sendNativeMessage(
-          "application.id",
-          JSON.stringify({
-            upgrade: {},
-          })
-        );
-      } else {
-        console.info("can't send data to native app", error);
-        let upgradeURL = this.apiUrl + "/dashboard/pricing";
-        browser.tabs.create({ url: upgradeURL });
-      }
-    },
+  if (aliasOptions.recommendation) {
+    recommendation.show = true;
+    recommendation.alias = aliasOptions.recommendation.alias;
+  }
 
-    // Clipboard
-    clipboardSuccessHandler({ value, event }) {
-      Utils.showSuccess(value + " copied to clipboard");
-    },
+  aliasSuffixes.value = aliasOptions.suffixes;
+  signedSuffix.value = aliasSuffixes.value[0];
+  aliasPrefix.value = aliasOptions.prefix_suggestion;
+  canCreate.value = aliasOptions.can_create;
+  mailboxes.value = mailboxesData;
 
-    clipboardErrorHandler({ value, event }) {
-      console.error("error", value);
-    },
-  },
-  computed: {},
-};
+  loading.value = false;
 
-// merge newAliases into currentAliases. If conflict, keep the new one
-function mergeAliases(currentAliases, newAliases) {
+  await loadAlias();
+
+  tippy(".recommended-alias", {
+    content: "Click to copy",
+    placement: "bottom",
+  });
+}
+
+    /**
+ * merge newAliases into currentAliases. If conflict, keep the new one
+ * 
+ * @param currentAliases 
+ * @param newAliases 
+ */
+const mergeAliases = (currentAliases, newAliases) => {
   // dict of aliasId and alias to speed up research
   let newAliasesDict = {};
   for (var i = 0; i < newAliases.length; i++) {
@@ -580,5 +359,255 @@ function mergeAliases(currentAliases, newAliases) {
   }
 
   return ret;
+}
+
+const cleanupEventListeners = () => {
+  if (onScrollCallback.value !== null && contentElem.value !== null) {
+    contentElem.value.removeEventListener("scroll", onScrollCallback.value);
+  }
+}
+
+const loadAlias = async () => {
+  aliasArray.value = [];
+  let currentPage = 0;
+
+  aliasArray.value = await fetchAlias(currentPage, searchString.value);
+
+  let allAliasesAreLoaded = false;
+
+  cleanupEventListeners()
+
+  onScrollCallback.value = async () => {
+    if (isFetchingAlias.value || allAliasesAreLoaded) return;
+
+    let bottomOfWindow =
+      (contentElem.value?.scrollTop ?? 0) + (contentElem.value?.clientHeight ?? 0) >
+      (contentElem.value?.scrollHeight ?? 0) - 100;
+
+    if (bottomOfWindow) {
+      currentPage += 1;
+
+      let newAliases = await fetchAlias(
+        currentPage,
+        searchString.value
+      );
+
+      allAliasesAreLoaded = newAliases.length === 0;
+      aliasArray.value = mergeAliases(aliasArray.value, newAliases);
+    }
+  };
+
+  contentElem.value?.addEventListener("scroll", onScrollCallback.value);
+}
+
+onBeforeUnmount(() => {
+  cleanupEventListeners()
+})
+
+const fetchAlias = async (page, query) => {
+  isFetchingAlias.value = true;
+  try {
+    const { data } = await callAPI(
+      API_ROUTE.GET_ALIASES,
+      {
+        page_id: page,
+      },
+      {
+        query,
+      }
+    );
+    isFetchingAlias.value = false;
+    return data.aliases;
+  } catch (e) {
+    Utils.showError("Cannot fetch list alias");
+    isFetchingAlias.value = false;
+    return [];
+  }
+}
+
+const resetSearch = async () => {
+  searchString.value = "";
+  await loadAlias();
+}
+
+const createCustomAlias = async () =>  {
+  if (loading.value) return;
+
+  // check aliasPrefix
+  aliasPrefixError.value = "";
+  if (aliasPrefix.value.match(ALIAS_PREFIX_REGEX) === null) {
+    aliasPrefixError.value =
+      "Only lowercase letters, dots, numbers, dashes (-) and underscores (_) are currently supported.";
+    return;
+  }
+
+  loading.value = true;
+
+  try {
+    const res = await callAPI(
+      API_ROUTE.NEW_ALIAS,
+      {
+        hostname: hostName.value,
+      },
+      {
+        alias_prefix: aliasPrefix.value,
+        signed_suffix: signedSuffix.value[1],
+        note: await Utils.getDefaultNote(),
+      }
+    );
+
+    if (res.status === 201) {
+      SLStorage.setTemporary("newAliasData", res.data);
+      SLStorage.setTemporary("userMailboxes", mailboxes.value);
+      Navigation.navigateTo(Navigation.PATH.NEW_ALIAS_RESULT);
+    } else {
+      Utils.showError(res.data.error);
+    }
+  } catch (err) {
+    // rate limit reached
+    if (err.response.status === 429) {
+      Utils.showError(
+        "Rate limit exceeded - please wait 60s before creating new alias"
+      );
+    } else if (err.response.status === 409) {
+      Utils.showError("Alias already chosen, please select another one");
+    } else if (err.response.status === 412) {
+      // can happen when the alias creation time slot is expired,
+      // i.e user waits for too long before creating the alias
+      Utils.showError(err.response.data.error);
+
+      // get new aliasSuffixes
+      // TODO getAliasOptions is NOT DEFINED
+      getAliasOptions();
+    } else {
+      Utils.showError("Unknown error");
+    }
+  }
+
+  loading.value = false;
+}
+
+const createRandomAlias = async () => {
+  if (loading.value) return;
+  loading.value = true;
+
+  try {
+    const res = await callAPI(
+      API_ROUTE.NEW_RANDOM_ALIAS,
+      {
+        hostname: "",
+      },
+      {
+        note: await Utils.getDefaultNote(),
+      }
+    );
+
+    if (res.status === 201) {
+      SLStorage.setTemporary("newAliasData", res.data);
+      SLStorage.setTemporary("userMailboxes", mailboxes.value);
+      Navigation.navigateTo(Navigation.PATH.NEW_ALIAS_RESULT);
+    } else {
+      Utils.showError(res.data.error);
+    }
+  } catch (err) {
+    // rate limit reached
+    if (err.response.status === 429) {
+      Utils.showError(
+        "Rate limit exceeded - please wait 60s before creating new alias"
+      );
+    } else {
+      Utils.showError("Unknown error");
+    }
+  }
+
+  loading.value = false;
+}
+const toggleAlias = async (alias) => {
+  const lastState = alias.enabled;
+  alias.loading = true;
+  const res = await callAPI(
+    API_ROUTE.TOGGLE_ALIAS,
+    {
+      alias_id: alias.id,
+    },
+    {},
+    API_ON_ERR.TOAST
+  );
+
+  if (res) {
+    alias.enabled = res.data.enabled;
+    Utils.showSuccess(
+      alias.email + " is " + (alias.enabled ? "enabled" : "disabled")
+    );
+  } else {
+    alias.enabled = lastState;
+  }
+
+  alias.loading = false;
+}
+
+// More options
+const toggleMoreOptions = (index) => {
+  const alias = aliasArray.value[index];
+  set(aliasArray.value, index, {
+    ...alias,
+    showMoreOptions: !alias.showMoreOptions,
+  });
+}
+const handleAliasDeleted = (event) => {
+  aliasArray.value.splice(event.index, 1);
+}
+const handleAliasChanged = (event) => {
+  const alias = aliasArray.value[event.index];
+  for (const key in event.data) {
+    alias[key] = event.data[key];
+  }
+}
+
+// Reverse Alias
+const goToReverseAlias = (alias) => {
+  SLStorage.setTemporary("alias", alias);
+  Navigation.navigateTo(Navigation.PATH.REVERSE_ALIAS, true);
+}
+
+const upgrade = async () => {
+  if (process.env.MAC) {
+    console.log("send upgrade event to host app");
+    await browser.runtime.sendNativeMessage(
+      "application.id",
+      JSON.stringify({
+        upgrade: {},
+      })
+    );
+  } else {
+    console.info("can't send data to native app", error);
+    let upgradeURL = apiUrl.value + "/dashboard/pricing";
+    browser.tabs.create({ url: upgradeURL });
+  }
+}
+
+/**
+ * 
+ * @param {string} value 
+ */
+const clipboardSuccessHandler = (value) => {
+  Utils.showSuccess(`${value} copied to clipboard`);
+}
+
+const clipboardErrorHandler = (error) => {
+  console.error("error", error);
+}
+
+/**
+ * @param {string} value
+ */
+const copyToClipboard = async (value) => {
+  try{
+    await copy(value)
+    clipboardSuccessHandler(value)
+  }
+  catch(e) {
+    clipboardErrorHandler(e)
+  }
 }
 </script>

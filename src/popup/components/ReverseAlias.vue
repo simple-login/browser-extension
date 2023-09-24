@@ -47,9 +47,7 @@
         </p>
         <p>
           <a
-            v-clipboard="() => createdReverseAlias.reverse_alias"
-            v-clipboard:success="clipboardSuccessHandler"
-            v-clipboard:error="clipboardErrorHandler"
+            @click="copyToClipboard"
             v-b-tooltip.hover
             title="Click to Copy"
             class="cursor"
@@ -93,52 +91,65 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import {ref} from 'vue'
 import SLStorage from "../SLStorage";
 import Navigation from "../Navigation";
 import Utils from "../Utils";
 import { callAPI, API_ROUTE, API_ON_ERR } from "../APIService";
+import {useClipboard} from '@vueuse/core'
 
-export default {
-  data() {
-    return {
-      alias: SLStorage.getTemporary("alias"),
-      createdReverseAlias: null,
-      loading: false,
-      receiverEmail: "",
-    };
-  },
-  methods: {
-    // Clipboard
-    clipboardSuccessHandler({ value, event }) {
-      Utils.showSuccess(value + " copied to clipboard");
-    },
+const alias = SLStorage.getTemporary("alias")
 
-    clipboardErrorHandler({ value, event }) {
-      console.error("error", value);
-    },
+const createdReverseAlias = ref(null)
+const loading = ref(false)
+const receiverEmail = ref("")
 
-    // Create reverse-alias
-    async createReverseAlias() {
-      this.loading = true;
-      const response = await callAPI(
-        API_ROUTE.CREATE_REVERSE_ALIAS,
-        {
-          alias_id: this.alias.id,
-        },
-        {
-          contact: this.receiverEmail,
-        },
-        API_ON_ERR.TOAST
-      );
-      this.createdReverseAlias = response ? response.data : null;
-      this.loading = false;
-    },
+const {copy} = useClipboard()
 
-    backToMainPage() {
-      Navigation.navigateBack();
+/** 
+ * @param {string} value
+ */
+ const clipboardSuccessHandler = (value) => {
+  Utils.showSuccess(`${value} copied to clipboard`);
+}
+
+/**
+ * 
+ * @param {any} error 
+ */
+const clipboardErrorHandler = (error) => {
+  console.error("error", error);
+}
+
+const copyToClipboard = async () => {
+  try{
+    await copy(createdReverseAlias.reverse_alias)
+    clipboardSuccessHandler(createdReverseAlias.reverse_alias)
+  }
+  catch(e) {
+    clipboardErrorHandler(e)
+  }
+}
+
+const backToMainPage = () => {
+  Navigation.navigateBack();
+}
+
+// Create reverse-alias
+const createReverseAlias = async () => {
+  loading.value = true;
+  const response = await callAPI(
+    API_ROUTE.CREATE_REVERSE_ALIAS,
+    {
+      alias_id: alias.id,
     },
-  },
-  computed: {},
-};
+    {
+      contact: receiverEmail.value,
+    },
+    API_ON_ERR.TOAST
+  );
+  createdReverseAlias.value = response ? response.data : null;
+  loading.value = false;
+}
 </script>

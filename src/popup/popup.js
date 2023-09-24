@@ -1,6 +1,5 @@
 import Vue from "vue";
 import App from "./App";
-import Clipboard from "v-clipboard";
 import Toasted from "vue-toasted";
 import BootstrapVue from "bootstrap-vue";
 import SLStorage from "./SLStorage";
@@ -67,7 +66,6 @@ async function initApp() {
     });
   }
 
-  Vue.use(Clipboard);
   Vue.use(Toasted, { duration: 1000, position: "bottom-right" });
   Vue.use(BootstrapVue);
   Vue.use(VModal, { dialog: true });

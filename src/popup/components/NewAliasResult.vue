@@ -5,9 +5,7 @@
         <p class="font-weight-bold">Alias is created</p>
         <p>
           <a
-            v-clipboard="() => newAliasData.alias"
-            v-clipboard:success="clipboardSuccessHandler"
-            v-clipboard:error="clipboardErrorHandler"
+            @click="copyToClipboard"
             class="cursor new-alias"
           >
             <span class="text-success">
@@ -49,59 +47,70 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import {ref, onMounted} from 'vue'
 import SLStorage from "../SLStorage";
 import Navigation from "../Navigation";
 import EventManager from "../EventManager";
 import Utils from "../Utils";
-import AliasMoreOptions from "./AliasMoreOptions";
+import AliasMoreOptions from "./AliasMoreOptions.vue";
 import { callAPI, API_ROUTE, API_ON_ERR } from "../APIService";
 import tippy from "tippy.js";
+import {useClipboard} from '@vueuse/core'
 
-export default {
-  components: {
-    "alias-more-options": AliasMoreOptions,
-  },
-  data() {
-    return {
-      mailboxes: SLStorage.getTemporary("userMailboxes"),
-      newAliasData: SLStorage.getTemporary("newAliasData"),
-      showVoteScreen: false,
-      extensionUrl: Utils.getExtensionURL(),
-    };
-  },
-  async mounted() {
-    this.newAlias = this.$route.params.email;
+const {copy} = useClipboard()
+
+const mailboxes = SLStorage.getTemporary("userMailboxes")
+const newAliasData = SLStorage.getTemporary("newAliasData")
+const extensionUrl = Utils.getExtensionURL()
+
+const showVoteScreen = ref(false)
+
+onMounted(async () => {
     let notAskingRate = await SLStorage.get(SLStorage.SETTINGS.NOT_ASKING_RATE);
-    if (!!notAskingRate) this.showVoteScreen = false;
+    if (!!notAskingRate) showVoteScreen.value = false;
     // TODO showVoteScreen 1 day after user installed plugin
-    else this.showVoteScreen = Utils.getRandomIntBetween(0, 10) % 2 === 0;
+    else showVoteScreen.value = Utils.getRandomIntBetween(0, 10) % 2 === 0;
 
     tippy(".new-alias", {
       content: "Click to copy",
       trigger: "manual",
       showOnCreate: true,
     });
-  },
-  methods: {
-    // Clipboard
-    clipboardSuccessHandler({ value, event }) {
-      Utils.showSuccess(value + " copied to clipboard");
-    },
+  })
 
-    clipboardErrorHandler({ value, event }) {
-      console.error("error", value);
-    },
+/**
+ * 
+ * @param {string} value 
+ */
+const clipboardSuccessHandler = (value) => {
+  Utils.showSuccess(`${value} copied to clipboard`);
+}
 
-    async backToMainPage() {
-      Navigation.navigateTo(Navigation.PATH.MAIN);
-    },
+/**
+ * 
+ * @param {any} error 
+ */
+const clipboardErrorHandler = (error) => {
+  console.error("error", error);
+}
 
-    doNotAskRateAgain() {
-      this.showVoteScreen = false;
-      SLStorage.set(SLStorage.SETTINGS.NOT_ASKING_RATE, true);
-    },
-  },
-  computed: {},
-};
+const copyToClipboard = async () => {
+  try{
+    await copy(createdReverseAlias.reverse_alias)
+    clipboardSuccessHandler(createdReverseAlias.reverse_alias)
+  }
+  catch(e) {
+    clipboardErrorHandler(e)
+  }
+}
+
+const backToMainPage = () => {
+  Navigation.navigateTo(Navigation.PATH.MAIN);
+}
+
+const doNotAskRateAgain = () => {
+  showVoteScreen.value = false;
+  SLStorage.set(SLStorage.SETTINGS.NOT_ASKING_RATE, true);
+}
 </script>
