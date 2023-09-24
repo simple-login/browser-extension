@@ -214,7 +214,7 @@
 </template>
 
 <script setup>
-import {ref, reactive, onMounted, set, onBeforeUnmount} from 'vue'
+import {ref, reactive, onMounted, set, onUnmounted} from 'vue'
 import Utils from "../Utils";
 import SLStorage from "../SLStorage";
 import EventManager from "../EventManager";
@@ -259,9 +259,9 @@ const searchString = ref("")
  */
 const aliasArray = ref([])
 
-const onScrollCallback = ref<null | (() => Promise<void>)>(null)
+const onScrollCallback = ref(null)
 
-const contentElem = ref<HTMLElement | null>(null)
+const contentElem = ref(null)
 
 onMounted(async () => {
   hostName.value = await Utils.getHostName();
@@ -400,7 +400,7 @@ const loadAlias = async () => {
   contentElem.value?.addEventListener("scroll", onScrollCallback.value);
 }
 
-onBeforeUnmount(() => {
+onUnmounted(() => {
   cleanupEventListeners()
 })
 
