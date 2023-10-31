@@ -1,71 +1,54 @@
-<script>
-const delay = (ms) => new Promise((r) => setTimeout(r, ms));
+<template>
+  <Transition name="expand" @after-enter="onAfterEnter" @enter="onEnter" @leave="onLeave">
+    <slot />
+  </Transition>
+</template>
 
-export default {
-  name: `ExpandTransition`,
-  functional: true,
-  render(createElement, context) {
-    const data = {
-      props: {
-        name: `expand`,
-      },
-      on: {
-        afterEnter(element) {
-          // eslint-disable-next-line no-param-reassign
-          element.style.height = `auto`;
-        },
-        async enter(element) {
-          const { width } = getComputedStyle(element);
+<script setup lang="ts">
+const delay = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
-          /* eslint-disable no-param-reassign */
-          element.style.width = width;
-          element.style.position = `absolute`;
-          element.style.visibility = `hidden`;
-          element.style.height = `auto`;
-          /* eslint-enable */
+const onAfterEnter = (element: HTMLElement) => {
+  element.style.height = `auto`
+}
+const onEnter = async (element: HTMLElement) => {
+  const {width} = getComputedStyle(element)
 
-          await delay(10);
-          const { height } = getComputedStyle(element);
+  element.style.width = width
+  element.style.position = `absolute`
+  element.style.visibility = `hidden`
+  element.style.height = `auto`
 
-          /* eslint-disable no-param-reassign */
-          element.style.width = null;
-          element.style.position = null;
-          element.style.visibility = null;
-          element.style.height = 0;
-          /* eslint-enable */
+  await delay(10)
+  const {height} = getComputedStyle(element)
 
-          // Force repaint to make sure the
-          // animation is triggered correctly.
-          // eslint-disable-next-line no-unused-expressions
-          getComputedStyle(element).height;
+  element.style.width = 'null'
+  element.style.position = 'null'
+  element.style.visibility = 'null'
+  element.style.height = '0'
 
-          requestAnimationFrame(() => {
-            // eslint-disable-next-line no-param-reassign
-            element.style.height = height;
-          });
-        },
-        leave(element) {
-          const { height } = getComputedStyle(element);
+  // Force repaint to make sure the
+  // animation is triggered correctly.
+  // eslint-disable-next-line no-unused-expressions
+  getComputedStyle(element).height
 
-          // eslint-disable-next-line no-param-reassign
-          element.style.height = height;
+  requestAnimationFrame(() => {
+    element.style.height = height
+  })
+}
+const onLeave = (element: HTMLElement) => {
+  const {height} = getComputedStyle(element)
 
-          // Force repaint to make sure the
-          // animation is triggered correctly.
-          // eslint-disable-next-line no-unused-expressions
-          getComputedStyle(element).height;
+  element.style.height = height
 
-          requestAnimationFrame(() => {
-            // eslint-disable-next-line no-param-reassign
-            element.style.height = 0;
-          });
-        },
-      },
-    };
+  // Force repaint to make sure the
+  // animation is triggered correctly.
+  // eslint-disable-next-line no-unused-expressions
+  getComputedStyle(element).height
 
-    return createElement(`transition`, data, context.children);
-  },
-};
+  requestAnimationFrame(() => {
+    element.style.height = '0'
+  })
+}
 </script>
 
 <style scoped>

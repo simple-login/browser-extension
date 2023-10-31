@@ -1,18 +1,13 @@
 {
-	"extends": "@vue/tsconfig/tsconfig.dom.json",
-	"include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
-	"compilerOptions": {
-		"composite": true,
-		"baseUrl": ".",
-		"allowJs": true,
-		"lib": ["ESNext", "DOM", "DOM.Iterable"]
-	},
-	"vueCompilerOptions": {
-		"target": 2.7
-	},
-	"references": [
-		{
-			"path": "./tsconfig.node.json"
-		}
-	]
+  "extends": "@vue/tsconfig/tsconfig.dom.json",
+  "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
+  "exclude": ["src/**/__tests__/*"],
+  "compilerOptions": {
+    "types": ["unplugin-icons/types/vue", "components.d.ts"],
+    "composite": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
 }

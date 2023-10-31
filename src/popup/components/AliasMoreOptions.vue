@@ -6,29 +6,27 @@ MIT License
 -->
 
 <template>
-  <expand-transition>
+  <ExpandTransition>
     <div class="more-options" v-if="show">
       <label>Mailboxes</label>
       <div>
-        <b-dropdown size="sm" variant="outline">
-          <b-dropdown-form>
-            <b-form-checkbox
+        <BDropdown size="sm" variant="outline">
+          <BDropdownForm>
+            <BFormCheckbox
               v-for="mailbox in mailboxes"
               :key="mailbox.id"
-              :checked="
-                findIndexOfMailbox(mailbox.id, moreOptions.mailboxes) !== -1
-              "
+              :checked="findIndexOfMailbox(mailbox.id, moreOptions.mailboxes) !== -1"
               @change="toggleMailbox(mailbox)"
             >
               {{ mailbox.email }}
-            </b-form-checkbox>
-          </b-dropdown-form>
-        </b-dropdown>
+            </BFormCheckbox>
+          </BDropdownForm>
+        </BDropdown>
 
         {{
           moreOptions.mailboxes.length > 0
-            ? moreOptions.mailboxes.map((mb) => mb.email).join(", ")
-            : "Please select at least one mailbox"
+            ? moreOptions.mailboxes.map((mb) => mb.email).join(', ')
+            : 'Please select at least one mailbox'
         }}
       </div>
 
@@ -39,28 +37,21 @@ MIT License
         style="width: 100%"
         v-model="moreOptions.note"
         :disabled="loading"
-      ></TextareaAutosize>
+      />
 
       <label>
         From Name
-        <font-awesome-icon
+        <FaQuestionCircleIcon
           v-b-tooltip.hover.top="
             'This name is used when you send or reply from alias. You may need to use a pseudonym because the receiver can see it.'
           "
-          icon="question-circle"
         />
       </label>
-      <b-input
-        v-model="moreOptions.name"
-        placeholder="From name"
-        :disabled="loading"
-      />
+      <BInput v-model="moreOptions.name" placeholder="From name" :disabled="loading" />
 
       <div class="advanced-options mt-2" v-if="alias.support_pgp">
-        <b-form-checkbox
-          :checked="!moreOptions.disable_pgp"
-          @change="toggleAliasPGP"
-          >Enable PGP</b-form-checkbox
+        <BFormCheckbox :checked="!moreOptions.disable_pgp" @change="toggleAliasPGP"
+          >Enable PGP</BFormCheckbox
         >
       </div>
 
@@ -70,8 +61,8 @@ MIT License
           v-on:click="handleClickSave"
           :disabled="loading || !canSave()"
         >
-          <font-awesome-icon icon="save" />
-          {{ btnSaveLabel || "Save" }}
+          <FaSaveIcon />
+          {{ btnSaveLabel || 'Save' }}
         </button>
 
         <button
@@ -80,199 +71,179 @@ MIT License
           v-on:click="handleClickDelete"
           :disabled="loading"
         >
-          <font-awesome-icon icon="trash" />
+          <FaTrashIcon />
           Delete
         </button>
       </div>
     </div>
-  </expand-transition>
+  </ExpandTransition>
 </template>
 
-<script>
-import Utils from "../Utils";
-import ExpandTransition from "./ExpandTransition";
-import TextareaAutosize from "./TextareaAutosize";
-import { callAPI, API_ROUTE, API_ON_ERR } from "../APIService";
+<script setup lang="ts">
+import {ref, onMounted, watch} from 'vue'
+import {
+  showSuccess,
+  cloneObject,
+  editAlias as apiEditAlias,
+  deleteAlias as apiDeleteAlias,
+  API_ON_ERR,
+} from '../utils'
+import FaTrashIcon from '~icons/fa/trash'
+import FaSaveIcon from '~icons/fa/save'
+import FaQuestionCircleIcon from '~icons/fa/question-circle'
+import {vBTooltip} from 'bootstrap-vue-next'
 
-export default {
-  props: {
-    alias: {
-      type: Object,
-      required: true,
-    },
-    index: {
-      type: Number,
-      required: true,
-    },
-    show: {
-      type: Boolean,
-      required: true,
-    },
-    mailboxes: {
-      type: Array,
-      required: true,
-    },
-    btnSaveLabel: {
-      type: String,
-    },
-  },
-  components: {
-    TextareaAutosize,
-    "expand-transition": ExpandTransition,
-  },
-  data() {
-    return {
-      moreOptions: {
-        note: "",
-        name: "",
-        disable_pgp: false,
-        mailboxes: [],
+const props = defineProps<{
+  alias: Record<string, any>
+  index: number
+  show: boolean
+  mailboxes: any[]
+  btnSaveLabel?: string
+}>()
+
+const emit = defineEmits<{
+  deleted: [value: {index: number; data: any}]
+  changed: [value: {index: number; data: any}]
+}>()
+
+const moreOptions = ref({
+  note: '',
+  name: '',
+  disable_pgp: false,
+  mailboxes: [] as any[],
+})
+const loading = ref(false)
+const hasMailboxesChanges = ref(false) // to be used in canSaved()
+const canAlwaysSave = ref(!!props.btnSaveLabel) // to be used in canSaved()
+
+watch(
+  () => props.show,
+  (newValue) => {
+    if (newValue) {
+      showMoreOptions()
+    }
+  }
+)
+
+onMounted(() => {
+  if (props.show) {
+    showMoreOptions()
+  }
+})
+
+const showMoreOptions = () => {
+  moreOptions.value = {
+    note: props.alias.note,
+    name: props.alias.name,
+    disable_pgp: !!props.alias.disable_pgp,
+    mailboxes: cloneObject(props.alias.mailboxes),
+  }
+
+  hasMailboxesChanges.value = false
+}
+
+const handleClickDelete = () => {
+  this.$modal.show('dialog', {
+    title: `Delete ${props.alias.email}`,
+    text: 'Do you really want to delete this alias?',
+    buttons: [
+      {
+        title: 'Yes',
+        handler: () => {
+          this.$modal.hide('dialog')
+          deleteAlias()
+        },
       },
-      loading: false,
-      hasMailboxesChanges: false, // to be used in canSaved()
-      canAlwaysSave: false, // to be used in canSaved()
-    };
-  },
-  mounted() {
-    this.$watch("show", (newValue) => {
-      if (newValue) {
-        this.showMoreOptions();
-      }
-    });
-
-    if (this.show) {
-      this.showMoreOptions();
-    }
-
-    if (this.btnSaveLabel) {
-      this.canAlwaysSave = true;
-    }
-  },
-  methods: {
-    showMoreOptions() {
-      this.moreOptions = {
-        note: this.alias.note,
-        name: this.alias.name,
-        disable_pgp: !!this.alias.disable_pgp,
-        mailboxes: Utils.cloneObject(this.alias.mailboxes),
-      };
-
-      this.hasMailboxesChanges = false;
-    },
-
-    handleClickDelete() {
-      this.$modal.show("dialog", {
-        title: `Delete ${this.alias.email}`,
-        text: "Do you really want to delete this alias?",
-        buttons: [
-          {
-            title: "Yes",
-            handler: () => {
-              this.$modal.hide("dialog");
-              this.deleteAlias();
-            },
-          },
-          {
-            title: "No",
-            default: true,
-            handler: () => {
-              this.$modal.hide("dialog");
-            },
-          },
-        ],
-      });
-    },
-
-    async deleteAlias() {
-      this.loading = true;
-      const res = await callAPI(
-        API_ROUTE.DELETE_ALIAS,
-        {
-          alias_id: this.alias.id,
+      {
+        title: 'No',
+        default: true,
+        handler: () => {
+          this.$modal.hide('dialog')
         },
-        {},
-        API_ON_ERR.TOAST
-      );
-      if (res) {
-        this.$emit("deleted", {
-          index: this.index,
-          data: this.alias,
-        });
-      } else {
-        this.loading = false;
-      }
-    },
+      },
+    ],
+  })
+}
 
-    canSave() {
-      return (
-        this.moreOptions.mailboxes.length > 0 &&
-        (this.alias.note !== this.moreOptions.note ||
-          this.alias.name !== this.moreOptions.name ||
-          !!this.alias.disable_pgp !== this.moreOptions.disable_pgp ||
-          this.hasMailboxesChanges ||
-          this.canAlwaysSave)
-      );
-    },
+const deleteAlias = async () => {
+  loading.value = true
+  try {
+    const res = await apiDeleteAlias(props.alias.id, {
+      errHandlerMethod: API_ON_ERR.TOAST,
+    })
+    if (res) {
+      emit('deleted', {
+        index: props.index,
+        data: props.alias,
+      })
+    }
+  } finally {
+    loading.value = false
+  }
+}
 
-    async handleClickSave() {
-      this.loading = true;
-      const savedData = {
-        note: this.moreOptions.note,
-        name: this.moreOptions.name,
-        disable_pgp: this.moreOptions.disable_pgp,
-        mailbox_ids: this.moreOptions.mailboxes.map((mb) => mb.id),
-      };
-      const res = await callAPI(
-        API_ROUTE.EDIT_ALIAS,
-        {
-          alias_id: this.alias.id,
-        },
+const canSave = () => {
+  return (
+    moreOptions.value.mailboxes.length > 0 &&
+    (props.alias.note !== moreOptions.value.note ||
+      props.alias.name !== moreOptions.value.name ||
+      !!props.alias.disable_pgp !== moreOptions.value.disable_pgp ||
+      hasMailboxesChanges.value ||
+      canAlwaysSave.value)
+  )
+}
+
+const handleClickSave = async () => {
+  loading.value = true
+  try {
+    const savedData = {
+      note: moreOptions.value.note,
+      name: moreOptions.value.name,
+      disable_pgp: moreOptions.value.disable_pgp,
+      mailbox_ids: moreOptions.value.mailboxes.map((mb) => mb.id),
+    }
+    const res = await apiEditAlias(
+      props.alias.id,
+      {
         savedData,
-        API_ON_ERR.TOAST
-      );
-      if (res) {
-        Utils.showSuccess("Updated alias");
-        this.$emit("changed", {
-          index: this.index,
-          data: this.moreOptions,
-        });
-      }
-      this.loading = false;
-    },
+      },
+      {errHandlerMethod: API_ON_ERR.TOAST}
+    )
+    if (res) {
+      showSuccess('Updated alias')
+      emit('changed', {
+        index: props.index,
+        data: moreOptions.value,
+      })
+    }
+  } finally {
+    loading.value = false
+  }
+}
 
-    toggleAliasPGP() {
-      this.moreOptions.disable_pgp = !this.moreOptions.disable_pgp;
-    },
+const toggleAliasPGP = () => {
+  moreOptions.value.disable_pgp = !moreOptions.value.disable_pgp
+}
 
-    findIndexOfMailbox(id, mailboxes) {
-      let index = -1;
-      for (const i in mailboxes) {
-        if (mailboxes[i].id === id) {
-          index = i;
-        }
-      }
-      return index;
-    },
+const findIndexOfMailbox = (id: any, mailboxes: any[]) => mailboxes.findIndex((el) => el.id === id)
 
-    toggleMailbox(mailbox) {
-      const i = this.findIndexOfMailbox(mailbox.id, this.moreOptions.mailboxes);
-      if (i === -1) {
-        this.moreOptions.mailboxes.push(mailbox);
-      } else {
-        this.moreOptions.mailboxes.splice(i, 1);
-      }
+const toggleMailbox = (mailbox: any) => {
+  const i = findIndexOfMailbox(mailbox.id, moreOptions.value.mailboxes)
+  if (i === -1) {
+    moreOptions.value.mailboxes.push(mailbox)
+  } else {
+    moreOptions.value.mailboxes.splice(i, 1)
+  }
 
-      // check if there are changes
-      const oldMailboxIds = this.alias.mailboxes
-        .map((mb) => mb.id)
-        .sort()
-        .join(",");
-      const newMailboxIds = this.moreOptions.mailboxes
-        .map((mb) => mb.id)
-        .sort()
-        .join(",");
-      this.hasMailboxesChanges = oldMailboxIds !== newMailboxIds;
-    },
-  },
-};
+  // check if there are changes
+  const oldMailboxIds = props.alias.mailboxes
+    .map((mb: any) => mb.id)
+    .sort()
+    .join(',')
+  const newMailboxIds = moreOptions.value.mailboxes
+    .map((mb) => mb.id)
+    .sort()
+    .join(',')
+  hasMailboxesChanges.value = oldMailboxIds !== newMailboxIds
+}
 </script>

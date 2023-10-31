@@ -1,120 +1,104 @@
 <template>
-  <textarea :style="computedStyles" v-model="val" @focus="resize"></textarea>
+  <textarea ref="element" :style="computedStyles" v-model="modelValue" @focus="resize"></textarea>
 </template>
-<script>
-export default {
-  name: "TextareaAutosize",
-  props: {
-    value: {
-      type: [String, Number],
-      default: "",
-    },
-    autosize: {
-      type: Boolean,
-      default: true,
-    },
-    minHeight: {
-      type: [Number],
-      default: null,
-    },
-    maxHeight: {
-      type: [Number],
-      default: null,
-    },
+
+<script setup lang="ts">
+import {ref, computed, onMounted, nextTick, type StyleValue, watch} from 'vue'
+import {useVModel} from '@vueuse/core'
+
+const props = withDefaults(
+  defineProps<{
+    modelValue: string | number
+    autosize?: boolean
+    minHeight?: number | null
+    maxHeight?: number | null
     /*
      * Force !important for style properties
      */
-    important: {
-      type: [Boolean, Array],
-      default: false,
-    },
-  },
-  data() {
-    return {
-      // data property for v-model binding with real textarea tag
-      val: null,
-      // works when content height becomes more then value of the maxHeight property
-      maxHeightScroll: false,
-      height: "auto",
-    };
-  },
-  computed: {
-    computedStyles() {
-      if (!this.autosize) return {};
-      return {
-        resize: !this.isResizeImportant ? "none" : "none !important",
-        height: this.height,
-        overflow: this.maxHeightScroll
-          ? "auto"
-          : !this.isOverflowImportant
-          ? "hidden"
-          : "hidden !important",
-      };
-    },
-    isResizeImportant() {
-      const imp = this.important;
-      return imp === true || (Array.isArray(imp) && imp.includes("resize"));
-    },
-    isOverflowImportant() {
-      const imp = this.important;
-      return imp === true || (Array.isArray(imp) && imp.includes("overflow"));
-    },
-    isHeightImportant() {
-      const imp = this.important;
-      return imp === true || (Array.isArray(imp) && imp.includes("height"));
-    },
-  },
-  watch: {
-    value(val) {
-      this.val = val;
-    },
-    val(val) {
-      this.$nextTick(this.resize);
-      this.$emit("input", val);
-    },
-    minHeight() {
-      this.$nextTick(this.resize);
-    },
-    maxHeight() {
-      this.$nextTick(this.resize);
-    },
-    autosize(val) {
-      if (val) this.resize();
-    },
-  },
-  methods: {
-    resize() {
-      const important = this.isHeightImportant ? "important" : "";
-      this.height = `auto${important ? " !important" : ""}`;
-      this.$nextTick(() => {
-        let contentHeight = this.$el.scrollHeight + 1;
+    important?: boolean | string[]
+  }>(),
+  {
+    modelValue: '',
+    autosize: true,
+    minHeight: null,
+    maxHeight: null,
+    important: false,
+  }
+)
 
-        if (this.minHeight) {
-          contentHeight =
-            contentHeight < this.minHeight ? this.minHeight : contentHeight;
-        }
+const emit = defineEmits<{
+  'update:modelValue': [value: string]
+}>()
 
-        if (this.maxHeight) {
-          if (contentHeight > this.maxHeight) {
-            contentHeight = this.maxHeight;
-            this.maxHeightScroll = true;
-          } else {
-            this.maxHeightScroll = false;
-          }
-        }
+const modelValue = useVModel(props, 'modelValue', emit)
 
-        const heightVal = contentHeight + "px";
-        this.height = `${heightVal}${important ? " !important" : ""}`;
-      });
+// data property for v-model binding with real textarea tag
+// val: null,
+// works when content height becomes more then value of the maxHeight property
+const maxHeightScroll = ref(false)
+const height = ref('auto')
+const element = ref<HTMLElement | null>(null)
 
-      return this;
-    },
-  },
-  created() {
-    this.val = this.value;
-  },
-  mounted() {
-    this.resize();
-  },
-};
+const computedStyles = computed<StyleValue>(() => {
+  if (!props.autosize) return {}
+  return {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resize: !isResizeImportant.value ? 'none' : ('none !important' as any), // TODO ? This is a style. Why is it "important"?
+    height: height.value,
+    overflow: maxHeightScroll.value
+      ? 'auto'
+      : !isOverflowImportant.value
+      ? 'hidden'
+      : 'hidden !important',
+  }
+})
+const isResizeImportant = computed(() => {
+  const imp = props.important
+  return imp === true || (Array.isArray(imp) && imp.includes('resize'))
+})
+const isOverflowImportant = computed(() => {
+  const imp = props.important
+  return imp === true || (Array.isArray(imp) && imp.includes('overflow'))
+})
+const isHeightImportant = computed(() => {
+  const imp = props.important
+  return imp === true || (Array.isArray(imp) && imp.includes('height'))
+})
+
+watch([modelValue, () => props.minHeight, () => props.maxHeight], () => {
+  nextTick(resize)
+})
+
+watch(
+  () => props.autosize,
+  (val) => {
+    if (val) resize()
+  }
+)
+
+const resize = () => {
+  const important = isHeightImportant.value ? 'important' : ''
+  height.value = `auto${important ? ' !important' : ''}`
+  nextTick(() => {
+    let contentHeight = (element.value?.scrollHeight ?? 0) + 1
+
+    if (props.minHeight) {
+      contentHeight = contentHeight < props.minHeight ? props.minHeight : contentHeight
+    }
+
+    if (props.maxHeight) {
+      if (contentHeight > props.maxHeight) {
+        contentHeight = props.maxHeight
+        maxHeightScroll.value = true
+      } else {
+        maxHeightScroll.value = false
+      }
+    }
+
+    const heightVal = contentHeight + 'px'
+    height.value = `${heightVal}${important ? ' !important' : ''}`
+  })
+}
+
+onMounted(resize)
 </script>

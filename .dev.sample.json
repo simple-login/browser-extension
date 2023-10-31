@@ -1,5 +1,4 @@
 {
   "DEFAULT_API_URL": "https://app.simplelogin.io",
-  "EXTRA_ALLOWED_DOMAINS": [],
   "permissions": []
 }

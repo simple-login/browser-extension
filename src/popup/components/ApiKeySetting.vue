@@ -31,56 +31,42 @@
         class="form-control mt-3 w-100"
       />
 
-      <button @click="saveApiKey" class="btn btn-primary btn-block mt-2">
-        Set API Key
-      </button>
+      <button @click="saveApiKey" class="btn btn-primary btn-block mt-2">Set API Key</button>
     </div>
   </div>
 </template>
 
-<script>
-import axios from "axios";
-import SLStorage from "../SLStorage";
-import EventManager from "../EventManager";
-import Navigation from "../Navigation";
-import Utils from "../Utils";
-import { API_ROUTE } from "../APIService";
+<script setup lang="ts">
+import {onMounted, ref} from 'vue'
+import {EventManager, SLStorage, showError, showSuccess, getUserInfo} from '../utils'
+import {useRouterExtensions} from '../composables'
 
-export default {
-  data() {
-    return {
-      apiKey: "",
-      apiUrl: "",
-    };
-  },
-  async mounted() {
-    this.apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
-  },
-  methods: {
-    async saveApiKey() {
-      if (this.apiKey === "") {
-        Utils.showError("API Key cannot be empty");
-        return;
-      }
+const apiKey = ref('')
+const apiUrl = ref('')
+const routerExtensions = useRouterExtensions()
 
-      // check api key
-      axios
-        .get(this.apiUrl + API_ROUTE.GET_USER_INFO.path, {
-          headers: { Authentication: this.apiKey },
-        })
-        .then(async (res) => {
-          const userName = res.data.name || res.data.email;
-          await SLStorage.set(SLStorage.SETTINGS.API_KEY, this.apiKey);
-          EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
+onMounted(async () => {
+  apiUrl.value = await SLStorage.get(SLStorage.settings.apiUrl)
+})
 
-          Utils.showSuccess(`Hi ${userName}!`);
-          Navigation.clearHistoryAndNavigateTo(Navigation.PATH.MAIN);
-        })
-        .catch((err) => {
-          Utils.showError("Incorrect API Key.");
-        });
-    },
-  },
-  computed: {},
-};
+const saveApiKey = async () => {
+  if (apiKey.value.trim() === '') {
+    showError('API Key cannot be empty')
+    return
+  }
+
+  // check api key
+  try {
+    const {data} = await getUserInfo()
+
+    const userName = data.name || data.email
+    await SLStorage.set(SLStorage.settings.apiKey, apiKey.value)
+    EventManager.broadcast(EventManager.settingsChangedEvent)
+
+    showSuccess(`Hi ${userName}!`)
+    routerExtensions.clearHistoryAndNavigateTo('/main')
+  } catch (err) {
+    showError('Incorrect API Key.')
+  }
+}
 </script>
