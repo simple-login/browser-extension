@@ -207,15 +207,18 @@ export default {
     },
     async upgrade() {
       if (process.env.MAC) {
-        console.log("send upgrade event to host app");
-        await browser.runtime.sendNativeMessage(
-          "application.id",
-          JSON.stringify({
-            upgrade: {},
-          })
-        );
+        try {
+          console.log("send upgrade event to host app");
+          await browser.runtime.sendNativeMessage(
+            "application.id",
+            JSON.stringify({
+              upgrade: {},
+            })
+          );
+        } catch (error) {
+          console.info("can't send data to native app", error);
+        }
       } else {
-        console.info("can't send data to native app", error);
         let apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
         let upgradeURL = apiUrl + "/dashboard/pricing";
         browser.tabs.create({ url: upgradeURL });
