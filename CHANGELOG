@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.11.0] - 2024-02-15
+- Fix upgrade button not working
+- Prepare the Safari extension
+- Enforce the reverse alias limit
+
 ## [2.10.2] - 2023-09-18
 
 - Use internal Sentry
