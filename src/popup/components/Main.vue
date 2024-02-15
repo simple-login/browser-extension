@@ -164,7 +164,7 @@
 
                   <div
                     class="btn-svg btn-send"
-                    @click="goToReverseAlias(alias)"
+                    @click="handleReverseAliasClick(alias)"
                   >
                     <font-awesome-icon icon="paper-plane" />
                   </div>
@@ -220,7 +220,6 @@
 <script>
 import Utils from "../Utils";
 import SLStorage from "../SLStorage";
-import EventManager from "../EventManager";
 import Navigation from "../Navigation";
 import AliasMoreOptions from "./AliasMoreOptions";
 import { callAPI, API_ROUTE, API_ON_ERR } from "../APIService";
@@ -255,6 +254,8 @@ export default {
       isFetchingAlias: true,
       searchString: "",
       aliasArray: [], // array of existing alias
+
+      canCreateReverseAlias: false,
     };
   },
   async mounted() {
@@ -280,6 +281,7 @@ export default {
     this.contentElem = document.querySelector(".app > .content");
 
     await this.getUserOptions();
+    await this.getUserInfo();
   },
   methods: {
     // get alias options and mailboxes
@@ -319,6 +321,16 @@ export default {
         content: "Click to copy",
         placement: "bottom",
       });
+    },
+
+    async getUserInfo() {
+      const userInfo = await callAPI(
+        API_ROUTE.GET_USER_INFO,
+        {},
+        {},
+        API_ON_ERR.TOAST
+      );
+      this.canCreateReverseAlias = userInfo.data.can_create_reverse_alias;
     },
 
     async loadAlias() {
@@ -517,25 +529,49 @@ export default {
       }
     },
 
-    // Reverse Alias
-    goToReverseAlias(alias) {
-      SLStorage.setTemporary("alias", alias);
-      Navigation.navigateTo(Navigation.PATH.REVERSE_ALIAS, true);
-    },
-
     async upgrade() {
       if (process.env.MAC) {
-        console.log("send upgrade event to host app");
-        await browser.runtime.sendNativeMessage(
-          "application.id",
-          JSON.stringify({
-            upgrade: {},
-          })
-        );
+        try {
+          console.log("send upgrade event to host app");
+          await browser.runtime.sendNativeMessage(
+            "application.id",
+            JSON.stringify({
+              upgrade: {},
+            })
+          );
+        } catch (error) {
+          console.info("can't send data to native app", error);
+        }
       } else {
-        console.info("can't send data to native app", error);
         let upgradeURL = this.apiUrl + "/dashboard/pricing";
         browser.tabs.create({ url: upgradeURL });
+      }
+    },
+
+    handleReverseAliasClick(alias) {
+      if (this.canCreateReverseAlias) {
+        SLStorage.setTemporary("alias", alias);
+        Navigation.navigateTo(Navigation.PATH.REVERSE_ALIAS, true);
+      } else {
+        this.$modal.show("dialog", {
+          title: `Send emails`,
+          text: "Sending a new email using an alias is a premium feature.",
+          buttons: [
+            {
+              title: "Cancel",
+              handler: () => {
+                this.$modal.hide("dialog");
+              },
+            },
+            {
+              title: "Upgrade now",
+              handler: () => {
+                this.$modal.hide("dialog");
+                this.upgrade();
+              },
+            },
+          ],
+        });
       }
     },
 
