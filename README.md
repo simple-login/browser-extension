@@ -44,6 +44,12 @@ To run the extension locally, please follow these steps:
 - install all dependencies with `npm install`.
 - run `npm start` to generate the `/dist` folder that can be installed into Chrome.
 
+In case of `Error: error:0308010C:digital envelope routines::unsupported` error, the workaround is to accept OPEN SSL by running this command before running `npm start`
+
+```bash
+export NODE_OPTIONS=--openssl-legacy-provider
+````
+
 On Firefox, it can be done via `web-ext` tool from within the `/dist` folder: 
 
 ```bash 
