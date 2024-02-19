@@ -1,5 +1,5 @@
 <template>
-  <div class="content">
+  <div class="content" ref="content">
     <v-dialog />
 
     <!-- Main Page -->
@@ -259,29 +259,33 @@ export default {
     };
   },
   async mounted() {
-    this.hostName = await Utils.getHostName();
-    this.apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
-    this.apiKey = await SLStorage.get(SLStorage.SETTINGS.API_KEY);
+    try {
+      this.hostName = await Utils.getHostName();
+      this.apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
+      this.apiKey = await SLStorage.get(SLStorage.SETTINGS.API_KEY);
 
-    if (this.apiKey && process.env.MAC) {
-      console.log("send api key to host app");
-      await browser.runtime.sendNativeMessage(
-        "application.id",
-        JSON.stringify({
-          logged_in: {
-            data: {
-              api_key: this.apiKey,
-              api_url: this.apiUrl,
+      this.contentElem = this.$refs.content;
+
+      await this.getUserOptions();
+      await this.getUserInfo();
+
+      if (this.apiKey && process.env.MAC) {
+        console.log("send api key to host app");
+        await browser.runtime.sendNativeMessage(
+          "application.id",
+          JSON.stringify({
+            logged_in: {
+              data: {
+                api_key: this.apiKey,
+                api_url: this.apiUrl,
+              },
             },
-          },
-        })
-      );
+          })
+        );
+      }
+    } catch (e) {
+      console.error("Can't display alias list ", e);
     }
-
-    this.contentElem = document.querySelector(".app > .content");
-
-    await this.getUserOptions();
-    await this.getUserInfo();
   },
   methods: {
     // get alias options and mailboxes
