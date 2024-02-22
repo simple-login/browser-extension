@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.11.1] - 2024-02-22
+- Fix alias list not displaying on Mac
+
 ## [2.11.0] - 2024-02-15
 - Fix upgrade button not working
 - Prepare the Safari extension
