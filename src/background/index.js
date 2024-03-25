@@ -28,7 +28,7 @@ async function handleGetAppSettings() {
 async function handleExtensionSetup() {
   const apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
 
-    const url = apiUrl + API_ROUTE.GET_API_KEY_FROM_COOKIE.path;
+  const url = apiUrl + API_ROUTE.GET_API_KEY_FROM_COOKIE.path;
   const res = await fetch(url, {
     method: "POST",
     headers: {
@@ -37,7 +37,7 @@ async function handleExtensionSetup() {
     body: JSON.stringify({
       device: Utils.getDeviceName(),
     }),
-    });
+  });
 
   if (res.ok) {
     const apiRes = await res.json();
@@ -131,10 +131,12 @@ browser.runtime.onMessage.addListener(async function (request, sender) {
  * Register context menu
  */
 browser.contextMenus.create({
+  id: "sl-random",
   title: "Create random email alias (copied)",
   contexts: ["all"],
-  onclick: handleOnClickContextMenu,
 });
+
+browser.contextMenus.onClicked.addListener(handleOnClickContextMenu);
 
 /**
  * Shortcuts and hotkeys listener

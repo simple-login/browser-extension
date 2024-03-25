@@ -112,8 +112,8 @@ const callAPI = async function (
       throw {
         response: {
           status: res.status,
-          data: await res.json()
-        }
+          data: await res.json(),
+        },
       };
     }
   }
