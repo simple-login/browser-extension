@@ -39,7 +39,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import SLStorage from "../SLStorage";
 import EventManager from "../EventManager";
 import Navigation from "../Navigation";
@@ -64,21 +63,20 @@ export default {
       }
 
       // check api key
-      axios
-        .get(this.apiUrl + API_ROUTE.GET_USER_INFO.path, {
-          headers: { Authentication: this.apiKey },
-        })
-        .then(async (res) => {
-          const userName = res.data.name || res.data.email;
-          await SLStorage.set(SLStorage.SETTINGS.API_KEY, this.apiKey);
-          EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
+      const res = await fetch(this.apiUrl + API_ROUTE.GET_USER_INFO.path, {
+        headers: { Authentication: this.apiKey },
+      });
+      if (res.ok) {
+        const apiRes = await res.json();
+        const userName = apiRes.name || apiRes.email;
+        await SLStorage.set(SLStorage.SETTINGS.API_KEY, this.apiKey);
+        EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED);
 
-          Utils.showSuccess(`Hi ${userName}!`);
-          Navigation.clearHistoryAndNavigateTo(Navigation.PATH.MAIN);
-        })
-        .catch((err) => {
-          Utils.showError("Incorrect API Key.");
-        });
+        Utils.showSuccess(`Hi ${userName}!`);
+        Navigation.clearHistoryAndNavigateTo(Navigation.PATH.MAIN);
+      } else {
+        Utils.showError("Incorrect API Key.");
+      }
     },
   },
   computed: {},

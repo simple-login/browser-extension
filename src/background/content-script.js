@@ -14,14 +14,19 @@ async function setupContentScript() {
       return;
     }
 
-    browser.tabs.executeScript(tabId, {
-      file: "content_script/input_tools.js",
-      runAt: "document_idle",
-    });
-
-    browser.tabs.insertCSS(tabId, {
-      file: "content_script/input_tools.css",
-    });
+    browser.scripting
+      .registerContentScripts([
+        {
+          id: "input-tools",
+          js: ["content_script/input_tools.js"],
+          css: ["content_script/input_tools.css"],
+          persistAcrossSessions: false,
+          matches: ["*://*/*"],
+          runAt: "document_idle",
+        },
+      ])
+      .then(() => console.log("registration input tools complete"))
+      .catch((err) => console.warn("unexpected error", err));
   });
 }
 
