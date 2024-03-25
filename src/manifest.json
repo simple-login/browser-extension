@@ -14,7 +14,9 @@
   "permissions": [
     "activeTab",
     "storage",
-    "contextMenus"
+    "contextMenus",
+    "scripting",
+    "tabs"
   ],
   "host_permissions": [    
     "https://*.simplelogin.io/*",
@@ -31,6 +33,10 @@
       "96": "icons/icon_96.png",
       "128": "icons/icon_128.png"
     }
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
   },
   "browser_specific_settings": {
     "gecko": {

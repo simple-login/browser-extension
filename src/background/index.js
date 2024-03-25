@@ -11,8 +11,6 @@ import {
 } from "./context-menu";
 import Utils from "../popup/Utils";
 
-global.isBackgroundJS = true;
-
 /**
  * Get app settings
  */
@@ -33,6 +31,9 @@ async function handleExtensionSetup() {
     const url = apiUrl + API_ROUTE.GET_API_KEY_FROM_COOKIE.path;
   const res = await fetch(url, {
     method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify({
       device: Utils.getDeviceName(),
     }),

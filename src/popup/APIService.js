@@ -75,8 +75,9 @@ const callAPI = async function (
     method: method,
     headers: headers,
   };
-  if (method === "POST") {
+  if (method === "POST" || method === "PUT") {
     fetchParam.body = JSON.stringify(data);
+    headers["Content-Type"] = "application/json";
   }
 
   let res = await fetch(url, fetchParam);
@@ -84,6 +85,7 @@ const callAPI = async function (
     const apiRes = await res.json();
     // wrap apiRes in data to look like axios which was used before
     return {
+      status: res.status,
       data: apiRes,
     };
   } else {
@@ -91,7 +93,7 @@ const callAPI = async function (
       console.error(res);
     }
 
-    if (res.status === 401 && !global.isBackgroundJS) {
+    if (res.status === 401) {
       await handle401Error();
       return null;
     }
@@ -99,7 +101,7 @@ const callAPI = async function (
     if (errHandlerMethod === API_ON_ERR.TOAST) {
       let apiRes = await res.json();
       if (apiRes.error) {
-        Utils.showError(err.response.data.error);
+        Utils.showError(apiRes.error);
       } else {
         Utils.showError("Unknown error");
       }
@@ -107,7 +109,12 @@ const callAPI = async function (
     }
 
     if (errHandlerMethod === API_ON_ERR.THROW) {
-      throw new Error("Request failed");
+      throw {
+        response: {
+          status: res.status,
+          data: await res.json()
+        }
+      };
     }
   }
 };
