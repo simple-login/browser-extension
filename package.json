@@ -27,7 +27,6 @@
     "@fortawesome/vue-fontawesome": "^0.1.10",
     "@sentry/browser": "^5.25.0",
     "@sentry/integrations": "^5.30.0",
-    "axios": "^0.27.2",
     "bootstrap": "^4.6.1",
     "bootstrap-vue": "^2.21.2",
     "tippy.js": "^6.3.7",

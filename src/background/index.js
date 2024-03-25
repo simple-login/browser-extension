@@ -9,7 +9,6 @@ import {
   handleOnClickContextMenu,
   generateAliasHandlerJS,
 } from "./context-menu";
-import axios from "axios";
 import Utils from "../popup/Utils";
 
 global.isBackgroundJS = true;
@@ -30,13 +29,18 @@ async function handleGetAppSettings() {
 
 async function handleExtensionSetup() {
   const apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
-  try {
+
     const url = apiUrl + API_ROUTE.GET_API_KEY_FROM_COOKIE.path;
-    const res = await axios.post(url, {
+  const res = await fetch(url, {
+    method: "POST",
+    body: JSON.stringify({
       device: Utils.getDeviceName(),
+    }),
     });
 
-    const apiKey = res.data.api_key;
+  if (res.ok) {
+    const apiRes = await res.json();
+    const apiKey = apiRes.api_key;
     if (apiKey) {
       await SLStorage.set(SLStorage.SETTINGS.API_KEY, apiKey);
 
@@ -52,9 +56,8 @@ async function handleExtensionSetup() {
     } else {
       console.error("Received null API Key");
     }
-  } catch (e) {
-    // Probably the user is not logged in
-    console.error(e);
+  } else {
+    console.error("api error");
   }
 }
 
