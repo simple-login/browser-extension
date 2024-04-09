@@ -18,7 +18,7 @@
     "scripting",
     "tabs"
   ],
-  "host_permissions": [    
+  "host_permissions": [
     "https://*.simplelogin.io/*",
     "http://*/*",
     "https://*/*"
@@ -34,10 +34,7 @@
       "128": "icons/icon_128.png"
     }
   },
-  "background": {
-    "service_worker": "background.js",
-    "type": "module"
-  },
+
   "browser_specific_settings": {
     "gecko": {
       "id": "addon@simplelogin"

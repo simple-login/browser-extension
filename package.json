@@ -16,10 +16,9 @@
     "build:mac": "cross-env NODE_ENV=production MAC=1 webpack",
     "build-zip": "node scripts/build-zip.js",
     "generate:buildconfig": "node scripts/generateBuildConfig.js",
-    "watch": "npm run build -- --watch",
-    "watch:dev": "cross-env HMR=true npm run build:dev -- --watch",
     "start": "cross-env HMR=true npm run build:dev -- --watch",
-    "start:mac": "cross-env HMR=true MAC=1 npm run build:dev -- --watch"
+    "start:mac": "cross-env HMR=true MAC=1 npm run build:dev -- --watch",
+    "start:firefox": "cross-env HMR=true NODE_ENV=development FIREFOX=1 webpack -- --watch"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.36",

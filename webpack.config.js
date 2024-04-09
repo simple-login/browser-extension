@@ -116,6 +116,17 @@ const config = {
               jsonContent.browser_specific_settings.gecko.id = geckoId.replace('@', '-beta@');
             }
 
+            if (process.env.FIREFOX) {
+              jsonContent.background = {
+                "scripts": ["background.js"]
+              }
+            } else { // CHROME
+              jsonContent.background = {
+                "service_worker": "background.js",
+                "type": "module"
+              }
+            }
+
             if (process.env.LITE) {
               // Remove "All sites" permissions
               const PERMISSIONS_TO_REMOVE = [
