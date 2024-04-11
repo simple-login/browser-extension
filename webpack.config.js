@@ -107,7 +107,7 @@ const config = {
 
             if (process.env.BETA) {
               const geckoId = jsonContent.browser_specific_settings.gecko.id;
-              jsonContent.name = jsonContent.name.replace('SimpleLogin', 'SimpleLogin (BETA)');
+              jsonContent.name = 'SimpleLogin BETA';
               jsonContent.icons = {
                 '48': 'icons/icon_beta_48.png',
                 '128': 'icons/icon_beta_128.png'
