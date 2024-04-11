@@ -10,6 +10,8 @@
     "prettier:write": "npm run prettier -- --write",
     "prettier:check": "prettier --check \"src/**/*.{js,vue}\"",
     "build": "cross-env NODE_ENV=production webpack",
+    "build:firefox": "cross-env NODE_ENV=production FIREFOX=1 webpack",
+    "build:firefox:beta": "cross-env NODE_ENV=production BETA=1 FIREFOX=1 webpack",
     "build:lite": "cross-env NODE_ENV=production LITE=1 webpack",
     "build:beta": "cross-env NODE_ENV=production BETA=1 webpack",
     "build:mac": "cross-env NODE_ENV=production MAC=1 webpack",

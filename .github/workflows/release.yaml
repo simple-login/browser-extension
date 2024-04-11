@@ -141,16 +141,35 @@ jobs:
         shell: bash
         run: |
           npm install
-          cross-env NODE_ENV=production BETA=1 FIREFOX=1 webpack
-          SUFFIX=beta-firefox npm run build-zip
+          npm run build:firefox:beta
+          
+          # dist-zip/simplelogin-extension-beta-firefox-v... can be submitted to firefox
+          SUFFIX=firefox npm run build-zip
+          
+          # create the code source for firefox reviewer
+          rm -rf code-for-reviewer && mkdir code-for-reviewer
+          # copy the minimum files
+          cp -r src LICENSE CHANGELOG scripts package.json package-lock.json webpack.config.js .dev.sample.json .babelrc code-for-reviewer
+          # override the readme
+          cp reviewers/firefox-beta.md code-for-reviewer/README.md
+          
 
       - name: Build production version for Firefox
         if: matrix.variant == 'beta-firefox'
         shell: bash
         run: |
           npm install
-          cross-env NODE_ENV=production FIREFOX=1 webpack
+          npm run build:firefox
+          
+          # dist-zip/simplelogin-extension-beta-firefox-v... can be submitted to firefox
           SUFFIX=firefox npm run build-zip
+          
+          # create the code source for firefox reviewer
+          rm -rf code-for-reviewer && mkdir code-for-reviewer
+          # copy the minimum files
+          cp -r src LICENSE CHANGELOG scripts package.json package-lock.json webpack.config.js .dev.sample.json .babelrc code-for-reviewer
+          # override the readme
+          cp reviewers/firefox.md code-for-reviewer/README.md
 
       - name: Build production version for Chromium
         if: matrix.variant == 'full'
