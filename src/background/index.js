@@ -9,10 +9,7 @@ import {
   handleOnClickContextMenu,
   generateAliasHandlerJS,
 } from "./context-menu";
-import axios from "axios";
 import Utils from "../popup/Utils";
-
-global.isBackgroundJS = true;
 
 /**
  * Get app settings
@@ -30,13 +27,21 @@ async function handleGetAppSettings() {
 
 async function handleExtensionSetup() {
   const apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
-  try {
-    const url = apiUrl + API_ROUTE.GET_API_KEY_FROM_COOKIE.path;
-    const res = await axios.post(url, {
-      device: Utils.getDeviceName(),
-    });
 
-    const apiKey = res.data.api_key;
+  const url = apiUrl + API_ROUTE.GET_API_KEY_FROM_COOKIE.path;
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      device: Utils.getDeviceName(),
+    }),
+  });
+
+  if (res.ok) {
+    const apiRes = await res.json();
+    const apiKey = apiRes.api_key;
     if (apiKey) {
       await SLStorage.set(SLStorage.SETTINGS.API_KEY, apiKey);
 
@@ -52,9 +57,8 @@ async function handleExtensionSetup() {
     } else {
       console.error("Received null API Key");
     }
-  } catch (e) {
-    // Probably the user is not logged in
-    console.error(e);
+  } else {
+    console.error("api error");
   }
 }
 
@@ -127,10 +131,12 @@ browser.runtime.onMessage.addListener(async function (request, sender) {
  * Register context menu
  */
 browser.contextMenus.create({
+  id: "sl-random",
   title: "Create random email alias (copied)",
   contexts: ["all"],
-  onclick: handleOnClickContextMenu,
 });
+
+browser.contextMenus.onClicked.addListener(handleOnClickContextMenu);
 
 /**
  * Shortcuts and hotkeys listener

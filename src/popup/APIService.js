@@ -2,7 +2,6 @@ import EventManager from "./EventManager";
 import Navigation from "./Navigation";
 import SLStorage from "./SLStorage";
 import Utils from "./Utils";
-import axios from "axios";
 
 const API_ROUTE = {
   GET_USER_INFO: { method: "GET", path: "/api/user_info" },
@@ -72,28 +71,37 @@ const callAPI = async function (
     headers["Authentication"] = SETTINGS.apiKey;
   }
 
-  try {
-    const res = await axios({
-      method,
-      url,
-      headers,
-      data,
-    });
+  let fetchParam = {
+    method: method,
+    headers: headers,
+  };
+  if (method === "POST" || method === "PUT") {
+    fetchParam.body = JSON.stringify(data);
+    headers["Content-Type"] = "application/json";
+  }
 
-    return res;
-  } catch (err) {
+  let res = await fetch(url, fetchParam);
+  if (res.ok) {
+    const apiRes = await res.json();
+    // wrap apiRes in data to look like axios which was used before
+    return {
+      status: res.status,
+      data: apiRes,
+    };
+  } else {
     if (errHandlerMethod !== API_ON_ERR.IGNORE) {
-      console.error(err);
+      console.error(res);
     }
 
-    if (err.response.status === 401 && !global.isBackgroundJS) {
+    if (res.status === 401) {
       await handle401Error();
       return null;
     }
 
     if (errHandlerMethod === API_ON_ERR.TOAST) {
-      if (err.response.data && err.response.data.error) {
-        Utils.showError(err.response.data.error);
+      let apiRes = await res.json();
+      if (apiRes.error) {
+        Utils.showError(apiRes.error);
       } else {
         Utils.showError("Unknown error");
       }
@@ -101,7 +109,12 @@ const callAPI = async function (
     }
 
     if (errHandlerMethod === API_ON_ERR.THROW) {
-      throw err;
+      throw {
+        response: {
+          status: res.status,
+          data: await res.json(),
+        },
+      };
     }
   }
 };

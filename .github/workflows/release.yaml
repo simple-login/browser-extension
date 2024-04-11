@@ -78,7 +78,7 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        variant: ['full', 'lite', 'mac']
+        variant: ['full', 'lite', 'mac', 'beta', 'beta-firefox']
 
     steps:
       - name: Build info
@@ -128,7 +128,31 @@ jobs:
           npm run build:lite
           SUFFIX=lite npm run build-zip
 
-      - name: Build full version
+      - name: Build beta version for Chromium
+        if: matrix.variant == 'beta'
+        shell: bash
+        run: |
+          npm install
+          cross-env NODE_ENV=production BETA=1 webpack
+          SUFFIX=beta npm run build-zip
+
+      - name: Build beta version for Firefox
+        if: matrix.variant == 'beta-firefox'
+        shell: bash
+        run: |
+          npm install
+          cross-env NODE_ENV=production BETA=1 FIREFOX=1 webpack
+          SUFFIX=beta-firefox npm run build-zip
+
+      - name: Build production version for Firefox
+        if: matrix.variant == 'beta-firefox'
+        shell: bash
+        run: |
+          npm install
+          cross-env NODE_ENV=production FIREFOX=1 webpack
+          SUFFIX=firefox npm run build-zip
+
+      - name: Build production version for Chromium
         if: matrix.variant == 'full'
         shell: bash
         run: |

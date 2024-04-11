@@ -39,10 +39,12 @@ All work on SimpleLogin Chrome/Firefox extension happens directly on GitHub.
 
 This project has been tested with Node v20.2.0 and NPM 9.6.6
 
-To run the extension locally, please follow these steps:
 
-- install all dependencies with `npm install`.
-- run `npm start` to generate the `/dist` folder that can be installed into Chrome.
+To run the extension locally, please first install all dependencies with `npm install`.
+
+## Chrome
+
+Run `npm start` to generate the `/dist` folder that can be installed into Chrome.
 
 In case of `Error: error:0308010C:digital envelope routines::unsupported` error, the workaround is to accept OPEN SSL by running this command before running `npm start`
 
@@ -50,11 +52,11 @@ In case of `Error: error:0308010C:digital envelope routines::unsupported` error,
 export NODE_OPTIONS=--openssl-legacy-provider
 ````
 
-On Firefox, it can be done via `web-ext` tool from within the `/dist` folder: 
+## Firefox
 
-```bash 
-( cd dist/ ; web-ext run )
-```
+Run `npm run start:firefox` to generate the `/dist` folder which can then be installed on Firefox, more info on https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Your_first_WebExtension#installing
+
+## Code formatting
 
 The code is formatted using `prettier`, make sure to run it before creating the commit, otherwise the GitHub lint workflow will mark the check as not passing:
 

@@ -2,7 +2,6 @@ const webpack = require('webpack');
 const ejs = require('ejs');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const ExtensionReloader = require('webpack-extension-reloader');
 const { VueLoaderPlugin } = require('vue-loader');
 const { version, betaRev } = require('./package.json');
 const fs = require('fs');
@@ -102,8 +101,7 @@ const config = {
             const jsonContent = JSON.parse(content);
             jsonContent.version = version;
 
-            if (config.mode === 'development') {
-              jsonContent.content_security_policy = "script-src 'self' 'unsafe-eval'; object-src 'self'";
+            if (config.mode === 'development') {              
               jsonContent.permissions = jsonContent.permissions.concat(devConfig.permissions);
             }
 
@@ -116,6 +114,17 @@ const config = {
               };
               jsonContent.version = version + '.' + betaRev;
               jsonContent.browser_specific_settings.gecko.id = geckoId.replace('@', '-beta@');
+            }
+
+            if (process.env.FIREFOX) {
+              jsonContent.background = {
+                "scripts": ["background.js"]
+              }
+            } else { // CHROME
+              jsonContent.background = {
+                "service_worker": "background.js",
+                "type": "module"
+              }
             }
 
             if (process.env.LITE) {
@@ -179,20 +188,17 @@ if (config.mode === 'production') {
   ]);
 }
 
-if (process.env.HMR === 'true') {
-  config.plugins = (config.plugins || []).concat([
-    new ExtensionReloader({
-      manifest: __dirname + '/src/manifest.json',
-      port: 19090
-    }),
-  ]);
-}
-
 function transformHtml(content) {
   return ejs.render(content.toString(), {
     ...process.env,
     devConfig,
   });
+}
+
+if (config.mode === 'production') {
+  config.devtool="source-map";
+} else {
+  config.devtool="cheap-source-map";
 }
 
 module.exports = config;
