@@ -133,7 +133,7 @@ jobs:
         shell: bash
         run: |
           npm install
-          cross-env NODE_ENV=production BETA=1 webpack
+          npm run build:beta
           SUFFIX=beta npm run build-zip
 
       - name: Build beta version for Firefox
