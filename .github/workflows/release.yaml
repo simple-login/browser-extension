@@ -134,7 +134,7 @@ jobs:
         run: |
           npm install
           npm run build:beta
-          SUFFIX=beta npm run build-zip
+          npm run build-zip
 
       - name: Build beta version for Firefox
         if: matrix.variant == 'beta-firefox'
