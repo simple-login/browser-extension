@@ -72,6 +72,36 @@ npm run prettier:write
 4. Wait until the CI process generates the extension ZIP and uploads it to GitHub. You will be able to find the generated zip as an artifact attached to the [GitHub release](https://github.com/simple-login/browser-extension/releases).
 5. Upload the extension to the Chrome, Firefox and Edge stores.
 
+### Firefox
+
+For Firefox, the code source must be submitted too. To faciliate the review process, the code source can be generated using the following script
+
+For beta version:
+
+```bash
+# create the code source for firefox reviewer
+rm -rf code-for-reviewer && mkdir code-for-reviewer
+
+# copy the minimum files
+cp -r src LICENSE CHANGELOG scripts package.json package-lock.json webpack.config.js .dev.sample.json .babelrc code-for-reviewer
+
+# override the readme
+cp reviewers/firefox-beta.md code-for-reviewer/README.md
+```
+
+For prod version
+
+```bash
+# create the code source for firefox reviewer
+rm -rf code-for-reviewer && mkdir code-for-reviewer
+
+# copy the minimum files
+cp -r src LICENSE CHANGELOG scripts package.json package-lock.json webpack.config.js .dev.sample.json .babelrc code-for-reviewer
+
+# override the readme
+cp reviewers/firefox.md code-for-reviewer/README.md
+```
+
 
 ## How to build the extension locally
 
