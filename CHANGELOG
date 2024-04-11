@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.0] - 2024-04-11
+
+Use Manifest v3
+
 ## [2.11.1] - 2024-02-22
 - Fix alias list not displaying on Mac
 
@@ -132,4 +136,3 @@ You can now login with email/password!
 ## [1.6.0] - 2020-06-24
 Handle 429 error.
 Fix Firefox scroll bar
-
