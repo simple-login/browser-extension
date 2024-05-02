@@ -50,7 +50,7 @@
     "core-js": "^3.22.7",
     "cross-env": "^5.2.0",
     "css-loader": "^2.1.1",
-    "ejs": "^3.1.8",
+    "ejs": "^3.1.10",
     "file-loader": "^6.2.0",
     "mini-css-extract-plugin": "^0.4.4",
     "prettier": "^2.6.2",
