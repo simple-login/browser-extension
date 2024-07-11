@@ -42,10 +42,10 @@ export default {
         method: "POST",
         body: JSON.stringify({
           device: Utils.getDeviceName(),
-        },
+        }),
         headers: {
           "X-Sl-Allowcookies": true,
-        }),
+        },
       });
 
       if (res.ok) {
