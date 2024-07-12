@@ -33,6 +33,7 @@ async function handleExtensionSetup() {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "X-Sl-Allowcookies": true,
     },
     body: JSON.stringify({
       device: Utils.getDeviceName(),
