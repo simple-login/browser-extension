@@ -2,7 +2,6 @@ import browser from "webextension-polyfill";
 import APIService, { API_ROUTE } from "../popup/APIService";
 import SLStorage from "../popup/SLStorage";
 import Onboarding from "./onboarding";
-import "./content-script";
 
 import { handleNewRandomAlias } from "./create-alias";
 import {
@@ -66,13 +65,12 @@ async function handleExtensionSetup() {
 /**
  * Check if a message comes from an authorized source
  * @param {string} url
- * @returns boolean
+ * @returns Promise<boolean>
  */
-const isMessageAllowed = (url) => {
+const isMessageAllowed = async (url) => {
   const requestUrl = new URL(url);
-  const apiUrl = new URL(
-    SLStorage.DEFAULT_SETTINGS[SLStorage.SETTINGS.API_URL]
-  );
+  const apiUrlValue = await SLStorage.get(SLStorage.SETTINGS.API_URL);
+  const apiUrl = new URL(apiUrlValue);
 
   let allowedSources = [
     new RegExp(apiUrl.hostname),
@@ -119,7 +117,8 @@ browser.runtime.onMessage.addListener(async function (request, sender) {
   }
 
   // Check messages allowed only from authorized sources
-  if (!isMessageAllowed(sender.url)) return;
+  const messageAllowed = await isMessageAllowed(sender.url);
+  if (!messageAllowed) return;
 
   if (request.tag === "EXTENSION_SETUP") {
     return await handleExtensionSetup();
