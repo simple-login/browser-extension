@@ -29,6 +29,7 @@
     "@sentry/integrations": "^5.30.0",
     "bootstrap": "^4.6.1",
     "bootstrap-vue": "^2.21.2",
+    "browser": "^0.2.6",
     "tippy.js": "^6.3.7",
     "v-clipboard": "^2.2.3",
     "vue": "^2.6.14",

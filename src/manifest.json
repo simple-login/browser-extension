@@ -37,7 +37,8 @@
 
   "browser_specific_settings": {
     "gecko": {
-      "id": "addon@simplelogin"
+      "id": "addon@simplelogin",
+      "strict_min_version": "109.0"
     }
   },
   "commands": {
