@@ -260,7 +260,29 @@ if (!window._hasExecutedSlExtension) {
         if (event.data.tag === "PERFORM_EXTENSION_SETUP") {
           if (!hasProcessedSetup) {
             hasProcessedSetup = true;
-            await sendMessageToBackground("EXTENSION_SETUP");
+            const apiUrl = await sendMessageToBackground("EXTENSION_SETUP");
+            // if apiUrl is undefined then the Chromium/Firefox extension has already finished setup
+            if (!apiUrl) {
+              return;
+            }
+            // else if apiUrl is defined, we are in Safari and need to setup the Safari extension
+            const url = apiUrl + '/api/api_key';
+            const res = await fetch(url, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-Sl-Allowcookies": true,
+              },
+              body: JSON.stringify({
+                device: "Safari extension",
+              }),
+            });
+
+            if (res.ok) {
+              const apiRes = await res.json();
+              const apiKey = apiRes.api_key;
+              await sendMessageToBackground("SAFARI_FINALIZE_EXTENSION_SETUP", apiKey);
+            }
           }
         } else if (event.data.tag === "EXTENSION_INSTALLED_QUERY") {
           const res = await sendMessageToBackground(
