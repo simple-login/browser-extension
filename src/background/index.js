@@ -24,6 +24,26 @@ async function handleGetAppSettings() {
   };
 }
 
+async function finalizeExtensionSetup(apiKey) {
+  if (!apiKey) {
+    return;
+  }
+
+  await SLStorage.set(SLStorage.SETTINGS.API_KEY, apiKey);
+
+  const currentTab = await browser.tabs.query({
+    active: true,
+    currentWindow: true,
+  });
+
+  const apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
+  const url = `${apiUrl}/onboarding/final`;
+  await browser.tabs.update(currentTab[0].id, {
+    url,
+  });
+}
+
+
 async function handleExtensionSetup() {
   const apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
 
@@ -42,21 +62,7 @@ async function handleExtensionSetup() {
   if (res.ok) {
     const apiRes = await res.json();
     const apiKey = apiRes.api_key;
-    if (apiKey) {
-      await SLStorage.set(SLStorage.SETTINGS.API_KEY, apiKey);
-
-      const currentTab = await browser.tabs.query({
-        active: true,
-        currentWindow: true,
-      });
-
-      const url = `${apiUrl}/onboarding/final`;
-      await browser.tabs.update(currentTab[0].id, {
-        url,
-      });
-    } else {
-      console.error("Received null API Key");
-    }
+    finalizeExtensionSetup(apiKey);
   } else {
     console.error("api error");
   }
@@ -121,9 +127,13 @@ browser.runtime.onMessage.addListener(async function (request, sender) {
   if (!messageAllowed) return;
 
   if (request.tag === "EXTENSION_SETUP") {
-    return await handleExtensionSetup();
+    // On Safari the background script won't set cookies properly in API calls (see https://bugs.webkit.org/show_bug.cgi?id=260676),
+    // so we will return the API URL to the content script which will make the API call with cookies properly set
+    return process.env.MAC ? await SLStorage.get(SLStorage.SETTINGS.API_URL) : await handleExtensionSetup();
   } else if (request.tag === "EXTENSION_INSTALLED_QUERY") {
     return handleExtensionInstalledQuery();
+  } else if (request.tag === "SAFARI_FINALIZE_EXTENSION_SETUP") {
+    return await finalizeExtensionSetup(request.data);
   }
 });
 
