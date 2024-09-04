@@ -43,7 +43,6 @@ async function finalizeExtensionSetup(apiKey) {
   });
 }
 
-
 async function handleExtensionSetup() {
   const apiUrl = await SLStorage.get(SLStorage.SETTINGS.API_URL);
 
@@ -129,7 +128,9 @@ browser.runtime.onMessage.addListener(async function (request, sender) {
   if (request.tag === "EXTENSION_SETUP") {
     // On Safari the background script won't set cookies properly in API calls (see https://bugs.webkit.org/show_bug.cgi?id=260676),
     // so we will return the API URL to the content script which will make the API call with cookies properly set
-    return process.env.MAC ? await SLStorage.get(SLStorage.SETTINGS.API_URL) : await handleExtensionSetup();
+    return process.env.MAC
+      ? await SLStorage.get(SLStorage.SETTINGS.API_URL)
+      : await handleExtensionSetup();
   } else if (request.tag === "EXTENSION_INSTALLED_QUERY") {
     return handleExtensionInstalledQuery();
   } else if (request.tag === "SAFARI_FINALIZE_EXTENSION_SETUP") {

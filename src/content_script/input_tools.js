@@ -266,7 +266,7 @@ if (!window._hasExecutedSlExtension) {
               return;
             }
             // else if apiUrl is defined, we are in Safari and need to setup the Safari extension
-            const url = apiUrl + '/api/api_key';
+            const url = apiUrl + "/api/api_key";
             const res = await fetch(url, {
               method: "POST",
               headers: {
@@ -281,7 +281,10 @@ if (!window._hasExecutedSlExtension) {
             if (res.ok) {
               const apiRes = await res.json();
               const apiKey = apiRes.api_key;
-              await sendMessageToBackground("SAFARI_FINALIZE_EXTENSION_SETUP", apiKey);
+              await sendMessageToBackground(
+                "SAFARI_FINALIZE_EXTENSION_SETUP",
+                apiKey
+              );
             }
           }
         } else if (event.data.tag === "EXTENSION_INSTALLED_QUERY") {
