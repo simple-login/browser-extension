@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.6] - 2024-09-04
+
+- Fix onboarding on Safari
+
 ## [3.0.1-3.0.4] - 2024-04-11
 
 - Automate firefox review assets
