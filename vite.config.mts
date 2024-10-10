@@ -34,7 +34,6 @@ export default defineConfig(({ mode }) => {
         input: {
           popup: 'index.html',
           background: 'src/extension/background.ts',
-          content: 'src/extension/content-script.ts',
           'content_script/input_tools': 'src/extension/input_tools.ts',
           'content_script/input_tools.css': 'src/extension/input_tools.css'
         },
