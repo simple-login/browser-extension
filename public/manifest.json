@@ -57,8 +57,8 @@
   },
   "content_scripts": [
     {
-      "js": ["content_script/input_tools.js"],
-      "css": ["content_script/input_tools.css"],
+      "js": ["assets/content_script/input_tools.js"],
+      "css": ["assets/content_script/input_tools.css"],
       "matches": ["http://*/*", "https://*/*"],
       "exclude_matches" : ["https://app.simplelogin.io/dashboard/*"],
       "run_at": "document_idle"
