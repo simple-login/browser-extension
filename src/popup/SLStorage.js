@@ -15,6 +15,14 @@ class SLStorage {
     EXTRA_ALLOWED_DOMAINS: [],
   };
 
+  static TYPES = {
+    apiUrl: "local",
+    apiKey: "local",
+    notAskingRate: "sync",
+    showSLButton: "sync",
+    SLButtonPosition: "sync",
+  };
+
   static DEFAULT_SETTINGS = {
     [SLStorage.SETTINGS.API_URL]: devConfig
       ? devConfig.DEFAULT_API_URL
@@ -29,12 +37,18 @@ class SLStorage {
       : [],
   };
 
+  static getType(key) {
+    return this.TYPES[key] || "local";
+  }
+
   static set(key, value) {
-    return browser.storage.sync.set({ [key]: value });
+    const type = this.getType(key);
+    return browser.storage[type].set({ [key]: value });
   }
 
   static async get(key) {
-    const data = await browser.storage.sync.get(key);
+    const type = this.getType(key);
+    const data = await browser.storage[type].get(key);
 
     if (data[key] === undefined || data[key] === null) {
       return SLStorage.DEFAULT_SETTINGS[key] || "";
@@ -44,10 +58,12 @@ class SLStorage {
   }
 
   static remove(key) {
-    return browser.storage.sync.remove(key);
+    const type = this.getType(key);
+    return browser.storage[type].remove(key);
   }
 
-  static clear() {
+  static async clear() {
+    await browser.storage.local.clear();
     return browser.storage.sync.clear();
   }
 
@@ -57,6 +73,15 @@ class SLStorage {
 
   static getTemporary(key) {
     return TEMP[key];
+  }
+
+  static async convertFromSyncToLocal(key) {
+    const data = await browser.storage.sync.get(key);
+    if (data[key]) {
+      await browser.storage.local
+        .set({ [key]: data[key] })
+        .then((_) => browser.storage.sync.remove(key));
+    }
   }
 }
 
