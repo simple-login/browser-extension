@@ -119,12 +119,12 @@ const config = {
             if (process.env.FIREFOX) {
               jsonContent.background = {
                 "scripts": ["background.js"]
-              }
+              };
             } else { // CHROME
               jsonContent.background = {
                 "service_worker": "background.js",
                 "type": "module"
-              }
+              };
             }
 
             if (process.env.LITE) {

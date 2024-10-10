@@ -460,7 +460,12 @@ export type GetApiKeyFromCookieReturn = {
 }
 
 export const usePostGetApiKeyFromCookie = ({
-  options = {},
+  options = {
+    headers: {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      'X-Sl-Allowcookies': true as any
+    }
+  },
   useFetchOptions,
   data,
   onError = API_ON_ERR.TOAST

@@ -1,5 +1,5 @@
 {
-  "name": "SimpleLogin:Receive & Send emails anonymously",
+  "name": "SimpleLogin by Proton: Secure Email Aliases",
   "short_name": "SimpleLogin",
   "description": "Easily create a different email for each website to hide your real email. Protect your inbox against spams, phishing, data breaches",
   "version": null,
@@ -37,7 +37,8 @@
 
   "browser_specific_settings": {
     "gecko": {
-      "id": "addon@simplelogin"
+      "id": "addon@simplelogin",
+      "strict_min_version": "109.0"
     }
   },
   "commands": {
@@ -53,5 +54,14 @@
       },
       "description": "Open the extension action menu"
     }
-  }
+  },
+  "content_scripts": [
+    {
+      "js": ["content_script/input_tools.js"],
+      "css": ["content_script/input_tools.css"],
+      "matches": ["http://*/*", "https://*/*"],
+      "exclude_matches" : ["https://app.simplelogin.io/dashboard/*"],
+      "run_at": "document_idle"
+    }
+  ]
 }
