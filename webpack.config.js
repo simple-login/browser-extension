@@ -158,7 +158,15 @@ const config = {
     }),
   ],
 };
+const loadDevConfig = () => {
+  if (fs.existsSync('./.dev.json')) {
+    return JSON.parse(fs.readFileSync('./.dev.json').toString());
+  } else {
+    return JSON.parse(fs.readFileSync('./.dev.sample.json').toString());
+  }
+};
 
+const devConfig = loadDevConfig();
 if (config.mode === 'development') {
   config.plugins = (config.plugins || []).concat([
     new webpack.DefinePlugin({

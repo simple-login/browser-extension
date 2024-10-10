@@ -1,0 +1,310 @@
+@import "./App-color.scss";
+@import "./App-scrollbar.scss";
+@import "./Theme.scss";
+
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/variables-dark";
+@import "bootstrap/scss/maps";
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/utilities";
+@import "bootstrap/scss/dropdown";
+@import "bootstrap/scss/forms";
+@import "bootstrap/scss/buttons";
+@import "bootstrap/scss/toasts";
+@import "bootstrap/scss/modal";
+@import "bootstrap/scss/utilities/api";
+@import "bootstrap/scss/helpers";
+
+body {
+  box-sizing: content-box !important;
+  width: 470px;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+input.form-control,
+select.form-control,
+textarea.form-control,
+.dropdown-menu.show {
+  color: var(--text-color);
+  background-color: var(--input-bg-color);
+  border-color: var(--input-border-color);
+}
+
+input.form-control:disabled,
+select.form-control:disabled,
+textarea.form-control:disabled {
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  border-color: var(--input-border-color);
+}
+
+input.form-control:focus,
+select.form-control:focus,
+textarea.form-control:focus {
+  color: var(--text-color);
+  background-color: var(--input-bg-focus);
+  border-color: var(--input-border-color);
+}
+
+.v--modal-box.v--modal.vue-dialog div,
+.v--modal-box.v--modal.vue-dialog button {
+  color: var(--text-color);
+  background-color: var(--input-bg-color);
+  border-color: var(--delimiter-color);
+}
+
+.header {
+  height: 45px;
+  width: 460px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+}
+
+.header .back {
+  cursor: pointer;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  height: 100vh;
+  width: 100vw;
+  min-height: 350px;
+  background-color: var(--overlay-background-color);
+}
+
+.overlay-content {
+  position: fixed;
+  z-index: 21;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.app {
+  width: 470px;
+  box-sizing: content-box !important;
+  overflow-y: hidden;
+}
+
+.app .content {
+  box-sizing: border-box;
+  margin-top: 45px;
+  padding-top: 15px;
+  padding-bottom: 40px;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.splash .logo {
+  width: 200px;
+}
+
+.splash .loading {
+  width: 30px;
+  padding-top: 20px;
+}
+
+.splash.overlay {
+  background-color: var(--background-color);
+}
+
+em {
+  font-style: normal;
+  background-color: #ffff00;
+}
+
+.small-text {
+  font-size: 12px;
+  font-weight: lighter;
+}
+
+.tooltip-inner {
+  max-width: 400px;
+}
+
+.card-rating {
+  border-radius: 8px;
+  border: 1px solid var(--brand-color);
+}
+
+/* list aliases */
+.vue-js-switch {
+  margin-bottom: 0;
+}
+
+.list-item-alias .disabled {
+  opacity: 0.7;
+}
+
+.list-item-email {
+  margin-right: 30px !important;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.list-item-email > a {
+  white-space: nowrap;
+}
+
+.list-item-email .email-sub {
+  font-size: 12px;
+}
+
+.list-item-email-fade {
+  right: 0;
+  width: 30px;
+  height: 100%;
+  background: linear-gradient(to right, transparent, var(--bg-color));
+  top: 0;
+  position: absolute;
+}
+
+.list-item-alias .alias-note-preview {
+  font-size: 12px;
+  max-height: calc(12px * 1.5 * 3); /* font-size * line-height */
+  overflow-y: hidden;
+}
+
+.header {
+  .actions-container {
+    position: absolute;
+    right: 0.5rem;
+  }
+
+  .header-button {
+    height: 20px;
+    margin-top: 2px;
+    margin-left: 10px;
+    margin-right: 7px;
+    color: var(--brand-color);
+    cursor: pointer;
+  }
+}
+
+.app-header-menu {
+  left: auto !important;
+  float: right !important;
+  right: 10px;
+  margin-top: 5px !important;
+}
+
+/* toasted: white close button */
+.toasted.toasted-primary > .action.ripple {
+  color: white !important;
+}
+
+/* button img */
+.btn-svg {
+  cursor: pointer;
+  padding: 5px;
+  display: inline;
+}
+
+/* send btn*/
+.btn-send {
+  width: 14px;
+  height: 14px;
+  color: var(--brand-color);
+}
+
+/* more options */
+.btn-delete:hover,
+.btn-svg:hover {
+  background-color: var(--delete-button-hover-color);
+}
+
+.btn-delete {
+  float: right;
+}
+
+.btn-delete > img {
+  vertical-align: unset;
+  height: 14px;
+}
+
+.more-options {
+  margin-top: 10px;
+}
+
+.cursor {
+  cursor: pointer;
+}
+
+span.link {
+  color: var(--brand-color);
+}
+
+.more-options > .action {
+  margin-top: 10px;
+  min-height: 25px;
+}
+
+.more-options > label {
+  margin-bottom: 0;
+  font-size: 12px;
+}
+
+/* BETA badge */
+.beta-badge {
+  padding: 0.1em 0.4em;
+  font-size: 0.65em;
+  margin-left: 1em;
+  border: 0.7px solid var(--brand-color);
+  display: inline-block;
+  color: var(--brand-color);
+}
+
+/* App Settings */
+table.settings-list > tr {
+  border-bottom: 1px solid var(--delimiter-color);
+}
+
+table.settings-list > tr > td {
+  vertical-align: top;
+  padding: 6px;
+}
+
+table.settings-list {
+  margin-bottom: 3em;
+
+  tr.disabled {
+    opacity: 0.7;
+    pointer-events: none;
+  }
+}
+
+/* Quick fix for Firefox Overflow Menu */
+.app.ff-overflow-menu {
+  width: auto;
+  font-size: 88%;
+
+  .content {
+    max-height: 500px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+
+  textarea,
+  input {
+    font-size: 88%;
+  }
+
+  .header {
+    width: 100%;
+
+    .dashboard-btn {
+      height: 20px;
+      margin-top: 2px;
+      padding: 0 0.5rem !important;
+    }
+  }
+}
