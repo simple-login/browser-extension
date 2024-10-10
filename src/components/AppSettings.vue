@@ -18,13 +18,9 @@
       <table class="settings-list">
         <tr>
           <td>
-            <toggle-button
-              :value="showSLButton"
-              sync
-              color="#b02a8f"
-              :width="30"
-              :height="18"
-              @change="handleToggleSLButton()"
+            <ToggleButton
+              :model-value="showSLButton"
+              @update:model-value="handleToggleSLButton()"
             />
           </td>
           <td>
@@ -43,13 +39,9 @@
 
         <tr v-show="showSLButton">
           <td>
-            <toggle-button
-              :value="positionSLButton === 'right-outside'"
-              sync
-              color="#b02a8f"
-              :width="30"
-              :height="18"
-              @change="handleToggleSLButtonOutside()"
+            <ToggleButton
+              :model-value="positionSLButton === 'right-outside'"
+              @update:model-value="handleToggleSLButtonOutside()"
             />
           </td>
           <td>

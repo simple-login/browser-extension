@@ -126,12 +126,9 @@
                   <div class="list-item-email-fade" />
                 </div>
                 <div style="white-space: nowrap">
-                  <toggle-button
-                    :value="alias.enabled"
-                    color="#b02a8f"
-                    :width="30"
-                    :height="18"
-                    @change="toggleAlias(alias)"
+                  <ToggleButton
+                    :model-value="alias.enabled"
+                    @update:model-value="toggleAlias(alias)"
                   />
 
                   <div class="btn-svg btn-send" @click="handleReverseAliasClick(alias)">

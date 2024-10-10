@@ -38,7 +38,18 @@ export default defineConfig(({ mode }) => {
           'content_script/input_tools.css': 'src/extension/input_tools.css'
         },
         output: {
-          entryFileNames: 'assets/[name].js',
+          entryFileNames: (chunkInfo) => {
+            if (chunkInfo.name === 'background') {
+              return 'background/[name].js' // output to dist/background
+            }
+            if (chunkInfo.name === 'content') {
+              return 'content/[name].js' // output to dist/content
+            }
+            if (chunkInfo.name === 'popup') {
+              return 'popup/[name].js' // output to dist/popup
+            }
+            return 'assets/[name].[hash].js' // default for other JS assets
+          },
           chunkFileNames: 'assets/[name].js',
           assetFileNames: 'assets/[name].[ext]'
         }

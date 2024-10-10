@@ -100,7 +100,7 @@ const password = ref('')
 const mfaKey = ref('')
 const mfaCode = ref('')
 const isShowMfa = ref(false)
-const loginWithProtonEnabled = features.loginWithProtonEnabled
+const { loginWithProtonEnabled } = features
 const { apiUrl } = useApiUrl()
 
 const sayHiToast = (userName: string) => {
