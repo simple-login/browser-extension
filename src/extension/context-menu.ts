@@ -16,11 +16,9 @@ const displayAndCopy = (alias: string, error: unknown) => {
     textArea.focus()
     textArea.select()
 
-    try {
-      document.execCommand('copy')
-    } catch (err) {
+    navigator.clipboard.writeText('Your text to copy').catch(() => {
       /** Empty */
-    }
+    })
 
     document.body.removeChild(textArea)
   }

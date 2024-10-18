@@ -70,7 +70,7 @@ const handleExtensionSetup = async () => {
  */
 const isMessageAllowed = async (url: string) => {
   const requestUrl = new URL(url)
-  const apiUrlValue = await SLStorage.getItem(SLStorage.SETTINGS.API_URL)
+  const apiUrlValue = (await SLStorage.getItem(SLStorage.SETTINGS.API_URL)) as string
   const apiUrl = new URL(apiUrlValue)
 
   const allowedSources = [
@@ -108,7 +108,8 @@ const handleExtensionInstalledQuery = () => {
 /**
  * Register onMessage listener
  */
-runtime.onMessage.addListener(async (request, sender) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+runtime.onMessage.addListener(async (request: any, sender) => {
   // Check messages allowed from everywhere
   if (request.tag === 'NEW_RANDOM_ALIAS') {
     return await handleNewRandomAlias(request.currentUrl)
@@ -123,7 +124,7 @@ runtime.onMessage.addListener(async (request, sender) => {
   if (request.tag === 'EXTENSION_SETUP') {
     // On Safari the background script won't set cookies properly in API calls (see https://bugs.webkit.org/show_bug.cgi?id=260676),
     // so we will return the API URL to the content script which will make the API call with cookies properly set
-    return process.env.MAC
+    return import.meta.env.VITE_MAC
       ? await SLStorage.getItem(SLStorage.SETTINGS.API_URL)
       : await handleExtensionSetup()
   } else if (request.tag === 'EXTENSION_INSTALLED_QUERY') {

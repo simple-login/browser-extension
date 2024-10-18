@@ -14,6 +14,9 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+
       - name: Install dependencies and check tag format
         run: |
           sudo apt update && sudo apt install -y jq
@@ -66,7 +69,7 @@ jobs:
         run: echo "${{ env.EXTENSION_VERSION }}" > artifacts/release-version
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         with:
           name: artifacts
           path: artifacts
@@ -85,17 +88,15 @@ jobs:
         run: echo "Starting build process for variant = ${{ matrix.variant }}"
 
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
-      - name: Install NodeJS
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
 
       - name: Get release download URL
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v4
         with:
           name: artifacts
           path: artifacts
@@ -118,59 +119,59 @@ jobs:
         env:
           ENABLE_LOGIN_WITH_PROTON: true
         run: |
-          npm run generate:buildconfig
+          bun run generate:buildConfig
 
       - name: Build lite version
         if: matrix.variant == 'lite'
         shell: bash
         run: |
-          npm install
-          npm run build:lite
-          SUFFIX=lite npm run build-zip
+          bun install
+          bun run build:lite
+          SUFFIX=lite bun run generate:zip
 
       - name: Build beta version for Chromium
         if: matrix.variant == 'beta'
         shell: bash
         run: |
-          npm install
-          npm run build:beta
-          npm run build-zip
+          bun install
+          bun run build:beta
+          bun run generate:zip
 
       - name: Build beta version for Firefox
         if: matrix.variant == 'beta-firefox'
         shell: bash
         run: |
-          npm install
-          npm run build:firefox:beta
+          bun install
+          bun run build:firefox:beta
           
           # dist-zip/simplelogin-extension-beta-firefox-v... can be submitted to firefox
-          SUFFIX=firefox npm run build-zip
+          SUFFIX=firefox bun run generate:zip
           
       - name: Build production version for Firefox
         if: matrix.variant == 'beta-firefox'
         shell: bash
         run: |
-          npm install
-          npm run build:firefox
+          bun install
+          bun run build:firefox
           
           # dist-zip/simplelogin-extension-beta-firefox-v... can be submitted to firefox
-          SUFFIX=firefox npm run build-zip
+          SUFFIX=firefox bun run generate:zip
           
       - name: Build production version for Chromium
         if: matrix.variant == 'full'
         shell: bash
         run: |
-          npm install
-          npm run build
-          npm run build-zip
+          bun install
+          bun run build
+          bun run generate:zip
 
       - name: Build Mac version
         if: matrix.variant == 'mac'
         shell: bash
         run: |
-          npm install
-          npm run build:mac
-          SUFFIX=mac npm run build-zip
+          bun install
+          bun run build:mac
+          SUFFIX=mac bun run generate:zip
 
       - name: Package extension
         run: |
@@ -196,7 +197,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get artifacts
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v4
         with:
           name: artifacts
           path: artifacts

@@ -88,7 +88,7 @@ const canBack = computed(() => hasMovedRoutes?.value || false)
 
 const { apiUrl, apiKey, getApiKey, getApiUrl } = useApiUrl()
 const showDropdownMenu = ref(false)
-const isBeta = ref(process.env.BETA)
+const isBeta = !!import.meta.env.VITE_BETA
 const canShowSettingsButton = ref(true)
 const reportBugUri = ref('')
 

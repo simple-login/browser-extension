@@ -153,7 +153,7 @@ const handleLogout = async () => {
   router.push('/login')
   if (hasMovedRoutes !== undefined) hasMovedRoutes.value = false
 
-  if (process.env.MAC) {
+  if (import.meta.env.VITE_MAC) {
     console.log('send log out event to host app')
     await browserRuntime.sendNativeMessage(
       'application.id',
@@ -171,7 +171,7 @@ const setMailToUri = async () => {
   reportURISLButton.value = `mailto:extension@simplelogin.io?subject=${subject}&body=${body}`
 }
 const upgrade = async () => {
-  if (process.env.MAC) {
+  if (import.meta.env.VITE_MAC) {
     try {
       console.log('send upgrade event to host app')
       await browserRuntime.sendNativeMessage(

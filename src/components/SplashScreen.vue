@@ -24,12 +24,14 @@ defineOptions({
 
 const router = useRouter()
 
-const { apiKey } = useApiUrl()
+const { apiKey, getApiKey } = useApiUrl({
+  immediate: false
+})
 const show = ref(false)
 
 let timeoutId: null | ReturnType<typeof setTimeout> = null
 
-const { post, data } = usePostGetApiKeyFromCookie({
+const { execute, data } = usePostGetApiKeyFromCookie({
   onError: API_ON_ERR.IGNORE,
   data: {
     device: getDeviceName()
@@ -47,18 +49,24 @@ onMounted(async () => {
   timeoutId = setTimeout(() => {
     show.value = true
   }, 500)
+  await getApiKey()
 
   if (apiKey.value !== '') {
+    console.log('to main')
     router.push('/main')
   } else {
-    await post()
+    console.log('before post')
+    await execute()
+    console.log('before post')
     apiKey.value = data.value?.api_key || ''
     if (apiKey.value) {
       await SLStorage.setItem(SLStorage.SETTINGS.API_KEY, apiKey.value)
       EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED)
 
+      console.log('to main')
       router.push('/main')
     } else {
+      console.log('to login')
       router.push('/login')
     }
   }

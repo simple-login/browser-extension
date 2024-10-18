@@ -1,6 +1,7 @@
 <template>
   <BFormCheckbox
     v-model="modelValue"
+    switch
     :style="{
       width: 30,
       height: 18,

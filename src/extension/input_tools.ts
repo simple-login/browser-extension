@@ -1,5 +1,4 @@
-import { runtime } from 'webextension-polyfill'
-import { apiKeyRoute } from '../utils/api'
+import type { runtime } from 'webextension-polyfill'
 
 if (!window._hasExecutedSlExtension) {
   window._hasExecutedSlExtension = true
@@ -9,10 +8,16 @@ if (!window._hasExecutedSlExtension) {
    * @param {string} tag
    * @param {object} data
    */
-  const sendMessageToBackground = (tag, data: Record<string, unknown> | null = null) => {
+  const sendMessageToBackground = (tag: string, data = null) => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    const sendMessage = (window.chrome?.sendMessage ||
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      window.browserSendMessage) as (typeof runtime)['sendMessage']
     return new Promise((resolve) => {
       try {
-        runtime.sendMessage(
+        sendMessage(
           {
             tag,
             data
@@ -256,13 +261,13 @@ if (!window._hasExecutedSlExtension) {
               return
             }
             // else if apiUrl is defined, we are in Safari and need to setup the Safari extension
-            const url = `${apiUrl}${apiKeyRoute}`
+            const url = `${apiUrl}/api/api_key`
             const res = await fetch(url, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                'X-Sl-Allowcookies': true as any
+                'X-Sl-Allowcookies': true
               },
               body: JSON.stringify({
                 device: 'Safari extension'

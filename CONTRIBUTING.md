@@ -1,4 +1,4 @@
-# DEVELOPMENT
+# CONTRIBUTING
 
 This document contains an overview on how the extension is organized, which parts does it have and how does it work.
 
@@ -9,14 +9,13 @@ The extension consists of 2 main screens:
 - main screen: displays email alias recommendation, alias creation and existing alias.
 - new alias screen: when a new alias is created, user is redirected to this screen so they can copy it.
 
-
 ## How to change the domain where the extension is connecting to
 
 In order to change the backend URL, you will need to:
 
 1. Copy the `.dev.sample.json` file into a `.dev.json` file.
 2. Edit the `DEFAULT_API_URL` parameter and enter the URL you want to use.
-3. You may need to run `npm start` again in order for the changes to take effect.
+3. You may need to run `bun start` again in order for the changes to take effect.
 
 ## How does the extension setup work
 
@@ -39,7 +38,6 @@ Here you have a full definition of the flow:
       2. The page will send the message for performing the extension setup.
       3. Once the setup is done, they will be redirected to the `/onboarding/final` page.
 2. Once the user reaches the `/onboarding/final` page, the extension will be correctly set up, the user will be able to use it, and the page will contain the extension version at the bottom of the page
-
 
 ## Add custom allowed domains
 

@@ -80,16 +80,31 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import SLStorage from '../utils/SLStorage'
 import EventManager from '../utils/EventManager'
 import { useToast } from '../composables/useToast'
 import { getDeviceName } from '../utils'
-import { features } from '../buildConfig.json'
 import { useRouter } from 'vue-router'
 import { API_ON_ERR, usePostLogin, usePostMFA } from '../composables/useApi'
 import { useApiUrl } from '../composables/useApiUrl'
 import LongArrowAltUpIcon from '~icons/fa-solid/long-arrow-alt-up'
+
+const loginWithProtonEnabled = ref(false)
+
+onMounted(async () => {
+  const fetchLoginWithProton = async () => {
+    try {
+      const res = await fetch('/buildConfig.json')
+      if (!res.ok) throw new Error('Failed to load config')
+      const data = await res.json()
+      loginWithProtonEnabled.value = data.features.loginWithProtonEnabled
+    } catch (error) {
+      console.error('Failed to load config', error)
+    }
+  }
+  await fetchLoginWithProton()
+})
 
 const router = useRouter()
 
@@ -100,7 +115,6 @@ const password = ref('')
 const mfaKey = ref('')
 const mfaCode = ref('')
 const isShowMfa = ref(false)
-const { loginWithProtonEnabled } = features
 const { apiUrl } = useApiUrl()
 
 const sayHiToast = (userName: string) => {

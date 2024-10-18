@@ -17,9 +17,8 @@ class SLStorage {
   }
 
   static DEFAULT_SETTINGS = {
-    [SLStorage.SETTINGS.API_URL]: devConfig
-      ? devConfig.DEFAULT_API_URL
-      : 'https://app.simplelogin.io',
+    [SLStorage.SETTINGS.API_URL]:
+      import.meta.env.VITE_DEFAULT_API_URL || 'https://app.simplelogin.io',
     [SLStorage.SETTINGS.API_KEY]: '',
     [SLStorage.SETTINGS.NOT_ASKING_RATE]: false,
     [SLStorage.SETTINGS.SHOW_SL_BUTTON]: true,
@@ -28,7 +27,9 @@ class SLStorage {
       | typeof THEME_SYSTEM
       | typeof THEME_DARK
       | typeof THEME_LIGHT,
-    [SLStorage.SETTINGS.EXTRA_ALLOWED_DOMAINS]: devConfig ? devConfig.EXTRA_ALLOWED_DOMAINS : []
+    [SLStorage.SETTINGS.EXTRA_ALLOWED_DOMAINS]: (
+      import.meta.env.VITE_EXTRA_ALLOWED_DOMAINS || ''
+    ).split(',')
   }
 
   static setItem(key: (typeof this.SETTINGS)[keyof typeof this.SETTINGS], value: unknown) {

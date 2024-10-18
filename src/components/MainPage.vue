@@ -233,7 +233,7 @@ onMounted(async () => {
 
     await getUserOptions()
 
-    if (apiKey.value && process.env.MAC) {
+    if (apiKey.value && import.meta.env.VITE_MAC) {
       console.log('send api key to host app')
       await browserRuntime.sendNativeMessage(
         'application.id',
@@ -466,7 +466,7 @@ const handleAliasChanged = (event: { data: Alias }) => {
 }
 
 const upgrade = async () => {
-  if (process.env.MAC) {
+  if (import.meta.env.VITE_MAC) {
     try {
       console.log('send upgrade event to host app')
       await browserRuntime.sendNativeMessage(
