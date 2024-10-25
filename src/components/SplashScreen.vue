@@ -1,12 +1,8 @@
 <template>
-  <div v-if="show" style="height: 400px">
-    <div class="splash overlay">
-      <div class="overlay-content">
-        <img class="logo" src="/images/horizontal-logo.svg" /><br />
-        <img class="loading" src="/images/loading.svg" />
-      </div>
-    </div>
-  </div>
+  <SplashScreenAbstract v-if="show">
+    <img class="logo" src="/images/horizontal-logo.svg" /><br />
+    <img class="loading" src="/images/loading.svg" />
+  </SplashScreenAbstract>
 </template>
 
 <script setup lang="ts">
@@ -17,6 +13,7 @@ import { getDeviceName } from '../utils'
 import { useRouter } from 'vue-router'
 import { API_ON_ERR, usePostGetApiKeyFromCookie } from '../composables/useApi'
 import { useApiUrl } from '../composables/useApiUrl'
+import SplashScreenAbstract from './SplashScreenAbstract.vue'
 
 defineOptions({
   name: 'SlLoading'
@@ -24,7 +21,7 @@ defineOptions({
 
 const router = useRouter()
 
-const { apiKey, getApiKey } = useApiUrl({
+const { apiKey, getApiKey } = await useApiUrl({
   immediate: false
 })
 const show = ref(false)

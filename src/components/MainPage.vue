@@ -1,7 +1,5 @@
 <template>
   <div ref="contentElem" class="content">
-    <v-dialog />
-
     <!-- Main Page -->
     <div class="container">
       <div v-if="recommendation.show" class="text-center">
@@ -206,7 +204,7 @@ const router = useRouter()
 
 const ALIAS_PREFIX_REGEX = /^[0-9a-z-_.]+$/
 
-const { apiUrl, apiKey } = useApiUrl()
+const { apiUrl, apiKey } = await useApiUrl()
 
 // variables for creating alias
 // hostName obtained from chrome tabs query
@@ -271,11 +269,7 @@ watch(getAliasOptions.data, (aliasOptions) => {
 const { data: mailboxes, execute: executeMailboxes } = useGetMailboxes()
 
 // get alias options and mailboxes
-const getUserOptions = async () => {
-  await Promise.all([getAliasOptions.execute(), executeMailboxes()])
-
-  await resetAndLoadAlias()
-}
+const getUserOptions = () => Promise.all([getAliasOptions.execute(), executeMailboxes()])
 
 const getUserInfo = useGetUserInfo({
   useFetchOptions: {
@@ -302,12 +296,20 @@ const postGetAliases = usePostGetAliases({
 })
 const isFetchingAlias = computed(() => postGetAliases.isFetching.value)
 
+let aliasesAppearsEnd = 0
 const loadAlias = async () => {
   await postGetAliases.execute()
+  if (
+    Array.isArray(postGetAliases.data.value?.aliases) &&
+    postGetAliases.data.value?.aliases.length === 0
+  ) {
+    aliasesAppearsEnd += 1
+  }
   aliasArray.value = mergeAliases(aliasArray.value, postGetAliases.data.value?.aliases || [])
 }
 
 const resetAndLoadAlias = async () => {
+  aliasesAppearsEnd = 0
   currentPage.value = 0
   aliasArray.value = []
   await loadAlias()
@@ -320,7 +322,7 @@ const infiniteList = useInfiniteScroll(
     currentPage.value += 1
     await loadAlias()
   },
-  { distance: 10 }
+  { distance: 500, canLoadMore: () => aliasesAppearsEnd <= 5 }
 )
 
 const resetSearch = async () => {

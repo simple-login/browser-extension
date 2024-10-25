@@ -1,7 +1,14 @@
 <template>
   <div class="app" :class="{ 'ff-overflow-menu': isInsideOverflowMenu }">
-    <SlHeader :use-compact-layout="isInsideOverflowMenu" />
-    <RouterView />
+    <Suspense>
+      <SlHeader :use-compact-layout="isInsideOverflowMenu" />
+    </Suspense>
+    <Suspense>
+      <RouterView />
+      <template #fallback>
+        <SplashScreenAbstract />
+      </template>
+    </Suspense>
     <BToastOrchestrator />
     <BModalOrchestrator />
   </div>
@@ -16,6 +23,7 @@ import { useRouter } from 'vue-router'
 import { useColorMode } from '@vueuse/core'
 import { BToastOrchestrator, BModalOrchestrator } from 'bootstrap-vue-next'
 import { initService as initApiService } from './utils/api'
+import SplashScreenAbstract from './components/SplashScreenAbstract.vue'
 
 const router = useRouter()
 const color = useColorMode({})

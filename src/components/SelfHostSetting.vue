@@ -28,7 +28,7 @@ import { useApiUrl } from '../composables/useApiUrl'
 
 const toast = useToast()
 
-const { apiUrl } = useApiUrl()
+const { apiUrl } = await useApiUrl()
 
 const saveApiUrl = async () => {
   // remove last slash

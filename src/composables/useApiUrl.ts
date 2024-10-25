@@ -1,7 +1,7 @@
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import SLStorage from '../utils/SLStorage'
 
-export const useApiUrl = (opts: { immediate?: boolean } = { immediate: true }) => {
+export const useApiUrl = async (opts: { immediate?: boolean } = { immediate: true }) => {
   const apiUrl = ref('')
   const apiUrlLoading = ref(false)
   const apiKey = ref('')
@@ -10,7 +10,9 @@ export const useApiUrl = (opts: { immediate?: boolean } = { immediate: true }) =
   const getApiUrl = async () => {
     try {
       apiUrlLoading.value = true
-      return await SLStorage.getItem(SLStorage.SETTINGS.API_URL)
+      const resp = await SLStorage.getItem(SLStorage.SETTINGS.API_URL)
+      apiUrl.value = resp
+      return resp
     } finally {
       apiUrlLoading.value = false
     }
@@ -18,18 +20,23 @@ export const useApiUrl = (opts: { immediate?: boolean } = { immediate: true }) =
   const getApiKey = async () => {
     try {
       apiKeyLoading.value = true
-      return await SLStorage.getItem(SLStorage.SETTINGS.API_KEY)
+      const resp = await SLStorage.getItem(SLStorage.SETTINGS.API_KEY)
+      apiKey.value = resp
+      return resp
     } finally {
       apiKeyLoading.value = false
     }
   }
 
-  onMounted(async () => {
+  const fetchData = async () => {
     if (opts.immediate) {
-      apiUrl.value = await getApiUrl()
-      apiKey.value = await getApiKey()
+      await Promise.all([getApiUrl(), getApiKey()])
     }
-  })
+  }
 
-  return { apiUrl, apiKey, apiUrlLoading, apiKeyLoading, getApiUrl, getApiKey }
+  if (opts.immediate) {
+    await fetchData()
+  }
+
+  return { apiUrl, apiKey, apiUrlLoading, apiKeyLoading, getApiUrl, getApiKey, fetchData }
 }

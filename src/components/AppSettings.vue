@@ -110,7 +110,7 @@ const positionSLButton = ref('right-inside')
 const reportURISLButton = ref('')
 const extension_version = ref('development')
 const theme = ref<Theme | null>(null)
-const { apiUrl } = useApiUrl()
+const { apiUrl } = await useApiUrl()
 
 onMounted(async () => {
   showSLButton.value = await SLStorage.getItem(SLStorage.SETTINGS.SHOW_SL_BUTTON)

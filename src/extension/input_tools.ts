@@ -8,29 +8,62 @@ if (!window._hasExecutedSlExtension) {
    * @param {string} tag
    * @param {object} data
    */
-  const sendMessageToBackground = (tag: string, data = null) => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    const sendMessage = (window.chrome?.sendMessage ||
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
-      window.browserSendMessage) as (typeof runtime)['sendMessage']
-    return new Promise((resolve) => {
-      try {
-        sendMessage(
-          {
-            tag,
-            data
-          },
-          (response) => {
-            resolve(response)
-          }
+  const sendMessageToBackground = async (tag: string, data: object | null = null) => {
+    const sendMessage = ((window &&
+    'chrome' in window &&
+    typeof window.chrome === 'object' &&
+    window.chrome !== null &&
+    'runtime' in window.chrome &&
+    typeof window.chrome.runtime === 'object' &&
+    window.chrome.runtime !== null &&
+    'sendMessage' in window.chrome.runtime
+      ? window.chrome.runtime.sendMessage
+      : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        typeof browser !== 'undefined' &&
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-expect-error
+          typeof browser === 'object' &&
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-expect-error
+          browser !== null &&
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-expect-error
+          'runtime' in browser &&
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-expect-error
+          typeof browser.runtime === 'object' &&
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-expect-error
+          browser.runtime !== null &&
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-expect-error
+          'sendMessage' in browser.runtime
+        ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-expect-error
+          browser.runtime.sendMessage
+        : null) || null) as (typeof runtime)['sendMessage'] | null
+
+    try {
+      if (!sendMessage) {
+        const msg = 'sendMessage is not available'
+        console.error(
+          msg,
+          window,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-expect-error
+          typeof browser !== 'undefined' ? browser : undefined
         )
-      } catch (e) {
-        // Extension context invalidated.
-        console.error(e)
+        throw new Error(msg)
       }
-    })
+      return await sendMessage({
+        tag,
+        data
+      })
+    } catch (e) {
+      // Extension context invalidated.
+      console.error('extension context', e)
+    }
   }
 
   const slButtonLogic = async () => {

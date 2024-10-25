@@ -115,7 +115,7 @@ const password = ref('')
 const mfaKey = ref('')
 const mfaCode = ref('')
 const isShowMfa = ref(false)
-const { apiUrl } = useApiUrl()
+const { apiUrl } = await useApiUrl()
 
 const sayHiToast = (userName: string) => {
   return toast.success({ message: `Hi ${userName}!` })

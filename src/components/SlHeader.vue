@@ -86,17 +86,14 @@ const router = useRouter()
 const hasMovedRoutes = inject(hasMovedRouterKey)
 const canBack = computed(() => hasMovedRoutes?.value || false)
 
-const { apiUrl, apiKey, getApiKey, getApiUrl } = useApiUrl()
+const { apiUrl, apiKey, fetchData: fetchApiData } = await useApiUrl()
 const showDropdownMenu = ref(false)
 const isBeta = !!import.meta.env.VITE_BETA
 const canShowSettingsButton = ref(true)
 const reportBugUri = ref('')
 
 onMounted(async () => {
-  EventManager.addListener(EventManager.EVENT.SETTINGS_CHANGED, async () => {
-    apiKey.value = await getApiKey()
-    apiUrl.value = await getApiUrl()
-  })
+  EventManager.addListener(EventManager.EVENT.SETTINGS_CHANGED, fetchApiData)
 
   setReportBugUri()
 })

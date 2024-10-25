@@ -17,6 +17,7 @@ const useFetch = createFetch({
   options: {
     immediate: false,
     async beforeFetch(ctx) {
+      ctx.url = `${SETTINGS.apiUrl}${ctx.url}`
       if (!SETTINGS.apiKey) {
         await reloadSettings()
       }
@@ -103,7 +104,9 @@ export const useGetUserInfo = ({
       return ctx
     },
     ...useFetchOptions
-  }).get()
+  })
+    .get()
+    .json()
 
 export const useGetLogout = ({
   options = {},
@@ -121,7 +124,9 @@ export const useGetLogout = ({
       return ctx
     },
     ...useFetchOptions
-  }).get()
+  })
+    .get()
+    .json()
 
 export type LoginReturn = {
   name: string
@@ -153,7 +158,9 @@ export const usePostLogin = ({
     },
     immediate: false,
     ...useFetchOptions
-  }).post(data)
+  })
+    .post(data)
+    .json()
 
 export type MFAReturn = {
   name: string
@@ -183,7 +190,9 @@ export const usePostMFA = ({
     },
     immediate: false,
     ...useFetchOptions
-  }).post(data)
+  })
+    .post(data)
+    .json()
 
 export type UseGetAliasOptionsReturn = {
   recommendation:
@@ -217,7 +226,9 @@ export const useGetAliasOptions = ({
       },
       ...useFetchOptions
     }
-  ).get()
+  )
+    .get()
+    .json()
 
 export type UseGetAliasReturn = Mailbox[]
 
@@ -236,7 +247,9 @@ export const useGetMailboxes = ({
       return ctx
     },
     ...useFetchOptions
-  }).get()
+  })
+    .get()
+    .json()
 
 export type UsePostGetAliasesReturn = {
   aliases: Alias[]
@@ -267,7 +280,9 @@ export const usePostGetAliases = ({
       },
       ...useFetchOptions
     }
-  ).post(data)
+  )
+    .post(data)
+    .json()
 
 export type UsePostNewAliasReturn = {
   error?: unknown
@@ -301,7 +316,9 @@ export const usePostNewAlias = ({
       },
       ...useFetchOptions
     }
-  ).post(data)
+  )
+    .post(data)
+    .json()
 
 export type UsePostNewRandomAliasReturn = {
   error?: unknown
@@ -334,7 +351,9 @@ export const usePostNewRandomAlias = ({
       },
       ...useFetchOptions
     }
-  ).post(data)
+  )
+    .post(data)
+    .json()
 
 export type UsePostToggleAliasReturn = {
   enabled: boolean
@@ -362,7 +381,9 @@ export const usePostToggleAlias = ({
       },
       ...useFetchOptions
     }
-  ).post()
+  )
+    .post()
+    .json()
 
 export const usePutEditAlias = ({
   aliasId,
@@ -395,7 +416,9 @@ export const usePutEditAlias = ({
       },
       ...useFetchOptions
     }
-  ).put(data)
+  )
+    .put(data)
+    .json()
 
 export const useDeleteAlias = ({
   aliasId,
@@ -419,7 +442,9 @@ export const useDeleteAlias = ({
       },
       ...useFetchOptions
     }
-  ).delete()
+  )
+    .delete()
+    .json()
 
 export type CreateReverseAliasReturn = {
   contact: string
@@ -453,7 +478,9 @@ export const usePostCreateReverseAlias = ({
       },
       ...useFetchOptions
     }
-  ).post(data)
+  )
+    .post(data)
+    .json()
 
 export type GetApiKeyFromCookieReturn = {
   api_key: string
@@ -484,4 +511,6 @@ export const usePostGetApiKeyFromCookie = ({
     },
     immediate: false,
     ...useFetchOptions
-  }).post(data)
+  })
+    .post(data)
+    .json()

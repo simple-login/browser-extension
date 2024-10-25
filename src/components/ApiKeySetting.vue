@@ -52,7 +52,7 @@ const router = useRouter()
 const hasMovedRoutes = inject(hasMovedRouterKey)
 
 const apiKey = ref('')
-const { apiUrl } = useApiUrl()
+const { apiUrl } = await useApiUrl()
 
 const { execute, data } = useGetUserInfo({
   useFetchOptions: {

@@ -3,24 +3,14 @@ import { handleNewRandomAlias } from './create-alias'
 import { scripting, type Menus, type Tabs } from 'webextension-polyfill'
 
 const displayAndCopy = (alias: string, error: unknown) => {
-  const copyTextToClipboard = (text: string) => {
+  const copyTextToClipboard = async (text: string) => {
     if (!text) return
-    const textArea = document.createElement('textarea')
-    textArea.value = text
 
-    textArea.style.top = '0'
-    textArea.style.left = '0'
-    textArea.style.position = 'fixed'
-
-    document.body.appendChild(textArea)
-    textArea.focus()
-    textArea.select()
-
-    navigator.clipboard.writeText('Your text to copy').catch(() => {
+    try {
+      await navigator.clipboard.writeText(text)
+    } catch {
       /** Empty */
-    })
-
-    document.body.removeChild(textArea)
+    }
   }
 
   const showSLDialog = (message: unknown) => {
