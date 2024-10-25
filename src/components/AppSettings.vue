@@ -147,7 +147,7 @@ const useLogout = useGetLogout({
 })
 
 const handleLogout = async () => {
-  await useLogout.get()
+  await useLogout.execute()
   await SLStorage.removeItem(SLStorage.SETTINGS.API_KEY)
   EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED)
   router.push('/login')

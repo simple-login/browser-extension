@@ -195,7 +195,7 @@ const deleteAliasFetch = useDeleteAlias({
 })
 
 const deleteAlias = async () => {
-  await deleteAliasFetch.delete()
+  await deleteAliasFetch.execute()
   emit('deleted', {
     data: props.alias
   })
@@ -225,7 +225,7 @@ const editAliasFetch = usePutEditAlias({
 const loading = computed(() => deleteAliasFetch.isFetching.value || editAliasFetch.isFetching.value)
 
 const handleClickSave = async () => {
-  await editAliasFetch.put()
+  await editAliasFetch.execute()
   toast.success({ message: 'Updated alias' })
   emit('changed', {
     data: { ...moreOptions.value, id: props.alias.id }

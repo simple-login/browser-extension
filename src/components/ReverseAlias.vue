@@ -67,7 +67,7 @@
           v-if="!createdReverseAlias"
           class="btn btn-sm btn-primary"
           :disabled="loading || !receiverEmail"
-          @click="createReverseAlias"
+          @click="createReverseAlias()"
         >
           Create a reverse-alias
         </button>
@@ -109,7 +109,7 @@ const clipboardErrorHandler = (value: unknown) => {
 }
 
 const {
-  post: createReverseAlias,
+  execute: createReverseAlias,
   isFetching: loading,
   data
 } = usePostCreateReverseAlias({

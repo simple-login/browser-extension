@@ -54,7 +54,7 @@ const hasMovedRoutes = inject(hasMovedRouterKey)
 const apiKey = ref('')
 const { apiUrl } = useApiUrl()
 
-const { get, data } = useGetUserInfo({
+const { execute, data } = useGetUserInfo({
   useFetchOptions: {
     onFetchError(ctx) {
       ctx.error.customMessage = 'Incorrect API Key'
@@ -68,7 +68,7 @@ const saveApiKey = async () => {
     toast.error({ message: 'API Key cannot be empty' })
     return
   }
-  await get()
+  await execute()
   const userName = data.value?.name || data.value?.email
   await SLStorage.setItem(SLStorage.SETTINGS.API_KEY, apiKey.value)
   EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED)

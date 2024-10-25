@@ -142,7 +142,7 @@ const useLogin = usePostLogin({
 })
 
 const login = async () => {
-  await useLogin.post()
+  await useLogin.execute()
   const data = useLogin.data
   if (data.value?.api_key) {
     const userName = data.value?.name || data.value?.email
@@ -173,7 +173,7 @@ const useMFA = usePostMFA({
 })
 
 const submitMfaCode = async () => {
-  await useMFA.post()
+  await useMFA.execute()
   const data = useMFA.data
   const userName = data.value?.name || data.value?.email
   if (data.value?.api_key) {

@@ -268,11 +268,11 @@ watch(getAliasOptions.data, (aliasOptions) => {
   aliasPrefix.value = aliasOptions.prefix_suggestion
   canCreate.value = aliasOptions.can_create
 })
-const { data: mailboxes, get: getMailboxes } = useGetMailboxes()
+const { data: mailboxes, execute: executeMailboxes } = useGetMailboxes()
 
 // get alias options and mailboxes
 const getUserOptions = async () => {
-  await Promise.all([getAliasOptions.get(), getMailboxes()])
+  await Promise.all([getAliasOptions.execute(), executeMailboxes()])
 
   await resetAndLoadAlias()
 }
@@ -303,7 +303,7 @@ const postGetAliases = usePostGetAliases({
 const isFetchingAlias = computed(() => postGetAliases.isFetching.value)
 
 const loadAlias = async () => {
-  await postGetAliases.post()
+  await postGetAliases.execute()
   aliasArray.value = mergeAliases(aliasArray.value, postGetAliases.data.value?.aliases || [])
 }
 
@@ -365,11 +365,13 @@ const createCustomAlias = async () => {
     return
   }
 
-  await postNewAlias.post({
-    alias_prefix: aliasPrefix.value,
-    signed_suffix: signedSuffix.value[1],
-    note: await getDefaultNote()
-  })
+  await postNewAlias
+    .post({
+      alias_prefix: aliasPrefix.value,
+      signed_suffix: signedSuffix.value[1],
+      note: await getDefaultNote()
+    })
+    .execute()
   const { response: res, data, error } = postNewAlias
 
   if (res.value?.status === 201 && data.value && mailboxes.value) {
@@ -406,9 +408,11 @@ const loading = computed(
 const createRandomAlias = async () => {
   if (postNewRandomAlias.isFetching.value) return
 
-  await postNewRandomAlias.post({
-    note: await getDefaultNote()
-  })
+  await postNewRandomAlias
+    .post({
+      note: await getDefaultNote()
+    })
+    .execute()
   const { response: res, data, error } = postNewRandomAlias
 
   if (res.value?.status === 201 && data.value && mailboxes.value) {
@@ -432,7 +436,7 @@ const toggleAlias = async (alias: Alias) => {
   try {
     currentAlias.value = alias.id
     if (currentAlias.value === '') return
-    await postToggleAlias.post()
+    await postToggleAlias.execute()
     const { response: res, data } = postToggleAlias
 
     if (res) {
