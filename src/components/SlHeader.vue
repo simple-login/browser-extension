@@ -12,7 +12,7 @@
           @click="navigateBack()"
         >
           <img
-            v-if="canGoBack"
+            v-show="canGoBack"
             src="/images/back-button.svg"
             class="invertable"
             style="height: 20px"
@@ -27,45 +27,53 @@
         <span v-if="!apiKey" class="header-button" @click="goToSelfHostSetting">Settings</span>
 
         <template v-else>
-          <BLink
-            v-b-tooltip.hover
-            icon
-            variant="primary"
-            :href="`${apiUrl}/dashboard/`"
-            target="_blank"
-            class="dashboard-btn ms-2"
-            style="
-              display: inline-flex;
-              align-items: center;
-              padding: 0.25rem 0.5rem;
-              font-size: 0.875rem;
-            "
-            title="Dashboard"
-            :disabled="!useCompactLayout"
-          >
-            <span v-if="!useCompactLayout">Dashboard</span>
-            <ExternalLinkAltIcon aria-hidden class="ms-1" />
-          </BLink>
+          <BTooltip>
+            <template #target>
+              <BLink
+                icon
+                variant="primary"
+                :href="`${apiUrl}/dashboard/`"
+                target="_blank"
+                class="dashboard-btn ms-2"
+                style="
+                  display: inline-flex;
+                  align-items: center;
+                  padding: 0.25rem 0.5rem;
+                  font-size: 0.875rem;
+                "
+              >
+                <span v-show="!useCompactLayout">Dashboard</span>
+                <ExternalLinkAltIcon aria-hidden class="ms-1" />
+              </BLink>
+            </template>
+            Dashboard
+          </BTooltip>
 
-          <BugIcon
-            v-if="isBeta"
-            v-b-tooltip.hover.bottomleft
-            :href="reportBugUri"
-            target="_blank"
-            class="header-button ms-2"
-            aria-label="Report an issue"
-            title="Report an issue"
-            aria-hidden
-          />
+          <BTooltip v-if="isBeta" placement="bottom-start">
+            <template #target>
+              <BLink
+                icon
+                :href="reportBugUri"
+                target="_blank"
+                class="header-button ms-2"
+                aria-label="Report an issue"
+              >
+                <BugIcon aria-hidden />
+              </BLink>
+            </template>
+            Report an issue
+          </BTooltip>
 
-          <CogIcon
-            v-show="canShowSettingsButton"
-            v-b-tooltip.hover.bottomleft
-            class="header-button ms-2"
-            title="Settings"
-            aria-label="To settings"
-            @click="onClickSettingButton"
-          />
+          <BTooltip v-show="canShowSettingsButton" placement="bottom-start">
+            <template #target>
+              <CogIcon
+                class="header-button ms-2"
+                aria-label="To settings"
+                @click="onClickSettingButton"
+              />
+            </template>
+            Settings
+          </BTooltip>
         </template>
       </BCol>
     </BRow>

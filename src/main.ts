@@ -3,9 +3,8 @@ import router from './router'
 import { init } from '@sentry/vue'
 
 import App from './App.vue'
-import { createBootstrap } from 'bootstrap-vue-next'
+import { createBootstrap } from 'bootstrap-vue-next/plugins/createBootstrap'
 
-import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue-next/dist/bootstrap-vue-next.css'
 import './assets/main.scss'
 import SLStorage from './utils/SLStorage'

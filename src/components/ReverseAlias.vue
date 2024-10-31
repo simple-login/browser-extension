@@ -24,7 +24,12 @@
         <BFormGroup label-for="receiver-email-input">
           <template #label>
             Receiver:
-            <QuestionCircleIcon v-b-tooltip.hover.top="ariaText" :aria-label="ariaText" />
+            <BTooltip placement="top">
+              <template #target>
+                <QuestionCircleIcon :aria-label="ariaText" />
+              </template>
+              {{ ariaText }}
+            </BTooltip>
           </template>
           <BFormInput
             id="receiver-email-input"
@@ -46,17 +51,16 @@
           }}
         </p>
         <p>
-          <BLink
-            v-b-tooltip.hover
-            variant="primary"
-            title="Click to Copy"
-            class="cursor"
-            @click="copyReverseAlias"
-          >
-            <span class="text-success">
-              {{ createdReverseAlias.reverse_alias }}
-            </span>
-          </BLink>
+          <BTooltip>
+            <template #target>
+              <BLink variant="primary" class="cursor" @click="copyReverseAlias">
+                <span class="text-success">
+                  {{ createdReverseAlias.reverse_alias }}
+                </span>
+              </BLink>
+            </template>
+            Click to Copy
+          </BTooltip>
         </p>
         <small>
           You can send email from one of these mailbox(es):

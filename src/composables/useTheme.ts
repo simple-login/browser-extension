@@ -18,12 +18,17 @@ export const useTheme = () => {
     removeItem: SLStorage.removeItem
   })
 
+  const themeToBootstrap = (theme: Theme) =>
+    (
+      ({
+        [THEME_LIGHT]: 'light',
+        [THEME_DARK]: 'dark',
+        [THEME_SYSTEM]: prefersDark.value ? 'dark' : 'light'
+      }) satisfies Record<Theme, string>
+    )[theme]
+
   const handleBootstrapTheme = (newValue: Theme) => {
-    if (newValue === THEME_SYSTEM) {
-      document.documentElement.setAttribute('data-bs-theme', prefersDark.value ? 'dark' : 'light')
-    } else {
-      document.documentElement.setAttribute('data-bs-theme', newValue)
-    }
+    document.documentElement.setAttribute('data-bs-theme', themeToBootstrap(newValue))
   }
   const handleNativeTheme = (newValue: Theme, previousValue: Theme | undefined = undefined) => {
     if (previousValue === undefined) return document.body.classList.add(newValue)

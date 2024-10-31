@@ -1,5 +1,5 @@
 <template>
-  <SplashScreenAbstract v-if="show">
+  <SplashScreenAbstract v-show="show">
     <img class="logo" src="/images/horizontal-logo.svg" /><br />
     <img class="loading" src="/images/loading.svg" />
   </SplashScreenAbstract>

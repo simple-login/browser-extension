@@ -6,8 +6,8 @@ MIT License
 -->
 
 <template>
-  <ExpandTransition>
-    <div v-if="show" class="more-options">
+  <BCollapse :model-value="show">
+    <div class="more-options">
       <span>Mailboxes</span>
       <div>
         <BDropdown tag="span" size="sm" :variant="null">
@@ -91,12 +91,11 @@ MIT License
         </BButtonGroup>
       </div>
     </div>
-  </ExpandTransition>
+  </BCollapse>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, watch, computed } from 'vue'
-import ExpandTransition from './ExpandTransition.vue'
 import TextareaAutosize from './TextareaAutosize.vue'
 import type { Mailbox, Alias } from '../types'
 import { useToast } from '../composables/useToast'
@@ -144,7 +143,7 @@ const moreOptions = ref<Alias>({
   loading: false
 })
 const hasMailboxesChanges = ref(false) // to be used in canSaved()
-const canAlwaysSave = ref(false) // to be used in canSaved()
+const canAlwaysSave = computed(() => !!props.btnSaveLabel)
 
 const ariaText =
   'Tooltip: This name is used when you send or reply from alias. You may need to use a pseudonym because the receiver can see it.'
@@ -159,27 +158,12 @@ onMounted(() => {
     },
     { immediate: true }
   )
-
-  if (props.btnSaveLabel) {
-    canAlwaysSave.value = true
-  }
 })
 
 const showMoreOptions = () => {
   moreOptions.value = {
-    note: props.alias.note,
-    name: props.alias.name,
-    disable_pgp: !!props.alias.disable_pgp,
-    mailboxes: deepClone(props.alias.mailboxes),
-    email: '',
-    id: '',
-    support_pgp: true,
-    enabled: true,
-    nb_block: undefined,
-    nb_forward: undefined,
-    nb_reply: undefined,
-    showMoreOptions: false,
-    alias: ''
+    ...props.alias,
+    mailboxes: deepClone(props.alias.mailboxes)
   }
 
   hasMailboxesChanges.value = false

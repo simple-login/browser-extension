@@ -3,7 +3,7 @@
     <BContainer class="p-3">
       <p class="font-weight-bold align-self-center">App Settings ({{ userEmail }})</p>
 
-      <div v-if="freeAccount">
+      <div v-show="!isFetching && freeAccount">
         <small>
           Currently you have a free SimpleLogin account. Upgrade your account to create unlimited
           aliases, add more mailboxes, create aliases on-the-fly with your domain or SimpleLogin
@@ -119,7 +119,7 @@ onMounted(async () => {
   extension_version.value = browserRuntime.getManifest().version
 })
 
-const { data } = useGetUserInfo({ useFetchOptions: { immediate: true } })
+const { data, isFetching } = useGetUserInfo({ useFetchOptions: { immediate: true } })
 const userEmail = computed(() => data.value?.email || '')
 const freeAccount = computed(() => data.value?.in_trial || !data.value?.is_premium)
 

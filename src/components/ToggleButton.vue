@@ -1,18 +1,17 @@
 <template>
-  <BFormCheckbox
-    v-model="modelValue"
-    switch
-    :style="{
-      width: 30,
-      height: 18,
-      '--bs-switch-bg': '#b02a8f', // Background color when checked
-      '--bs-switch-border-color': '#b02a8f' // Border color when checked
-    }"
-  />
+  <BFormCheckbox v-model="modelValue" :wrapper-attrs switch variant="primary" />
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+
+const props = withDefaults(defineProps<{ tag?: string }>(), {
+  tag: undefined
+})
+
 const modelValue = defineModel<boolean>({
   required: true
 })
+
+const wrapperAttrs = computed(() => (props.tag ? { tag: props.tag } : undefined))
 </script>

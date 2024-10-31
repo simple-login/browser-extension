@@ -2,21 +2,23 @@
   <div ref="contentElem" class="content">
     <!-- Main Page -->
     <BContainer>
-      <div v-if="recommendation.show" class="text-center">
-        <div style="font-size: 14px">You created this alias on this website before:</div>
-        <div class="flex-grow-1">
-          <BLink variant="primary" class="cursor" @click="copyAlias">
-            <BTooltip placement="bottom">
-              <template #target>
-                <span class="text-success recommended-alias">{{ recommendation.alias }}</span>
-              </template>
-              Click to copy
-            </BTooltip>
-          </BLink>
-        </div>
+      <BCollapse v-model="recommendation.show">
+        <div class="text-center">
+          <div style="font-size: 14px">You created this alias on this website before:</div>
+          <div class="flex-grow-1">
+            <BLink variant="primary" class="cursor" @click="copyAlias">
+              <BTooltip placement="bottom">
+                <template #target>
+                  <span class="text-success recommended-alias">{{ recommendation.alias }}</span>
+                </template>
+                Click to copy
+              </BTooltip>
+            </BLink>
+          </div>
 
-        <hr />
-      </div>
+          <hr />
+        </div>
+      </BCollapse>
 
       <div>
         <BForm>
@@ -67,7 +69,7 @@
 
       <div v-if="aliasPrefix" class="mb-1 text-center" style="font-size: 14px">
         You're about to create alias
-        <span class="text-primary">{{ aliasPrefix }}{{ signedSuffix[0] }}</span>
+        <span class="text-primary">{{ aliasPrefix }}{{ signedSuffix?.[0] || '' }}</span>
       </div>
 
       <hr />
@@ -104,35 +106,45 @@
             v-model="searchString"
             size="sm"
             placeholder="Search"
+            aria-describedby="search-help"
             @keyup.enter="resetAndLoadAlias"
           />
 
-          <div class="small-text mt-1">
-            Type enter to search.
-            <button
-              v-if="searchString"
-              class="float-end"
-              style="color: blue; border: none; padding: 0; background: none"
+          <div id="search-help" class="small-text mt-1">
+            Press enter to search.
+            <BButton
+              :disabled="!searchString"
+              type="button"
+              variant="link-info"
+              size="sm"
+              class="float-end p-0 border-0"
+              aria-label="Reset search"
               @click="resetSearch"
             >
               Reset
-            </button>
+            </BButton>
           </div>
         </div>
 
         <!-- list alias -->
         <div v-if="aliasArray.length > 0">
-          <div v-for="alias in aliasArray" :key="alias.id">
+          <div v-for="alias in aliasArray" :key="alias.id" class="mb-1 border-bottom">
             <div class="p-2 my-2 list-item-alias">
               <div class="d-flex" :class="{ disabled: !alias.enabled }">
                 <div class="flex-grow-1 list-item-email" @click="copyAliasEmail(alias)">
-                  <BLink v-b-tooltip.hover.top="'Click to Copy'" variant="primary" class="cursor">
-                    {{ alias.email }}
-                  </BLink>
+                  <BTooltip placement="top" strategy="fixed">
+                    <template #target>
+                      <BLink variant="primary" class="cursor">
+                        {{ alias.email }}
+                      </BLink>
+                    </template>
+                    Click to Copy
+                  </BTooltip>
                   <div class="list-item-email-fade" />
                 </div>
                 <div style="white-space: nowrap">
                   <ToggleButton
+                    tag="span"
                     :model-value="alias.enabled"
                     @update:model-value="toggleAlias(alias)"
                   />
@@ -223,10 +235,10 @@ const { apiUrl, apiKey } = await useApiUrl()
 // hostName obtained from chrome tabs query
 const hostName = ref('')
 const canCreate = ref(true)
-const aliasSuffixes = ref<string[]>([])
+const aliasSuffixes = ref<[string, string][]>([])
 const aliasPrefix = ref('')
 const aliasPrefixError = ref('')
-const signedSuffix = ref('')
+const signedSuffix = ref<[string, string] | null>(null)
 const recommendation = ref({
   show: false,
   alias: ''
@@ -282,7 +294,7 @@ watch(getAliasOptions.data, (aliasOptions) => {
   }
 
   aliasSuffixes.value = aliasOptions.suffixes
-  signedSuffix.value = aliasSuffixes.value[0]
+  ;[signedSuffix.value] = aliasSuffixes.value
   aliasPrefix.value = aliasOptions.prefix_suggestion
   canCreate.value = aliasOptions.can_create
 })
@@ -377,7 +389,7 @@ const postNewAlias = usePostNewAlias({
 })
 
 const createCustomAlias = async () => {
-  if (postNewAlias.isFetching.value) return
+  if (postNewAlias.isFetching.value || !signedSuffix.value) return
 
   // check aliasPrefix
   aliasPrefixError.value = ''

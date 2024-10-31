@@ -1,4 +1,4 @@
-import { useToastController as bvUseToast } from 'bootstrap-vue-next'
+import { useToastController as bvUseToast } from 'bootstrap-vue-next/composables/useToastController'
 
 export const useToast = () => {
   const toast = bvUseToast()

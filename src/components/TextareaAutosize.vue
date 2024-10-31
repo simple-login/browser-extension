@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts" setup>
-import { BFormTextarea } from 'bootstrap-vue-next'
+import { BFormTextarea } from 'bootstrap-vue-next/components/BFormTextarea'
 import { ref, computed, onMounted, watch, nextTick, type StyleValue, useTemplateRef } from 'vue'
 
 const props = withDefaults(

@@ -160,7 +160,7 @@ export type UseGetAliasOptionsReturn = {
     | {
         alias: string
       }
-  suffixes: string[]
+  suffixes: [string, string][]
   prefix_suggestion: string
   can_create: boolean
 }
