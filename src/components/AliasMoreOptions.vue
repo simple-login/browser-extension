@@ -8,10 +8,10 @@ MIT License
 <template>
   <ExpandTransition>
     <div v-if="show" class="more-options">
-      <label>Mailboxes</label>
+      <span>Mailboxes</span>
       <div>
-        <BDropdown size="sm" variant="outline-primary">
-          <BDropdownForm>
+        <BDropdown tag="span" size="sm" :variant="null">
+          <BDropdownForm aria-describedby="mailbox-help-text">
             <BFormCheckbox
               v-for="mailbox in mailboxes"
               :key="mailbox.id"
@@ -22,34 +22,42 @@ MIT License
             </BFormCheckbox>
           </BDropdownForm>
         </BDropdown>
-
-        {{
-          moreOptions.mailboxes.length > 0
-            ? moreOptions.mailboxes.map((mb) => mb.email).join(', ')
-            : 'Please select at least one mailbox'
-        }}
+        <span id="mailbox-help-text">
+          {{
+            moreOptions.mailboxes.length > 0
+              ? moreOptions.mailboxes.map((mb) => mb.email).join(', ')
+              : 'Please select at least one mailbox'
+          }}
+        </span>
       </div>
 
-      <label>Alias Note</label>
-      <TextareaAutosize
-        v-model="moreOptions.note"
-        placeholder="Note, can be anything to help you remember why you created this alias. This field is optional."
-        class="form-control"
-        style="width: 100%"
-        :disabled="loading"
-      />
+      <BFormGroup label-for="textarea-note" label="Alias Note">
+        <TextareaAutosize
+          id="textarea-note"
+          v-model="moreOptions.note"
+          placeholder="Note, can be anything to help you remember why you created this alias. This field is optional."
+          class="w-100"
+          :disabled="loading"
+        />
+      </BFormGroup>
 
-      <label>
-        From Name
-        <BTooltip placement="top">
-          <template #target>
-            <QuestionCircleIcon aria-hidden />
-          </template>
-          This name is used when you send or reply from alias. You may need to use a pseudonym
-          because the receiver can see it.
-        </BTooltip>
-      </label>
-      <BFormInput v-model="moreOptions.name" placeholder="From name" :disabled="loading" />
+      <BFormGroup label-for="more-options-name-input">
+        <template #label>
+          From Name
+          <BTooltip placement="top">
+            <template #target>
+              <QuestionCircleIcon :aria-label="ariaText" />
+            </template>
+            {{ ariaText }}
+          </BTooltip>
+        </template>
+        <BFormInput
+          id="more-options-name-input"
+          v-model="moreOptions.name"
+          placeholder="From name"
+          :disabled="loading"
+        />
+      </BFormGroup>
 
       <div v-if="alias.support_pgp" class="advanced-options mt-2">
         <BFormCheckbox :checked="!moreOptions.disable_pgp" @change="toggleAliasPGP"
@@ -58,24 +66,29 @@ MIT License
       </div>
 
       <div class="action">
-        <button
-          class="btn btn-sm btn-primary"
-          :disabled="loading || !canSave()"
-          @click="handleClickSave"
-        >
-          <SaveIcon aria-hidden icon="save" />
-          {{ btnSaveLabel || 'Save' }}
-        </button>
+        <BButtonGroup>
+          <BButton
+            size="sm"
+            type="button"
+            variant="primary"
+            :disabled="loading || !canSave"
+            @click="handleClickSave"
+          >
+            <SaveIcon aria-hidden />
+            {{ btnSaveLabel || 'Save' }}
+          </BButton>
 
-        <button
-          class="btn btn-sm btn-delete"
-          style="color: #dc3545"
-          :disabled="loading"
-          @click="handleClickDelete"
-        >
-          <TrashIcon aria-hidden icon="trash" />
-          Delete
-        </button>
+          <BButton
+            type="button"
+            size="sm"
+            variant="danger"
+            :disabled="loading"
+            @click="handleClickDelete"
+          >
+            <TrashIcon aria-hidden />
+            Delete
+          </BButton>
+        </BButtonGroup>
       </div>
     </div>
   </ExpandTransition>
@@ -88,18 +101,11 @@ import TextareaAutosize from './TextareaAutosize.vue'
 import type { Mailbox, Alias } from '../types'
 import { useToast } from '../composables/useToast'
 import { API_ON_ERR, useDeleteAlias, usePutEditAlias } from '../composables/useApi'
-import {
-  BDropdown,
-  useModalController,
-  BDropdownForm,
-  BFormCheckbox,
-  BFormInput,
-  BTooltip
-} from 'bootstrap-vue-next'
 import { deepClone } from '../utils'
 import QuestionCircleIcon from '~icons/fa-solid/question-circle'
 import SaveIcon from '~icons/fa-solid/save'
 import TrashIcon from '~icons/fa-solid/trash'
+import { useModalController } from 'bootstrap-vue-next/composables/useModalController'
 
 const props = withDefaults(
   defineProps<{
@@ -139,6 +145,9 @@ const moreOptions = ref<Alias>({
 })
 const hasMailboxesChanges = ref(false) // to be used in canSaved()
 const canAlwaysSave = ref(false) // to be used in canSaved()
+
+const ariaText =
+  'Tooltip: This name is used when you send or reply from alias. You may need to use a pseudonym because the receiver can see it.'
 
 onMounted(() => {
   watch(
@@ -201,16 +210,16 @@ const deleteAlias = async () => {
   })
 }
 
-const canSave = () => {
+const canSave = computed(() => {
   return (
     moreOptions.value.mailboxes.length > 0 &&
     (props.alias.note !== moreOptions.value.note ||
-      props.alias.name !== moreOptions.value.name ||
+      (props.alias.name || '') !== (moreOptions.value.name || '') ||
       !!props.alias.disable_pgp !== moreOptions.value.disable_pgp ||
       hasMailboxesChanges.value ||
       canAlwaysSave.value)
   )
-}
+})
 
 const editAliasFetch = usePutEditAlias({
   aliasId: () => props.alias.id,

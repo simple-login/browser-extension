@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <div class="p-3 container">
+    <BContainer class="p-3">
       <p class="font-weight-bold align-self-center">App Settings ({{ userEmail }})</p>
 
       <div v-if="freeAccount">
@@ -9,9 +9,9 @@
           aliases, add more mailboxes, create aliases on-the-fly with your domain or SimpleLogin
           subdomain and more.
         </small>
-        <button class="btn btn-primary btn-sm" @click="upgrade">
+        <BButton size="sm" variant="primary" type="button" @click="upgrade">
           Upgrade your SimpleLogin account
-        </button>
+        </BButton>
         <hr />
       </div>
 
@@ -28,11 +28,16 @@
             <small>
               If enabled, you can quickly create a random alias by clicking on the SimpleLogin
               button placed next to the email field.
-              <a v-show="showSLButton" :href="reportURISLButton" target="_blank">
-                <br />
-                <BugIcon aria-hidden icon="bug" />
+              <BLink
+                v-show="showSLButton"
+                variant="primary"
+                icon
+                :href="reportURISLButton"
+                target="_blank"
+              >
+                <BugIcon aria-hidden />
                 Report an issue
-              </a>
+              </BLink>
             </small>
           </td>
         </tr>
@@ -62,18 +67,16 @@
               System theme automatically switches between Light and Dark - according to system
               preference.
             </small>
-            <div class="input-group-sm w-50" style="padding-top: 6px; padding-bottom: 6px">
-              <select v-model="theme" class="form-control">
-                <option v-for="themeOption in THEMES" :key="themeOption" :value="themeOption">
-                  {{ THEME_LABELS[themeOption] }}
-                </option>
-              </select>
-            </div>
+            <BInputGroup class="w-50" style="padding-top: 6px; padding-bottom: 6px">
+              <BFormSelect v-model="theme" :options="themeSelectOptions" />
+            </BInputGroup>
           </td>
         </tr>
       </table>
 
-      <button class="btn btn-outline-primary btn-block mt-2" @click="handleLogout">Logout</button>
+      <BButton type="button" variant="outline-primary" class="w-100 mt-2" @click="handleLogout"
+        >Logout</BButton
+      >
 
       <div
         class="font-weight-light"
@@ -81,41 +84,36 @@
       >
         Version: {{ extension_version }}
       </div>
-    </div>
+    </BContainer>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, computed, inject } from 'vue'
+import { ref, watch, onMounted, computed } from 'vue'
 import SLStorage from '../utils/SLStorage'
 import EventManager from '../utils/EventManager'
 import { getHostName } from '../utils'
-import { setThemeClass, THEME_LABELS, THEMES, getSavedTheme } from '../utils/Theme'
+import { THEME_LABELS, THEMES, useTheme } from '../composables/useTheme'
 import { useToast } from '../composables/useToast'
 import { useGetUserInfo, useGetLogout, API_ON_ERR } from '../composables/useApi'
 import { runtime as browserRuntime, tabs as browserTabs } from 'webextension-polyfill'
-import type { Theme } from '../utils/constants'
-import { hasMovedRouterKey } from '../utils/keys'
 import { useRouter } from 'vue-router'
 import { useApiUrl } from '../composables/useApiUrl'
 import BugIcon from '~icons/fa-solid/bug'
 
 const toast = useToast()
 const router = useRouter()
-
-const hasMovedRoutes = inject(hasMovedRouterKey)
+const { theme } = useTheme()
 
 const showSLButton = ref(false)
 const positionSLButton = ref('right-inside')
 const reportURISLButton = ref('')
 const extension_version = ref('development')
-const theme = ref<Theme | null>(null)
 const { apiUrl } = await useApiUrl()
 
 onMounted(async () => {
   showSLButton.value = await SLStorage.getItem(SLStorage.SETTINGS.SHOW_SL_BUTTON)
   positionSLButton.value = await SLStorage.getItem(SLStorage.SETTINGS.SL_BUTTON_POSITION)
-  theme.value = await getSavedTheme()
 
   await setMailToUri()
   extension_version.value = browserRuntime.getManifest().version
@@ -124,6 +122,11 @@ onMounted(async () => {
 const { data } = useGetUserInfo({ useFetchOptions: { immediate: true } })
 const userEmail = computed(() => data.value?.email || '')
 const freeAccount = computed(() => data.value?.in_trial || !data.value?.is_premium)
+
+const themeSelectOptions = THEMES.map((themeOption) => ({
+  value: themeOption,
+  text: THEME_LABELS[themeOption]
+}))
 
 const handleToggleSLButton = async () => {
   showSLButton.value = !showSLButton.value
@@ -151,7 +154,6 @@ const handleLogout = async () => {
   await SLStorage.removeItem(SLStorage.SETTINGS.API_KEY)
   EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED)
   router.push('/login')
-  if (hasMovedRoutes !== undefined) hasMovedRoutes.value = false
 
   if (import.meta.env.VITE_MAC) {
     console.log('send log out event to host app')
@@ -190,10 +192,7 @@ const upgrade = async () => {
   }
 }
 
-watch(theme, async (nextTheme, prevTheme) => {
-  if (!prevTheme) return
-
-  setThemeClass(nextTheme as Theme, prevTheme as Theme)
+watch(theme, () => {
   showSavedSettingsToast()
 })
 </script>

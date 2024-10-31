@@ -62,10 +62,10 @@ textarea.form-control:focus {
   top: 0;
   left: 0;
   z-index: 10;
-}
 
-.header .back {
-  cursor: pointer;
+  .back {
+    cursor: pointer;
+  }
 }
 
 .overlay {

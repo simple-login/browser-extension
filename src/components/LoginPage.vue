@@ -1,60 +1,93 @@
 <template>
   <div class="content">
     <!-- Login/register screen -->
-    <div v-if="!isShowMfa" class="p-6 container" style="min-height: 350px">
+    <BContainer v-if="!isShowMfa" class="p-6" style="min-height: 350px">
       <h1 class="h5 mb-3">
         Welcome to
-        <a href="https://simplelogin.io" target="_blank"
-          >SimpleLogin <LongArrowAltUpIcon :rotate="45" /></a
+        <BLink icon variant="primary" href="https://simplelogin.io" target="_blank">
+          SimpleLogin
+          <LongArrowAltUpIcon
+            aria-hidden
+            style="transform: rotate(45deg) translate(1px, -3px)"
+            width="8"
+          /> </BLink
         >, the most powerful email alias solution!
       </h1>
 
-      <form @submit.prevent="login">
-        <div class="form-group">
-          <label>Email</label>
+      <BForm>
+        <BFormGroup class="mb-3" label="Email" label-for="email-input">
+          <BFormInput
+            id="email-input"
+            v-model="email"
+            :state="v$.email.$dirty ? !v$.email.$error : null"
+            type="email"
+            autofocus
+            @input="v$.email.$touch"
+            @blur="v$.email.$touch"
+          />
+        </BFormGroup>
 
-          <input v-model="email" class="form-control" type="email" autofocus required />
-        </div>
+        <BFormGroup label="Password" class="mb-3" label-for="password-input">
+          <BInputGroup>
+            <template #append>
+              <BButton
+                type="button"
+                @click="passwordType = passwordType === 'password' ? 'text' : 'password'"
+              >
+                <EyeIcon v-if="passwordType === 'password'" />
+                <EyeSlashIcon v-else />
+              </BButton>
+            </template>
+            <BFormInput
+              id="password-input"
+              v-model="password"
+              :state="v$.password.$dirty ? !v$.password.$error : null"
+              :type="passwordType"
+              @input="v$.password.$touch"
+              @blur="v$.password.$touch"
+            />
+          </BInputGroup>
+        </BFormGroup>
 
-        <div class="form-group">
-          <label>Password</label>
-          <input v-model="password" type="password" class="form-control" />
-        </div>
-
-        <button class="btn btn-primary btn-block mt-2">Login</button>
-      </form>
+        <BButton type="button" variant="primary" class="w-100 mt-2" @click="login">Login</BButton>
+      </BForm>
 
       <!-- Login with Proton -->
       <div v-if="loginWithProtonEnabled">
         <div class="text-center my-2 text-gray"><span>or</span></div>
 
-        <a
-          class="btn btn-primary btn-block mt-2 proton-button"
+        <BButton
+          :variant="null"
+          class="w-100 mt-2 proton-button"
           target="_blank"
           :href="`${apiUrl}/auth/proton/login?next=/onboarding/setup_done`"
         >
-          <img class="mr-2" src="/images/proton.svg" />
+          <img class="me-2" src="/images/proton.svg" />
           Login with Proton
-        </a>
+        </BButton>
       </div>
 
       <div class="text-center mt-2">
-        <button class="mt-2 btn btn-link text-center" @click="showApiKeySetup">
+        <BButton type="button" variant="link" class="mt-2 text-center" @click="showApiKeySetup">
           Sign in with API Key
-        </button>
+        </BButton>
       </div>
 
       <div class="text-center">
         Don't have an account yet?
-        <a :href="`${apiUrl}/auth/register?next=%2Fdashboard%2Fsetup_done`" target="_blank">
+        <BLink
+          variant="primary"
+          :href="`${apiUrl}/auth/register?next=%2Fdashboard%2Fsetup_done`"
+          target="_blank"
+        >
           Sign Up
-        </a>
+        </BLink>
       </div>
-    </div>
+    </BContainer>
     <!-- END Login/register screen -->
 
     <!-- MFA screen -->
-    <div v-else class="p-6 container" style="min-height: 350px">
+    <BContainer v-else class="p-6" style="min-height: 350px">
       <div class="p-3">
         <div class="mb-2">Your account is protected with Two Factor Authentication. <br /></div>
 
@@ -64,17 +97,19 @@
         </div>
 
         <div style="margin: auto">
-          <input
+          <BFormInput
             v-model="mfaCode"
             placeholder="xxxxxx"
             autofocus
-            class="form-control mt-3 w-100"
+            class="mt-3 w-100"
             @keyup.enter="submitMfaCode"
           />
-          <button class="btn btn-primary btn-block mt-2" @click="submitMfaCode">Submit</button>
+          <BButton variant="primary" class="w-100 mt-2" type="button" @click="submitMfaCode">
+            Submit
+          </BButton>
         </div>
       </div>
-    </div>
+    </BContainer>
     <!-- END MFA screen -->
   </div>
 </template>
@@ -89,6 +124,10 @@ import { useRouter } from 'vue-router'
 import { API_ON_ERR, usePostLogin, usePostMFA } from '../composables/useApi'
 import { useApiUrl } from '../composables/useApiUrl'
 import LongArrowAltUpIcon from '~icons/fa-solid/long-arrow-alt-up'
+import EyeSlashIcon from '~icons/fa-solid/eye-slash'
+import EyeIcon from '~icons/fa-solid/eye'
+import { useVuelidate } from '@vuelidate/core'
+import { required, email as emailValidator } from '@vuelidate/validators'
 
 const loginWithProtonEnabled = ref(false)
 
@@ -112,10 +151,19 @@ const toast = useToast()
 
 const email = ref('')
 const password = ref('')
+const passwordType = ref<'password' | 'text'>('password')
 const mfaKey = ref('')
 const mfaCode = ref('')
 const isShowMfa = ref(false)
 const { apiUrl } = await useApiUrl()
+
+const v$ = useVuelidate(
+  {
+    email: { required, email: emailValidator },
+    password: { required }
+  },
+  { email, password }
+)
 
 const sayHiToast = (userName: string) => {
   return toast.success({ message: `Hi ${userName}!` })
@@ -142,6 +190,7 @@ const useLogin = usePostLogin({
 })
 
 const login = async () => {
+  if (!(await v$.value.$validate())) return
   await useLogin.execute()
   const data = useLogin.data
   if (data.value?.api_key) {
@@ -193,14 +242,14 @@ const showApiKeySetup = () => {
 
 <style lang="css">
 .proton-button {
-  border-color: #6d4aff;
-  background-color: var(--bg-color);
-  color: #6d4aff;
+  border-color: #6d4aff !important;
+  background-color: var(--bg-color) !important;
+  color: #6d4aff !important;
 }
 .proton-button:hover {
-  border-color: #6d4aff;
-  background-color: #1b1340;
-  color: var(--text-color);
+  border-color: #6d4aff !important;
+  background-color: #1b1340 !important;
+  color: var(--text-color) !important;
 }
 .text-gray {
   color: #868e96;

@@ -1,62 +1,68 @@
 <template>
   <div ref="contentElem" class="content">
     <!-- Main Page -->
-    <div class="container">
+    <BContainer>
       <div v-if="recommendation.show" class="text-center">
-        <div class="" style="font-size: 14px">You created this alias on this website before:</div>
+        <div style="font-size: 14px">You created this alias on this website before:</div>
         <div class="flex-grow-1">
-          <a class="cursor" @click.prevent="copyAlias">
+          <BLink variant="primary" class="cursor" @click="copyAlias">
             <BTooltip placement="bottom">
               <template #target>
                 <span class="text-success recommended-alias">{{ recommendation.alias }}</span>
               </template>
               Click to copy
             </BTooltip>
-          </a>
+          </BLink>
         </div>
 
         <hr />
       </div>
 
       <div>
-        <form @submit.prevent="createCustomAlias">
-          <div class="row mb-2">
-            <div class="col align-self-start input-group-sm" style="padding-right: 0">
-              <input
+        <BForm>
+          <BRow class="mb-2">
+            <BCol align-self="start" class="input-group-sm" style="padding-right: 0">
+              <BFormInput
                 v-model="aliasPrefix"
-                class="form-control"
                 placeholder="Alias prefix"
                 :disabled="loading || !canCreate"
                 autofocus
                 required
               />
-            </div>
+            </BCol>
 
-            <div
-              class="col align-self-start input-group-sm"
+            <BCol
+              align-self="start"
+              class="input-group-sm"
               style="padding-left: 5px; padding-right: 5px"
             >
-              <select v-model="signedSuffix" class="form-control" :disabled="loading || !canCreate">
-                <option v-for="suffix in aliasSuffixes" :key="suffix[0]" :value="suffix">
-                  {{ suffix[0] }}
-                </option>
-              </select>
-            </div>
+              <BFormSelect
+                v-model="signedSuffix"
+                :disabled="loading || !canCreate"
+                :options="aliasFormSelectOptions"
+              />
+            </BCol>
 
-            <button
-              :disabled="loading || !canCreate"
-              style="margin-right: 15px"
-              class="btn btn-primary btn-sm align-self-start"
-            >
-              Create
-            </button>
-          </div>
-          <div v-if="aliasPrefixError != ''" class="row text-danger" style="font-size: 12px">
-            <div class="col">
+            <BCol cols="auto" align-self="start">
+              <BButton
+                size="sm"
+                variant="primary"
+                :disabled="loading || !canCreate"
+                style="margin-right: 15px"
+                class="align-self-start"
+                type="button"
+                @click="createCustomAlias"
+              >
+                Create
+              </BButton>
+            </BCol>
+          </BRow>
+          <BRow v-if="!aliasPrefixError" class="text-danger" style="font-size: 12px">
+            <BCol>
               {{ aliasPrefixError }}
-            </div>
-          </div>
-        </form>
+            </BCol>
+          </BRow>
+        </BForm>
       </div>
 
       <div v-if="aliasPrefix" class="mb-1 text-center" style="font-size: 14px">
@@ -66,15 +72,17 @@
 
       <hr />
       <div class="text-center">
-        <button
+        <BButton
+          variant="outline-primary"
+          size="sm"
+          type="button"
           :disabled="loading || !canCreate"
           style="margin-left: 15px"
-          class="btn btn-outline-primary btn-sm"
           @click="createRandomAlias"
         >
           <RandomIcon aria-hidden />
           OR create a totally random alias
-        </button>
+        </BButton>
       </div>
 
       <div v-if="!canCreate">
@@ -92,9 +100,9 @@
         <div class="mx-auto font-weight-bold text-center mb-2">OR use an existing alias</div>
 
         <div class="mx-auto" style="max-width: 60%">
-          <input
+          <BFormInput
             v-model="searchString"
-            class="form-control form-control-sm"
+            size="sm"
             placeholder="Search"
             @keyup.enter="resetAndLoadAlias"
           />
@@ -103,7 +111,7 @@
             Type enter to search.
             <button
               v-if="searchString"
-              class="float-right"
+              class="float-end"
               style="color: blue; border: none; padding: 0; background: none"
               @click="resetSearch"
             >
@@ -118,9 +126,9 @@
             <div class="p-2 my-2 list-item-alias">
               <div class="d-flex" :class="{ disabled: !alias.enabled }">
                 <div class="flex-grow-1 list-item-email" @click="copyAliasEmail(alias)">
-                  <a v-b-tooltip.hover.top="'Click to Copy'" class="cursor">
+                  <BLink v-b-tooltip.hover.top="'Click to Copy'" variant="primary" class="cursor">
                     {{ alias.email }}
-                  </a>
+                  </BLink>
                   <div class="list-item-email-fade" />
                 </div>
                 <div style="white-space: nowrap">
@@ -129,8 +137,12 @@
                     @update:model-value="toggleAlias(alias)"
                   />
 
-                  <div class="btn-svg btn-send" @click="handleReverseAliasClick(alias)">
-                    <PaperPlaneIcon />
+                  <div
+                    role="button"
+                    class="btn-svg btn-send"
+                    @click="handleReverseAliasClick(alias)"
+                  >
+                    <PaperPlaneIcon aria-label="Create reverse alias" />
                   </div>
 
                   <img
@@ -139,6 +151,7 @@
                     :style="{
                       transform: alias.showMoreOptions ? 'rotate(180deg)' : ''
                     }"
+                    role="button"
                     class="btn-svg"
                     @click="toggleMoreOptions(alias)"
                   />
@@ -157,7 +170,7 @@
               <AliasMoreOptions
                 :alias="alias"
                 :show="!!alias.showMoreOptions"
-                :mailboxes="mailboxes ?? []"
+                :mailboxes="mailboxes?.mailboxes || []"
                 @changed="handleAliasChanged"
                 @deleted="handleAliasDeleted"
               />
@@ -169,7 +182,7 @@
       <div v-if="isFetchingAlias" class="text-secondary mx-auto text-center">
         <img src="/images/loading-three-dots.svg" style="width: 80px; margin: 20px" />
       </div>
-    </div>
+    </BContainer>
     <!-- END Main Page -->
   </div>
 </template>
@@ -194,10 +207,10 @@ import {
   useGetMailboxes,
   API_ON_ERR
 } from '../composables/useApi'
-import { BTooltip, useModalController } from 'bootstrap-vue-next'
 import { useApiUrl } from '../composables/useApiUrl'
 import RandomIcon from '~icons/fa-solid/random'
 import PaperPlaneIcon from '~icons/fa-solid/paper-plane'
+import { useModalController } from 'bootstrap-vue-next/composables/useModalController'
 
 const toast = useToast()
 const router = useRouter()
@@ -218,6 +231,13 @@ const recommendation = ref({
   show: false,
   alias: ''
 })
+
+const aliasFormSelectOptions = computed(() =>
+  aliasSuffixes.value.map((suffix) => ({
+    value: suffix,
+    text: suffix[0]
+  }))
+)
 
 const searchString = ref('')
 // array of existing alias
@@ -376,9 +396,9 @@ const createCustomAlias = async () => {
     .execute()
   const { response: res, data, error } = postNewAlias
 
-  if (res.value?.status === 201 && data.value && mailboxes.value) {
+  if (res.value?.status === 201 && data.value && mailboxes.value?.mailboxes) {
     SLStorage.setTemporary('newAliasData', data.value)
-    SLStorage.setTemporary('userMailboxes', mailboxes.value)
+    SLStorage.setTemporary('userMailboxes', mailboxes.value.mailboxes)
     router.replace('/new-alias-result')
   } else {
     toast.error({ message: data.value?.error || error.value.message })
@@ -417,9 +437,9 @@ const createRandomAlias = async () => {
     .execute()
   const { response: res, data, error } = postNewRandomAlias
 
-  if (res.value?.status === 201 && data.value && mailboxes.value) {
+  if (res.value?.status === 201 && data.value && mailboxes.value?.mailboxes) {
     SLStorage.setTemporary('newAliasData', data.value)
-    SLStorage.setTemporary('userMailboxes', mailboxes.value)
+    SLStorage.setTemporary('userMailboxes', mailboxes.value.mailboxes)
     router.replace('/new-alias-result')
   } else {
     toast.error({ message: data.value?.error || error.value.message })

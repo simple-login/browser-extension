@@ -1,16 +1,16 @@
 <template>
   <div class="content">
-    <div class="p-2 container">
+    <BContainer class="p-2">
       <div class="m-2 p-2">
         <p class="font-weight-bold">Alias is created</p>
         <p>
           <BTooltip>
             <template #target>
-              <a class="cursor new-alias" @click="copyNewAlias">
+              <BLink variant="primary" class="cursor new-alias" @click="copyNewAlias">
                 <span class="text-success">
                   {{ newAliasData.alias }}
                 </span>
-              </a>
+              </BLink>
             </template>
             Click to copy
           </BTooltip>
@@ -29,19 +29,30 @@
         <div v-if="showVoteScreen" class="mt-5 p-3 card-rating">
           Happy with SimpleLogin?<br />
           Please support us by
-          <a :href="extensionUrl" target="_blank" rel="noreferrer noopener">
-            <StarIcon aria-hidden /> Rating this extension </a
+          <BLink
+            variant="primary"
+            icon
+            :href="extensionUrl"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            <StarIcon aria-hidden /> Rating this extension </BLink
           ><br />
           Thank you!
 
           <br />
 
-          <a class="text-secondary cursor" style="font-size: 0.7em" @click="doNotAskRateAgain">
+          <BLink
+            variant="primary"
+            class="text-secondary cursor"
+            style="font-size: 0.7em"
+            @click="doNotAskRateAgain"
+          >
             Do not ask again
-          </a>
+          </BLink>
         </div>
       </div>
-    </div>
+    </BContainer>
   </div>
 </template>
 
@@ -55,7 +66,6 @@ import { useRouter } from 'vue-router'
 import { useClipboard } from '@vueuse/core'
 import type { Mailbox, Alias } from '../types'
 import StarIcon from '~icons/fa-solid/star'
-import { BTooltip } from 'bootstrap-vue-next'
 
 const toast = useToast()
 const router = useRouter()

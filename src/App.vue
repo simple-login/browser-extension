@@ -1,5 +1,5 @@
 <template>
-  <div class="app" :class="{ 'ff-overflow-menu': isInsideOverflowMenu }">
+  <div ref="container" class="app" :class="{ 'ff-overflow-menu': isInsideOverflowMenu }">
     <Suspense>
       <SlHeader :use-compact-layout="isInsideOverflowMenu" />
     </Suspense>
@@ -15,37 +15,26 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-
+import { onMounted, useTemplateRef, computed } from 'vue'
 import SlHeader from './components/SlHeader.vue'
-import { getSavedTheme, setThemeClass } from './utils/Theme'
 import { useRouter } from 'vue-router'
-import { useColorMode } from '@vueuse/core'
-import { BToastOrchestrator, BModalOrchestrator } from 'bootstrap-vue-next'
+import { useElementBounding, useWindowSize } from '@vueuse/core'
 import { initService as initApiService } from './utils/api'
 import SplashScreenAbstract from './components/SplashScreenAbstract.vue'
+import { useTheme } from './composables/useTheme'
 
 const router = useRouter()
-const color = useColorMode({})
+useTheme()
 
-const isInsideOverflowMenu = ref(false)
-const appScale = ref(1)
+const container = useTemplateRef('container')
 
-const detectOverflowMenu = () => {
-  const appElem = document.querySelector('.app')
-  if (appElem) {
-    const appWidth = +getComputedStyle(appElem).width.replace('px', '')
-    const windowWidth = window.innerWidth
-    if (windowWidth < appWidth) {
-      isInsideOverflowMenu.value = true
-    }
-  }
-}
+const { width: windowWidth } = useWindowSize()
+const { width: appWidth } = useElementBounding(container)
+
+const isInsideOverflowMenu = computed(() => windowWidth.value < appWidth.value)
 
 onMounted(async () => {
   await initApiService()
-  await setThemeClass(await getSavedTheme())
   router.push('/')
-  detectOverflowMenu()
 })
 </script>

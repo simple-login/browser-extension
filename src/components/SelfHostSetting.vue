@@ -7,14 +7,16 @@
       <div class="mb-2">The default API URL is https://app.simplelogin.io</div>
 
       <div style="margin: auto">
-        <input
+        <BFormInput
           v-model="apiUrl"
           placeholder="https://app.simplelogin.io"
           autofocus
-          class="form-control mt-3 w-100"
+          class="mt-3 w-100"
           @keyup.enter="saveApiUrl"
         />
-        <button class="btn btn-primary btn-block mt-2" @click="saveApiUrl">Set API URL</button>
+        <BButton type="button" variant="primary" class="w-100 mt-2" @click="saveApiUrl"
+          >Set API URL</BButton
+        >
       </div>
     </div>
   </div>

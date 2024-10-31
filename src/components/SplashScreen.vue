@@ -49,21 +49,16 @@ onMounted(async () => {
   await getApiKey()
 
   if (apiKey.value !== '') {
-    console.log('to main')
     router.push('/main')
   } else {
-    console.log('before post')
     await execute()
-    console.log('before post')
     apiKey.value = data.value?.api_key || ''
     if (apiKey.value) {
       await SLStorage.setItem(SLStorage.SETTINGS.API_KEY, apiKey.value)
       EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED)
 
-      console.log('to main')
       router.push('/main')
     } else {
-      console.log('to login')
       router.push('/login')
     }
   }

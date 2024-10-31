@@ -13,73 +13,71 @@ export const enum API_ON_ERR {
   THROW = 'THROW'
 }
 
-const useFetch = createFetch({
-  options: {
-    immediate: false,
-    async beforeFetch(ctx) {
-      ctx.url = `${SETTINGS.apiUrl}${ctx.url}`
-      if (!SETTINGS.apiKey) {
-        await reloadSettings()
-      }
+const useFetch = (errHandlerMethod: MaybeRefOrGetter<API_ON_ERR> = API_ON_ERR.IGNORE) => {
+  const router = useRouter()
+  const toaster = useToast()
 
-      ctx.options.headers = {
-        ...ctx.options.headers,
-        Authentication: SETTINGS.apiKey,
-        'Content-Type':
-          ctx.options.headers &&
-          'Content-Type' in ctx.options.headers &&
-          !!ctx.options.headers['Content-Type']
-            ? ctx.options.headers['Content-Type']
-            : ctx.options.method === 'POST' || ctx.options.method === 'PUT'
-              ? 'application/json'
-              : ''
-      }
+  return createFetch({
+    options: {
+      immediate: false,
+      async beforeFetch(ctx) {
+        ctx.url = `${SETTINGS.apiUrl}${ctx.url}`
+        if (!SETTINGS.apiKey) {
+          await reloadSettings()
+        }
 
-      return ctx
-    },
-    async onFetchError(ctx) {
-      const router = useRouter()
-      const toaster = useToast()
-      const {
-        error: { _onError: errHandlerMethod }
-      } = ctx
-
-      if (errHandlerMethod !== API_ON_ERR.IGNORE) {
-        console.error(ctx.response)
-      }
-
-      if (ctx.response?.status === 401) {
-        const toast = useToast()
-        toast.error({ message: 'Authentication error, please login again' })
-        await SLStorage.removeItem(SLStorage.SETTINGS.API_KEY)
-        EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED)
-        router.push('/login')
+        ctx.options.headers = {
+          ...ctx.options.headers,
+          Authentication: SETTINGS.apiKey,
+          'Content-Type':
+            ctx.options.headers &&
+            'Content-Type' in ctx.options.headers &&
+            !!ctx.options.headers['Content-Type']
+              ? ctx.options.headers['Content-Type']
+              : ctx.options.method === 'POST' || ctx.options.method === 'PUT'
+                ? 'application/json'
+                : ''
+        }
 
         return ctx
-      }
-
-      if (errHandlerMethod === API_ON_ERR.TOAST) {
-        if (ctx.error.customMessage) {
-          toaster.error({ message: ctx.error.customMessage })
+      },
+      async onFetchError(ctx) {
+        if (toValue(errHandlerMethod) === API_ON_ERR.IGNORE) {
           return ctx
         }
 
-        if (ctx.error) {
-          toaster.error({ message: ctx.error })
-        } else {
-          toaster.error({ message: 'Unknown error' })
+        if (ctx.response?.status === 401) {
+          const toast = useToast()
+          toast.error({ message: 'Authentication error, please login again' })
+          await SLStorage.removeItem(SLStorage.SETTINGS.API_KEY)
+          EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED)
+          router.push('/login')
+
+          return ctx
         }
+
+        if (toValue(errHandlerMethod) === API_ON_ERR.TOAST) {
+          if (ctx.error.customMessage) {
+            toaster.error({ message: ctx.error.customMessage })
+            return ctx
+          }
+
+          if (ctx.error) {
+            toaster.error({ message: ctx.error })
+          } else {
+            toaster.error({ message: 'Unknown error' })
+          }
+          return ctx
+        }
+
+        if (toValue(errHandlerMethod) === API_ON_ERR.THROW) throw ctx
+
         return ctx
       }
-
-      if (errHandlerMethod === API_ON_ERR.THROW) {
-        throw ctx
-      }
-      return ctx
-    }
-  },
-  combination: 'chain'
-})
+    },
+    combination: 'chain'
+  })
+}
 
 export type GetUserInfoReturn = {
   name: string
@@ -98,15 +96,7 @@ export const useGetUserInfo = ({
   useFetchOptions?: UseFetchOptions
   onError?: MaybeRefOrGetter<API_ON_ERR>
 } = {}) =>
-  useFetch<GetUserInfoReturn>('/api/user_info', options, {
-    onFetchError(ctx) {
-      ctx.error._onError = toValue(onError)
-      return ctx
-    },
-    ...useFetchOptions
-  })
-    .get()
-    .json()
+  useFetch(onError)('/api/user_info', options, useFetchOptions).get().json<GetUserInfoReturn>()
 
 export const useGetLogout = ({
   options = {},
@@ -116,17 +106,7 @@ export const useGetLogout = ({
   options?: RequestInit
   useFetchOptions?: UseFetchOptions
   onError?: MaybeRefOrGetter<API_ON_ERR>
-} = {}) =>
-  useFetch('/api/logout', options, {
-    immediate: false,
-    onFetchError(ctx) {
-      ctx.error._onError = toValue(onError)
-      return ctx
-    },
-    ...useFetchOptions
-  })
-    .get()
-    .json()
+} = {}) => useFetch(onError)('/api/logout', options, useFetchOptions).get().json()
 
 export type LoginReturn = {
   name: string
@@ -150,17 +130,7 @@ export const usePostLogin = ({
   }>
   useFetchOptions?: UseFetchOptions
   onError?: MaybeRefOrGetter<API_ON_ERR>
-}) =>
-  useFetch<LoginReturn>('/api/auth/login', options, {
-    onFetchError(ctx) {
-      ctx.error._onError = toValue(onError)
-      return ctx
-    },
-    immediate: false,
-    ...useFetchOptions
-  })
-    .post(data)
-    .json()
+}) => useFetch(onError)('/api/auth/login', options, useFetchOptions).post(data).json<LoginReturn>()
 
 export type MFAReturn = {
   name: string
@@ -182,17 +152,7 @@ export const usePostMFA = ({
   }>
   useFetchOptions?: UseFetchOptions
   onError?: MaybeRefOrGetter<API_ON_ERR>
-}) =>
-  useFetch<MFAReturn>('/api/auth/mfa', options, {
-    onFetchError(ctx) {
-      ctx.error._onError = toValue(onError)
-      return ctx
-    },
-    immediate: false,
-    ...useFetchOptions
-  })
-    .post(data)
-    .json()
+}) => useFetch(onError)('/api/auth/mfa', options, useFetchOptions).post(data).json<MFAReturn>()
 
 export type UseGetAliasOptionsReturn = {
   recommendation:
@@ -216,21 +176,15 @@ export const useGetAliasOptions = ({
   useFetchOptions?: UseFetchOptions
   onError?: MaybeRefOrGetter<API_ON_ERR>
 }) =>
-  useFetch<UseGetAliasOptionsReturn>(
+  useFetch(onError)(
     computed(() => `/api/v4/alias/options?hostname=${toValue(hostname)}`),
     options,
-    {
-      onFetchError(ctx) {
-        ctx.error._onError = toValue(onError)
-        return ctx
-      },
-      ...useFetchOptions
-    }
+    useFetchOptions
   )
     .get()
-    .json()
+    .json<UseGetAliasOptionsReturn>()
 
-export type UseGetAliasReturn = Mailbox[]
+export type UseGetAliasReturn = { mailboxes: Mailbox[] }
 
 export const useGetMailboxes = ({
   options = {},
@@ -241,15 +195,7 @@ export const useGetMailboxes = ({
   useFetchOptions?: UseFetchOptions
   onError?: MaybeRefOrGetter<API_ON_ERR>
 } = {}) =>
-  useFetch<UseGetAliasReturn>('/api/mailboxes', options, {
-    onFetchError(ctx) {
-      ctx.error._onError = toValue(onError)
-      return ctx
-    },
-    ...useFetchOptions
-  })
-    .get()
-    .json()
+  useFetch(onError)('/api/mailboxes', options, useFetchOptions).get().json<UseGetAliasReturn>()
 
 export type UsePostGetAliasesReturn = {
   aliases: Alias[]
@@ -270,19 +216,13 @@ export const usePostGetAliases = ({
   useFetchOptions?: UseFetchOptions
   onError?: MaybeRefOrGetter<API_ON_ERR>
 }) =>
-  useFetch<UsePostGetAliasesReturn>(
+  useFetch(onError)(
     computed(() => `/api/v2/aliases?page_id=${toValue(pageId)}`),
     options,
-    {
-      onFetchError(ctx) {
-        ctx.error._onError = toValue(onError)
-        return ctx
-      },
-      ...useFetchOptions
-    }
+    useFetchOptions
   )
     .post(data)
-    .json()
+    .json<UsePostGetAliasesReturn>()
 
 export type UsePostNewAliasReturn = {
   error?: unknown
@@ -305,20 +245,13 @@ export const usePostNewAlias = ({
   useFetchOptions?: UseFetchOptions
   onError?: MaybeRefOrGetter<API_ON_ERR>
 }) =>
-  useFetch<UsePostNewAliasReturn>(
+  useFetch(onError)(
     computed(() => `/api/v2/alias/custom/new?hostname=${toValue(hostname)}`),
     options,
-    {
-      immediate: false,
-      onFetchError(ctx) {
-        ctx.error._onError = toValue(onError)
-        return ctx
-      },
-      ...useFetchOptions
-    }
+    useFetchOptions
   )
     .post(data)
-    .json()
+    .json<UsePostNewAliasReturn>()
 
 export type UsePostNewRandomAliasReturn = {
   error?: unknown
@@ -340,20 +273,13 @@ export const usePostNewRandomAlias = ({
   useFetchOptions?: UseFetchOptions
   onError?: MaybeRefOrGetter<API_ON_ERR>
 }) =>
-  useFetch<UsePostNewRandomAliasReturn>(
+  useFetch(onError)(
     computed(() => newRandomAliasRoute(toValue(hostname))),
     options,
-    {
-      immediate: false,
-      onFetchError(ctx) {
-        ctx.error._onError = toValue(onError)
-        return ctx
-      },
-      ...useFetchOptions
-    }
+    useFetchOptions
   )
     .post(data)
-    .json()
+    .json<UsePostNewRandomAliasReturn>()
 
 export type UsePostToggleAliasReturn = {
   enabled: boolean
@@ -370,20 +296,13 @@ export const usePostToggleAlias = ({
   useFetchOptions?: UseFetchOptions
   onError?: MaybeRefOrGetter<API_ON_ERR>
 }) =>
-  useFetch<UsePostToggleAliasReturn>(
+  useFetch(onError)(
     computed(() => `/api/aliases/${toValue(aliasId)}/toggle`),
     options,
-    {
-      immediate: false,
-      onFetchError(ctx) {
-        ctx.error._onError = toValue(onError)
-        return ctx
-      },
-      ...useFetchOptions
-    }
+    useFetchOptions
   )
     .post()
-    .json()
+    .json<UsePostToggleAliasReturn>()
 
 export const usePutEditAlias = ({
   aliasId,
@@ -403,22 +322,15 @@ export const usePutEditAlias = ({
   useFetchOptions?: UseFetchOptions
   onError?: MaybeRefOrGetter<API_ON_ERR>
 }) =>
-  useFetch<{
-    name: string
-  }>(
+  useFetch(onError)(
     computed(() => `/api/aliases/${toValue(aliasId)}`),
     options,
-    {
-      immediate: false,
-      onFetchError(ctx) {
-        ctx.error._onError = toValue(onError)
-        return ctx
-      },
-      ...useFetchOptions
-    }
+    useFetchOptions
   )
     .put(data)
-    .json()
+    .json<{
+      name: string
+    }>()
 
 export const useDeleteAlias = ({
   aliasId,
@@ -431,17 +343,10 @@ export const useDeleteAlias = ({
   useFetchOptions?: UseFetchOptions
   onError?: MaybeRefOrGetter<API_ON_ERR>
 }) =>
-  useFetch(
+  useFetch(onError)(
     computed(() => `/api/aliases/${toValue(aliasId)}`),
     options,
-    {
-      immediate: false,
-      onFetchError(ctx) {
-        ctx.error._onError = toValue(onError)
-        return ctx
-      },
-      ...useFetchOptions
-    }
+    useFetchOptions
   )
     .delete()
     .json()
@@ -467,20 +372,13 @@ export const usePostCreateReverseAlias = ({
   }>
   onError?: MaybeRefOrGetter<API_ON_ERR>
 }) =>
-  useFetch<CreateReverseAliasReturn>(
+  useFetch(onError)(
     computed(() => `/api/aliases/${toValue(aliasId)}/contacts`),
     options,
-    {
-      immediate: false,
-      onFetchError(ctx) {
-        ctx.error._onError = toValue(onError)
-        return ctx
-      },
-      ...useFetchOptions
-    }
+    useFetchOptions
   )
     .post(data)
-    .json()
+    .json<CreateReverseAliasReturn>()
 
 export type GetApiKeyFromCookieReturn = {
   api_key: string
@@ -504,13 +402,6 @@ export const usePostGetApiKeyFromCookie = ({
   }> | null
   onError?: MaybeRefOrGetter<API_ON_ERR>
 }) =>
-  useFetch<GetApiKeyFromCookieReturn>(apiKeyRoute, options, {
-    onFetchError(ctx) {
-      ctx.error._onError = toValue(onError)
-      return ctx
-    },
-    immediate: false,
-    ...useFetchOptions
-  })
+  useFetch(onError)(apiKeyRoute, options, useFetchOptions)
     .post(data)
-    .json()
+    .json<GetApiKeyFromCookieReturn>()

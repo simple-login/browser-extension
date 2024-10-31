@@ -1,8 +1,9 @@
 <template>
-  <textarea ref="element" v-model="val" :style="computedStyles" @focus="resize" />
+  <BFormTextarea ref="element" v-model="val" :style="computedStyles" @focus="resize" />
 </template>
 
 <script lang="ts" setup>
+import { BFormTextarea } from 'bootstrap-vue-next'
 import { ref, computed, onMounted, watch, nextTick, type StyleValue, useTemplateRef } from 'vue'
 
 const props = withDefaults(
@@ -69,7 +70,7 @@ const resize = () => {
   const important = isHeightImportant.value ? 'important' : ''
   height.value = `auto${important ? ' !important' : ''}`
   nextTick(() => {
-    let contentHeight = (element.value?.scrollHeight ?? 0) + 1
+    let contentHeight = (element.value?.element?.scrollHeight ?? 0) + 1
 
     if (props.minHeight) {
       contentHeight = contentHeight < props.minHeight ? props.minHeight : contentHeight

@@ -3,7 +3,7 @@ import { createWriteStream } from 'fs'
 import { access, mkdir } from 'fs/promises'
 import { join } from 'path'
 import archiver from 'archiver'
-import extPackageJson from '../package.json' assert { type: 'json' }
+import extPackageJson from '../package.json'
 
 const DEST_DIR = join(__dirname, '../dist')
 const DEST_ZIP_DIR = join(__dirname, '../dist-zip')

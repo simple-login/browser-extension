@@ -12,8 +12,6 @@
 </template>
 
 <script setup lang="ts">
-import { BFormCheckbox } from 'bootstrap-vue-next'
-
 const modelValue = defineModel<boolean>({
   required: true
 })

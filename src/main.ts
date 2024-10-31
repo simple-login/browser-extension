@@ -1,4 +1,4 @@
-import { createApp, inject, ref } from 'vue'
+import { createApp } from 'vue'
 import router from './router'
 import { init } from '@sentry/vue'
 
@@ -8,21 +8,9 @@ import { createBootstrap } from 'bootstrap-vue-next'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue-next/dist/bootstrap-vue-next.css'
 import './assets/main.scss'
-import { hasMovedRouterKey } from './utils/keys'
 import SLStorage from './utils/SLStorage'
 
-const app = createApp(App).use(router).provide(hasMovedRouterKey, ref(false))
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-
-router.beforeEach((to, from) => {
-  if (to.fullPath !== from.fullPath) {
-    const val = inject(hasMovedRouterKey)
-    if (val) {
-      val.value = true
-    }
-  }
-})
+const app = createApp(App).use(router)
 
 const initApp = async () => {
   const apiUrl = await SLStorage.getItem(SLStorage.SETTINGS.API_URL)

@@ -13,8 +13,8 @@ import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
 import { BootstrapVueNextResolver } from 'bootstrap-vue-next'
 
-import packageJson from './package.json' assert { type: 'json' }
-import manifest from './public/manifest.json' assert { type: 'json' }
+import packageJson from './package.json'
+import manifest from './public/manifest.json' 
 
 const transformManifest = (): Plugin => ({
   name: 'vite-plugin-transform-manifest',
@@ -76,8 +76,14 @@ const transformManifest = (): Plugin => ({
       myManifest.permissions.push('nativeMessaging')
     }
 
-    console.info(myManifest)
+    if(!process.env.FIREFOX) {
+      // Remove browser_specific_settings for Chrome
+      // @ts-ignore
+      myManifest.browser_specific_settings = undefined
+    }
+
     await writeFile(resolve(__dirname, 'dist', 'manifest.json'), JSON.stringify(myManifest, null, 2))
+    console.info('dist/manifest.json updated')
   }
 })
 
@@ -85,7 +91,6 @@ const transformManifest = (): Plugin => ({
 export default defineConfig({
   base: './',
   build: {
-    sourcemap: true,
     rollupOptions: {
       input: {
         popup: 'index.html',

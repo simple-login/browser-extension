@@ -5,6 +5,11 @@
 </template>
 
 <script lang="ts" setup>
+defineSlots<{
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  default(props: Record<string, never>): any
+}>()
+
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
 const afterEnter = (element: Element) => {
