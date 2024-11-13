@@ -69,7 +69,7 @@
 
       <div v-if="aliasPrefix" class="mb-1 text-center" style="font-size: 14px">
         You're about to create alias
-        <span class="text-primary">{{ aliasPrefix }}{{ signedSuffix?.signed_suffix || '' }}</span>
+        <span class="text-primary">{{ aliasPrefix }}{{ signedSuffix?.suffix || '' }}</span>
       </div>
 
       <hr />
