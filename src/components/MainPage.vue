@@ -224,6 +224,7 @@ import { useApiUrl } from '../composables/useApiUrl'
 import RandomIcon from '~icons/fa-solid/random'
 import PaperPlaneIcon from '~icons/fa-solid/paper-plane'
 import { useModalController } from 'bootstrap-vue-next/composables/useModalController'
+import { useMainPageSuggestedPrefix } from '@/composables/useMainPageSuggestedPrefix'
 
 const toast = useToast()
 const router = useRouter()
@@ -237,7 +238,8 @@ const { apiUrl, apiKey } = await useApiUrl()
 const hostName = ref('')
 const canCreate = ref(true)
 const aliasSuffixes = ref<UseGetAliasOptionsReturn['suffixes']>([])
-const aliasPrefix = ref('')
+const { aliasPrefix, setAliasPrefixWithMustache } = await useMainPageSuggestedPrefix()
+
 const aliasPrefixError = ref('')
 const signedSuffix = ref<Suffix | null>(null)
 const recommendation = ref({
@@ -299,6 +301,7 @@ onMounted(async () => {
 const getAliasOptions = useGetAliasOptions({
   hostname: hostName
 })
+
 watch(getAliasOptions.data, (aliasOptions) => {
   if (!aliasOptions) return
 
@@ -309,8 +312,9 @@ watch(getAliasOptions.data, (aliasOptions) => {
 
   aliasSuffixes.value = aliasOptions.suffixes
   ;[signedSuffix.value] = aliasSuffixes.value
-  aliasPrefix.value = aliasOptions.prefix_suggestion
   canCreate.value = aliasOptions.can_create
+
+  aliasPrefix.value = setAliasPrefixWithMustache(aliasOptions.prefix_suggestion)
 })
 const { data: mailboxes, execute: executeMailboxes } = useGetMailboxes()
 

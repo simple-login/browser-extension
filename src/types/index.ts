@@ -42,3 +42,5 @@ export type Alias = {
   loading?: boolean
   alias: string
 }
+
+export type MustacheViewKeys = 'suggested' | 'random'

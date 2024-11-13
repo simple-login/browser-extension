@@ -55,6 +55,29 @@
         </AppSettingsTableItem>
 
         <AppSettingsTableItem>
+          <template #title> Dynamic alias prefix suggestion </template>
+          <template #description>
+            <div class="mb-1">
+              When used, you can use mustache syntax to generate an alias prefix.
+            </div>
+            The following is a list of available mustache variables:
+            <ul class="mb-1">
+              <li v-for="[key, description] in Object.entries(mustacheOptions)" :key>
+                <bold class="fw-bold">{{ key }}</bold
+                >: {{ description }}
+              </li>
+            </ul>
+            For example:
+            <pre v-pre>spam.{{ random }}.{{ suggested }}.{{ random }}.eggs</pre>
+            Should autofill:
+            <pre>spam.8.extension.5.eggs</pre>
+          </template>
+          <template #bottom>
+            <BFormInput v-model="mustacheOp" @change="onUpdateMustacheOp" />
+          </template>
+        </AppSettingsTableItem>
+
+        <AppSettingsTableItem>
           <template #title> Default alias domain </template>
           <template #description>
             When creating an alias, it will attempt to use this domain as the suffix (with its
@@ -112,13 +135,19 @@ import { useRouter } from 'vue-router'
 import { useApiUrl } from '../composables/useApiUrl'
 import BugIcon from '~icons/fa-solid/bug'
 import AppSettingsTableItem from './AppSettingsTableItem.vue'
-import type { Suffix } from '@/types'
+import type { MustacheViewKeys, Suffix } from '@/types'
 
 const toast = useToast()
 const router = useRouter()
 const { theme } = useTheme()
 
+const mustacheOptions = {
+  random: 'A single random digit',
+  suggested: 'Usually the hostname of the current page'
+} as const satisfies Record<MustacheViewKeys, string>
+
 const showSLButton = ref(false)
+const mustacheOp = ref<string | number | null>('')
 const positionSLButton = ref('right-inside')
 const defaultDomainForSuffix = ref<Suffix | null>(null)
 const reportURISLButton = ref('')
@@ -152,16 +181,26 @@ const defaultDomainForSuffixOptions = computed(() => [
   }))
 ])
 
+const getDefaultDomainForSuffix = async () => {
+  const [domainForSuffix] = await Promise.all([
+    SLStorage.getItem('DEFAULT_DOMAIN_FOR_SUFFIX'),
+    getAliasOptions.execute()
+  ])
+  defaultDomainForSuffix.value =
+    getAliasOptions.data.value?.suffixes.find((el) => el.suffix.includes(domainForSuffix)) || null
+}
+
+const onUpdateMustacheOp = async () => {
+  await SLStorage.setItem('ALIAS_PREFIX_MUSTACHE_TEMPLATE', mustacheOp.value?.toString() || null)
+  showSavedSettingsToast()
+}
+
 onMounted(async () => {
   // This before others
   hostName.value = await getHostName()
+  await getDefaultDomainForSuffix()
 
-  await getAliasOptions.execute()
-  // must be lower than getAliasOptions.execute()
-  const domainForSuffix = await SLStorage.getItem('DEFAULT_DOMAIN_FOR_SUFFIX')
-  defaultDomainForSuffix.value =
-    getAliasOptions.data.value?.suffixes.find((el) => el.suffix.includes(domainForSuffix)) || null
-
+  mustacheOp.value = (await SLStorage.getItem('ALIAS_PREFIX_MUSTACHE_TEMPLATE')) || null
   showSLButton.value = await SLStorage.getItem('SHOW_SL_BUTTON')
   positionSLButton.value = await SLStorage.getItem('SL_BUTTON_POSITION')
 

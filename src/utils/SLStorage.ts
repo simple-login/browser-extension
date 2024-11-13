@@ -14,7 +14,8 @@ class SLStorage {
     THEME: 'SLTheme',
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     EXTRA_ALLOWED_DOMAINS: [] as any,
-    DEFAULT_DOMAIN_FOR_SUFFIX: null as string | null
+    DEFAULT_DOMAIN_FOR_SUFFIX: null as string | null,
+    ALIAS_PREFIX_MUSTACHE_TEMPLATE: null as string | null
   } as const
 
   static DEFAULT_SETTINGS = {
@@ -25,7 +26,8 @@ class SLStorage {
     SL_BUTTON_POSITION: 'right-inside',
     THEME: THEME_SYSTEM as typeof THEME_SYSTEM | typeof THEME_DARK | typeof THEME_LIGHT,
     EXTRA_ALLOWED_DOMAINS: (import.meta.env.VITE_EXTRA_ALLOWED_DOMAINS || '').split(','),
-    DEFAULT_DOMAIN_FOR_SUFFIX: null
+    DEFAULT_DOMAIN_FOR_SUFFIX: null,
+    ALIAS_PREFIX_MUSTACHE_TEMPLATE: null
   } as const satisfies Record<keyof typeof this.SETTINGS, unknown>
 
   static setItem(key: keyof typeof this.SETTINGS, value: unknown) {
