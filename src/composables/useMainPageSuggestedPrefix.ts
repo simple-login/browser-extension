@@ -1,16 +1,18 @@
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import SLStorage from '../utils/SLStorage'
 import type { MustacheViewKeys } from '../types'
 import mustache from 'mustache'
+
+const ALIAS_PREFIX_REGEX = /^[0-9a-z-_.]+$/
 
 export const useMainPageSuggestedPrefix = async () => {
   const aliasPrefixMustacheTemplate: string | null =
     (await SLStorage.getItem('ALIAS_PREFIX_MUSTACHE_TEMPLATE')) || null
 
   const aliasPrefix = ref('')
+  const aliasPrefixError = ref('')
 
   const setAliasPrefixWithMustache = (suggestion: string) => {
-    console.log(suggestion)
     if (!aliasPrefixMustacheTemplate) return suggestion
     return mustache.render(aliasPrefixMustacheTemplate, {
       suggested: () => suggestion,
@@ -18,5 +20,18 @@ export const useMainPageSuggestedPrefix = async () => {
     } satisfies Record<MustacheViewKeys, unknown>)
   }
 
-  return { aliasPrefix, setAliasPrefixWithMustache }
+  watch(aliasPrefix, () => {
+    aliasPrefixError.value = ''
+  })
+
+  const validateAliasPrefix = () => {
+    if (aliasPrefix.value.match(ALIAS_PREFIX_REGEX) === null) {
+      aliasPrefixError.value =
+        'Only lowercase letters, dots, numbers, dashes (-) and underscores (_) are currently supported.'
+      return false
+    }
+    return true
+  }
+
+  return { aliasPrefix, setAliasPrefixWithMustache, aliasPrefixError, validateAliasPrefix }
 }
