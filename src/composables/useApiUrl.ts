@@ -10,7 +10,7 @@ export const useApiUrl = async (opts: { immediate?: boolean } = { immediate: tru
   const getApiUrl = async () => {
     try {
       apiUrlLoading.value = true
-      const resp = await SLStorage.getItem(SLStorage.SETTINGS.API_URL)
+      const resp = await SLStorage.getItem('API_URL')
       apiUrl.value = resp
       return resp
     } finally {
@@ -20,7 +20,7 @@ export const useApiUrl = async (opts: { immediate?: boolean } = { immediate: tru
   const getApiKey = async () => {
     try {
       apiKeyLoading.value = true
-      const resp = await SLStorage.getItem(SLStorage.SETTINGS.API_KEY)
+      const resp = await SLStorage.getItem('API_KEY')
       apiKey.value = resp
       return resp
     } finally {

@@ -5,10 +5,7 @@ class EventManager {
     SETTINGS_CHANGED: 'settings_changed'
   } as const
 
-  static addListener(
-    eventName: (typeof this.EVENT)[keyof typeof this.EVENT],
-    callback: (data: unknown) => void
-  ) {
+  static addListener(eventName: keyof typeof this.EVENT, callback: (data: unknown) => void) {
     if (!listeners[eventName]) {
       listeners[eventName] = []
     }
@@ -27,10 +24,7 @@ class EventManager {
     }
   }
 
-  static broadcast(
-    eventName: (typeof this.EVENT)[keyof typeof this.EVENT],
-    data: unknown = undefined
-  ) {
+  static broadcast(eventName: keyof typeof this.EVENT, data: unknown = undefined) {
     if (listeners[eventName]) {
       for (const callback of listeners[eventName]) {
         callback(data)

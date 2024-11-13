@@ -4,7 +4,7 @@ import SLStorage from '../utils/SLStorage'
 import EventManager from '../utils/EventManager'
 import { useRouter } from 'vue-router'
 import { computed, type MaybeRefOrGetter, toValue } from 'vue'
-import type { Alias, Mailbox } from '../types'
+import type { Alias, Mailbox, Suffix } from '../types'
 import { SETTINGS, apiKeyRoute, newRandomAliasRoute, reloadSettings } from '../utils/api'
 
 export const enum API_ON_ERR {
@@ -49,8 +49,8 @@ const useFetch = (errHandlerMethod: MaybeRefOrGetter<API_ON_ERR> = API_ON_ERR.IG
         if (ctx.response?.status === 401) {
           const toast = useToast()
           toast.error({ message: 'Authentication error, please login again' })
-          await SLStorage.removeItem(SLStorage.SETTINGS.API_KEY)
-          EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED)
+          await SLStorage.removeItem('API_KEY')
+          EventManager.broadcast('SETTINGS_CHANGED')
           router.push('/login')
 
           return ctx
@@ -81,9 +81,11 @@ const useFetch = (errHandlerMethod: MaybeRefOrGetter<API_ON_ERR> = API_ON_ERR.IG
 
 export type GetUserInfoReturn = {
   name: string
-  email: string
   is_premium: boolean
+  email: string
   in_trial: boolean
+  max_alias_free: number
+  is_connected_with_proton: boolean
   can_create_reverse_alias: boolean
 }
 
@@ -155,14 +157,13 @@ export const usePostMFA = ({
 }) => useFetch(onError)('/api/auth/mfa', options, useFetchOptions).post(data).json<MFAReturn>()
 
 export type UseGetAliasOptionsReturn = {
-  recommendation:
-    | undefined
-    | {
-        alias: string
-      }
-  suffixes: [string, string][]
-  prefix_suggestion: string
   can_create: boolean
+  suffixes: Suffix[]
+  prefix_suggestion: string
+  recommendation: {
+    alias: string
+    hostname: string
+  }
 }
 
 export const useGetAliasOptions = ({
@@ -177,7 +178,7 @@ export const useGetAliasOptions = ({
   onError?: MaybeRefOrGetter<API_ON_ERR>
 }) =>
   useFetch(onError)(
-    computed(() => `/api/v4/alias/options?hostname=${toValue(hostname)}`),
+    computed(() => `/api/v5/alias/options?hostname=${toValue(hostname)}`),
     options,
     useFetchOptions
   )
@@ -240,7 +241,7 @@ export const usePostNewAlias = ({
   data: MaybeRefOrGetter<{
     alias_prefix: string
     signed_suffix: string
-    note: string
+    note: string | undefined
   }> | null
   useFetchOptions?: UseFetchOptions
   onError?: MaybeRefOrGetter<API_ON_ERR>
@@ -314,9 +315,9 @@ export const usePutEditAlias = ({
   aliasId: MaybeRefOrGetter<string>
   options?: RequestInit
   data: MaybeRefOrGetter<{
-    note: string
-    name: string
-    disable_pgp: boolean
+    note: string | undefined
+    name: string | undefined
+    disable_pgp: boolean | undefined
     mailbox_ids: string[]
   }>
   useFetchOptions?: UseFetchOptions

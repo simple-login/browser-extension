@@ -12,14 +12,14 @@ const finalizeExtensionSetup = async (apiKey: string) => {
     return
   }
 
-  await SLStorage.setItem(SLStorage.SETTINGS.API_KEY, apiKey)
+  await SLStorage.setItem('API_KEY', apiKey)
 
   const currentTab = await tabs.query({
     active: true,
     currentWindow: true
   })
 
-  const apiUrl = await SLStorage.getItem(SLStorage.SETTINGS.API_URL)
+  const apiUrl = await SLStorage.getItem('API_URL')
   const url = `${apiUrl}/onboarding/final`
   await tabs.update(currentTab[0].id, {
     url
@@ -32,14 +32,13 @@ const finalizeExtensionSetup = async (apiKey: string) => {
 const handleGetAppSettings = async () => {
   return {
     showSLButton:
-      (await SLStorage.getItem(SLStorage.SETTINGS.API_KEY)) !== '' &&
-      (await SLStorage.getItem(SLStorage.SETTINGS.SHOW_SL_BUTTON)),
-    SLButtonPosition: await SLStorage.getItem(SLStorage.SETTINGS.SL_BUTTON_POSITION)
+      (await SLStorage.getItem('API_KEY')) !== '' && (await SLStorage.getItem('SHOW_SL_BUTTON')),
+    SLButtonPosition: await SLStorage.getItem('SL_BUTTON_POSITION')
   }
 }
 
 const handleExtensionSetup = async () => {
-  const apiUrl = await SLStorage.getItem(SLStorage.SETTINGS.API_URL)
+  const apiUrl = await SLStorage.getItem('API_URL')
 
   const url = `${apiUrl}${apiKeyRoute}`
   const res = await fetch(url, {
@@ -70,7 +69,7 @@ const handleExtensionSetup = async () => {
  */
 const isMessageAllowed = async (url: string) => {
   const requestUrl = new URL(url)
-  const apiUrlValue = (await SLStorage.getItem(SLStorage.SETTINGS.API_URL)) as string
+  const apiUrlValue = (await SLStorage.getItem('API_URL')) as string
   const apiUrl = new URL(apiUrlValue)
 
   const allowedSources = [
@@ -80,7 +79,7 @@ const isMessageAllowed = async (url: string) => {
     new RegExp('^.*\\.protonmail\\.com$')
   ]
 
-  const extraAllowedDomains = SLStorage.DEFAULT_SETTINGS[SLStorage.SETTINGS.EXTRA_ALLOWED_DOMAINS]
+  const extraAllowedDomains = SLStorage.DEFAULT_SETTINGS['EXTRA_ALLOWED_DOMAINS']
   for (const extra of extraAllowedDomains) {
     allowedSources.push(new RegExp(extra))
   }
@@ -125,7 +124,7 @@ runtime.onMessage.addListener(async (request: any, sender) => {
     // On Safari the background script won't set cookies properly in API calls (see https://bugs.webkit.org/show_bug.cgi?id=260676),
     // so we will return the API URL to the content script which will make the API call with cookies properly set
     return import.meta.env.VITE_MAC
-      ? await SLStorage.getItem(SLStorage.SETTINGS.API_URL)
+      ? await SLStorage.getItem('API_URL')
       : await handleExtensionSetup()
   } else if (request.tag === 'EXTENSION_INSTALLED_QUERY') {
     return handleExtensionInstalledQuery()

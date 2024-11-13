@@ -6,7 +6,7 @@ export const initService = () => {
     if (reason === 'install') {
       await SLStorage.clear()
 
-      const apiUrl = await SLStorage.getItem(SLStorage.SETTINGS.API_URL)
+      const apiUrl = await SLStorage.getItem('API_URL')
       await tabs.create({
         url: `${apiUrl}/onboarding`
       })

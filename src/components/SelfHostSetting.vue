@@ -38,12 +38,10 @@ const saveApiUrl = async () => {
 
   // save apiUrl to storage
   await SLStorage.setItem(
-    SLStorage.SETTINGS.API_URL,
-    apiUrl.value.trim() !== ''
-      ? apiUrl.value
-      : SLStorage.DEFAULT_SETTINGS[SLStorage.SETTINGS.API_URL]
+    'API_URL',
+    apiUrl.value.trim() !== '' ? apiUrl.value : SLStorage.DEFAULT_SETTINGS['API_URL']
   )
-  EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED)
+  EventManager.broadcast('SETTINGS_CHANGED')
 
   toast.success({ message: 'API URL saved successfully' })
 }

@@ -8,15 +8,15 @@ export const SETTINGS = {
 
 export const reloadSettings = async () => {
   ;[SETTINGS.apiKey, SETTINGS.apiUrl] = await Promise.all([
-    SLStorage.getItem(SLStorage.SETTINGS.API_KEY),
-    SLStorage.getItem(SLStorage.SETTINGS.API_URL)
+    SLStorage.getItem('API_KEY'),
+    SLStorage.getItem('API_URL')
   ])
 }
 
 export const initService = async () => {
   await reloadSettings()
 
-  EventManager.addListener(EventManager.EVENT.SETTINGS_CHANGED, reloadSettings)
+  EventManager.addListener('SETTINGS_CHANGED', reloadSettings)
 }
 
 export const apiKeyRoute = '/api/api_key'

@@ -13,40 +13,36 @@ class SLStorage {
     SL_BUTTON_POSITION: 'SLButtonPosition',
     THEME: 'SLTheme',
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    EXTRA_ALLOWED_DOMAINS: [] as any
-  }
+    EXTRA_ALLOWED_DOMAINS: [] as any,
+    DEFAULT_DOMAIN_FOR_SUFFIX: null as string | null
+  } as const
 
   static DEFAULT_SETTINGS = {
-    [SLStorage.SETTINGS.API_URL]:
-      import.meta.env.VITE_DEFAULT_API_URL || 'https://app.simplelogin.io',
-    [SLStorage.SETTINGS.API_KEY]: '',
-    [SLStorage.SETTINGS.NOT_ASKING_RATE]: false,
-    [SLStorage.SETTINGS.SHOW_SL_BUTTON]: true,
-    [SLStorage.SETTINGS.SL_BUTTON_POSITION]: 'right-inside',
-    [SLStorage.SETTINGS.THEME]: THEME_SYSTEM as
-      | typeof THEME_SYSTEM
-      | typeof THEME_DARK
-      | typeof THEME_LIGHT,
-    [SLStorage.SETTINGS.EXTRA_ALLOWED_DOMAINS]: (
-      import.meta.env.VITE_EXTRA_ALLOWED_DOMAINS || ''
-    ).split(',')
-  }
+    API_URL: import.meta.env.VITE_DEFAULT_API_URL || 'https://app.simplelogin.io',
+    API_KEY: '',
+    NOT_ASKING_RATE: false,
+    SHOW_SL_BUTTON: true,
+    SL_BUTTON_POSITION: 'right-inside',
+    THEME: THEME_SYSTEM as typeof THEME_SYSTEM | typeof THEME_DARK | typeof THEME_LIGHT,
+    EXTRA_ALLOWED_DOMAINS: (import.meta.env.VITE_EXTRA_ALLOWED_DOMAINS || '').split(','),
+    DEFAULT_DOMAIN_FOR_SUFFIX: null
+  } as const satisfies Record<keyof typeof this.SETTINGS, unknown>
 
-  static setItem(key: (typeof this.SETTINGS)[keyof typeof this.SETTINGS], value: unknown) {
+  static setItem(key: keyof typeof this.SETTINGS, value: unknown) {
     return browserStorage.sync.set({ [key as string]: value })
   }
 
-  static async getItem(key: (typeof this.SETTINGS)[keyof typeof this.SETTINGS]) {
+  static async getItem(key: keyof typeof this.SETTINGS) {
     const data = await browserStorage.sync.get(key)
 
     if (data[key as string] === undefined || data[key as string] === null) {
-      return SLStorage.DEFAULT_SETTINGS[key as string] || ''
+      return SLStorage.DEFAULT_SETTINGS[key] || ''
     } else {
       return data[key as string]
     }
   }
 
-  static removeItem(key: (typeof this.SETTINGS)[keyof typeof this.SETTINGS]) {
+  static removeItem(key: keyof typeof this.SETTINGS) {
     return browserStorage.sync.remove(key as string)
   }
 

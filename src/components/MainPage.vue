@@ -69,7 +69,7 @@
 
       <div v-if="aliasPrefix" class="mb-1 text-center" style="font-size: 14px">
         You're about to create alias
-        <span class="text-primary">{{ aliasPrefix }}{{ signedSuffix?.[0] || '' }}</span>
+        <span class="text-primary">{{ aliasPrefix }}{{ signedSuffix?.signed_suffix || '' }}</span>
       </div>
 
       <hr />
@@ -204,7 +204,7 @@ import { computed, onMounted, ref, useTemplateRef, watch } from 'vue'
 import SLStorage from '../utils/SLStorage'
 import AliasMoreOptions from './AliasMoreOptions.vue'
 import { useToast } from '../composables/useToast'
-import type { Alias } from '../types'
+import type { Alias, Suffix } from '../types'
 import { getHostName, getDefaultNote } from '../utils'
 import { useRouter } from 'vue-router'
 import { runtime as browserRuntime, tabs as browserTabs } from 'webextension-polyfill'
@@ -217,7 +217,8 @@ import {
   usePostNewRandomAlias,
   useGetAliasOptions,
   useGetMailboxes,
-  API_ON_ERR
+  API_ON_ERR,
+  type UseGetAliasOptionsReturn
 } from '../composables/useApi'
 import { useApiUrl } from '../composables/useApiUrl'
 import RandomIcon from '~icons/fa-solid/random'
@@ -235,10 +236,10 @@ const { apiUrl, apiKey } = await useApiUrl()
 // hostName obtained from chrome tabs query
 const hostName = ref('')
 const canCreate = ref(true)
-const aliasSuffixes = ref<[string, string][]>([])
+const aliasSuffixes = ref<UseGetAliasOptionsReturn['suffixes']>([])
 const aliasPrefix = ref('')
 const aliasPrefixError = ref('')
-const signedSuffix = ref<[string, string] | null>(null)
+const signedSuffix = ref<Suffix | null>(null)
 const recommendation = ref({
   show: false,
   alias: ''
@@ -247,7 +248,7 @@ const recommendation = ref({
 const aliasFormSelectOptions = computed(() =>
   aliasSuffixes.value.map((suffix) => ({
     value: suffix,
-    text: suffix[0]
+    text: suffix.suffix
   }))
 )
 
@@ -259,9 +260,22 @@ const contentElem = useTemplateRef('contentElem')
 
 onMounted(async () => {
   try {
+    // getUserOptions needs this first
     hostName.value = await getHostName()
 
-    await getUserOptions()
+    const [domainForSuffix] = await Promise.all([
+      SLStorage.getItem('DEFAULT_DOMAIN_FOR_SUFFIX'),
+      getUserOptions()
+    ])
+
+    if (domainForSuffix) {
+      const found = aliasFormSelectOptions.value.find((el) =>
+        el.value.suffix.includes(domainForSuffix)
+      )
+      if (found) {
+        signedSuffix.value = found.value || null
+      }
+    }
 
     if (apiKey.value && import.meta.env.VITE_MAC) {
       console.log('send api key to host app')
@@ -402,7 +416,7 @@ const createCustomAlias = async () => {
   await postNewAlias
     .post({
       alias_prefix: aliasPrefix.value,
-      signed_suffix: signedSuffix.value[1],
+      signed_suffix: signedSuffix.value.signed_suffix,
       note: await getDefaultNote()
     })
     .execute()
