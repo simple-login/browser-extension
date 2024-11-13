@@ -129,8 +129,9 @@ const hostName = ref('')
 const getAliasOptions = useGetAliasOptions({
   hostname: hostName
 })
+const getUrlFromString = (url: string) => url.split('@')[1] || null
 const handleDefaultDomainForSuffixChange = async () => {
-  const hostname = defaultDomainForSuffix.value?.suffix.split('@')[1] || null
+  const hostname = getUrlFromString(defaultDomainForSuffix.value?.suffix || '') || null
   if (!hostname) {
     await SLStorage.removeItem('DEFAULT_DOMAIN_FOR_SUFFIX')
   } else {
@@ -146,7 +147,7 @@ const defaultDomainForSuffixOptions = computed(() => [
     value: null
   },
   ...(getAliasOptions.data.value?.suffixes || []).map((el) => ({
-    text: el.suffix,
+    text: getUrlFromString(el.suffix) || '',
     value: el
   }))
 ])
