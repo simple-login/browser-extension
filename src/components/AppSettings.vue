@@ -112,7 +112,6 @@ import { useRouter } from 'vue-router'
 import { useApiUrl } from '../composables/useApiUrl'
 import BugIcon from '~icons/fa-solid/bug'
 import AppSettingsTableItem from './AppSettingsTableItem.vue'
-import { BPlaceholder } from 'bootstrap-vue-next'
 import type { Suffix } from '@/types'
 
 const toast = useToast()
