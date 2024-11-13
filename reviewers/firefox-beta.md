@@ -1,5 +1,4 @@
-SimpleLogin Chrome/Firefox extension
----
+# SimpleLogin Chrome/Firefox extension
 
 Please find below the instructions for building the SimpleLogin extension from source.
 
@@ -9,9 +8,9 @@ Please run the following commands to install dependencies and generate a build
 
 ```bash
 export NODE_OPTIONS=--openssl-legacy-provider
-npm install
-npm run build:firefox:beta
-npm run build-zip
+bun install
+bun run build:firefox:beta
+bun run generate:zip
 ```
 
 After that the build should be available in `/dist` folder. Its zip file can be found in `dist-zip` folder.
