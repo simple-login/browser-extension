@@ -69,8 +69,8 @@ const saveApiKey = async () => {
   }
   await execute()
   const userName = data.value?.name || data.value?.email
-  await SLStorage.setItem(SLStorage.SETTINGS.API_KEY, apiKey.value)
-  EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED)
+  await SLStorage.setItem('API_KEY', apiKey.value)
+  EventManager.broadcast('SETTINGS_CHANGED')
 
   toast.success({ message: `Hi ${userName}!` })
   router.push('/main')

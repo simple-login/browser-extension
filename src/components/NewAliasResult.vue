@@ -76,7 +76,7 @@ const showVoteScreen = ref(false)
 const extensionUrl = getExtensionURL()
 
 onMounted(async () => {
-  const notAskingRate = await SLStorage.getItem(SLStorage.SETTINGS.NOT_ASKING_RATE)
+  const notAskingRate = await SLStorage.getItem('NOT_ASKING_RATE')
   if (notAskingRate) showVoteScreen.value = false
   // TODO showVoteScreen 1 day after user installed plugin
   else showVoteScreen.value = getRandomIntBetween(0, 10) % 2 === 0
@@ -95,7 +95,7 @@ const backToMainPage = () => router.replace('/main')
 
 const doNotAskRateAgain = () => {
   showVoteScreen.value = false
-  SLStorage.setItem(SLStorage.SETTINGS.NOT_ASKING_RATE, true)
+  SLStorage.setItem('NOT_ASKING_RATE', true)
 }
 
 const newAliasClipboard = useClipboard({

@@ -12,11 +12,11 @@ import SLStorage from './utils/SLStorage'
 const app = createApp(App).use(router)
 
 const initApp = async () => {
-  const apiUrl = await SLStorage.getItem(SLStorage.SETTINGS.API_URL)
+  const apiUrl = await SLStorage.getItem('API_URL')
 
   if (
     // only enable Sentry for non self-hosting users
-    apiUrl === SLStorage.DEFAULT_SETTINGS[SLStorage.SETTINGS.API_URL] &&
+    apiUrl === SLStorage.DEFAULT_SETTINGS['API_URL'] &&
     // and not in development mode
     import.meta.env.PROD
   ) {

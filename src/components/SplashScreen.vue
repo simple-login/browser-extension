@@ -54,8 +54,8 @@ onMounted(async () => {
     await execute()
     apiKey.value = data.value?.api_key || ''
     if (apiKey.value) {
-      await SLStorage.setItem(SLStorage.SETTINGS.API_KEY, apiKey.value)
-      EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED)
+      await SLStorage.setItem('API_KEY', apiKey.value)
+      EventManager.broadcast('SETTINGS_CHANGED')
 
       router.push('/main')
     } else {

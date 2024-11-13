@@ -195,8 +195,8 @@ const login = async () => {
   const data = useLogin.data
   if (data.value?.api_key) {
     const userName = data.value?.name || data.value?.email
-    await SLStorage.setItem(SLStorage.SETTINGS.API_KEY, data.value?.api_key)
-    EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED)
+    await SLStorage.setItem('API_KEY', data.value?.api_key)
+    EventManager.broadcast('SETTINGS_CHANGED')
 
     sayHiToast(userName)
 
@@ -226,9 +226,9 @@ const submitMfaCode = async () => {
   const data = useMFA.data
   const userName = data.value?.name || data.value?.email
   if (data.value?.api_key) {
-    await SLStorage.setItem(SLStorage.SETTINGS.API_KEY, data.value.api_key)
+    await SLStorage.setItem('API_KEY', data.value.api_key)
   }
-  EventManager.broadcast(EventManager.EVENT.SETTINGS_CHANGED)
+  EventManager.broadcast('SETTINGS_CHANGED')
 
   sayHiToast(userName ?? '')
 

@@ -105,7 +105,7 @@ const canShowSettingsButton = ref(true)
 const reportBugUri = ref('')
 
 onMounted(async () => {
-  EventManager.addListener(EventManager.EVENT.SETTINGS_CHANGED, fetchApiData)
+  EventManager.addListener('SETTINGS_CHANGED', fetchApiData)
 
   setReportBugUri()
 })

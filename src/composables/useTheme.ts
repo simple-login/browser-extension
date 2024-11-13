@@ -12,7 +12,7 @@ export const THEME_LABELS = {
 
 export const useTheme = () => {
   const prefersDark = usePreferredDark()
-  const theme = useStorageAsync<Theme>(SLStorage.SETTINGS.THEME, THEME_SYSTEM, {
+  const theme = useStorageAsync<Theme>('THEME', THEME_SYSTEM, {
     getItem: SLStorage.getItem,
     setItem: SLStorage.setItem,
     removeItem: SLStorage.removeItem
@@ -39,8 +39,8 @@ export const useTheme = () => {
   watch(
     theme,
     (newValue, previousValue) => {
-      handleBootstrapTheme(newValue)
-      handleNativeTheme(newValue, previousValue)
+      handleBootstrapTheme(newValue as Theme)
+      handleNativeTheme(newValue as Theme, previousValue as Theme)
     },
     {
       immediate: true
