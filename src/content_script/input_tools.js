@@ -164,6 +164,32 @@ if (!window._hasExecutedSlExtension) {
           updatePosition();
         },
 
+        setInputValue(input, value) {
+          // Accessing the original setter in the input element's prototype \
+          // to update the value, thus bypassing React's getters/setters.
+          const prototype = Object.getPrototypeOf(input);
+          const descriptor = Object.getOwnPropertyDescriptor(
+            prototype,
+            "value"
+          );
+          const valueSetter = descriptor ? descriptor.set : null;
+
+          if (valueSetter) {
+            valueSetter.call(input, value);
+          } else {
+            // Fallback for environments where the setter is not found
+            input.value = value;
+          }
+
+          // Dispatch a bubbling 'input' event to trigger React's event system.
+          // Also can help other frameworks, or even Vanilla JS to register
+          // other event handlers, such as 'onchange' and/or 'oninput'.
+          // They might help to get an intended behaviour out of an input, such
+          // as input validation, etc.
+          const event = new Event("input", { bubbles: true });
+          input.dispatchEvent(event);
+        },
+
         async handleOnClickSLButton(inputElem, slButton) {
           if (InputTools.isLoading) {
             return;
@@ -182,7 +208,7 @@ if (!window._hasExecutedSlExtension) {
           InputTools.isLoading = false;
           slButton.classList.remove("loading");
 
-          inputElem.value = res.alias;
+          InputTools.setInputValue(inputElem, res.alias);
         },
 
         sumPixel(dimensions) {
