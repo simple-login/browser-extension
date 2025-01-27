@@ -174,6 +174,10 @@ if (!window._hasExecutedSlExtension) {
           );
           const valueSetter = descriptor ? descriptor.set : null;
 
+          // More on why we're dispatching an event at the end of the function definition.
+          const focusEvent = new Event("focus", { bubbles: true });
+          input.dispatchEvent(focusEvent);
+
           if (valueSetter) {
             valueSetter.call(input, value);
           } else {
@@ -181,13 +185,19 @@ if (!window._hasExecutedSlExtension) {
             input.value = value;
           }
 
-          // Dispatch a bubbling 'input' event to trigger React's event system.
-          // Also can help other frameworks, or even Vanilla JS to register
-          // other event handlers, such as 'onchange' and/or 'oninput'.
-          // They might help to get an intended behaviour out of an input, such
-          // as input validation, etc.
-          const event = new Event("input", { bubbles: true });
-          input.dispatchEvent(event);
+          // Define and dispatch a bubbling 'input' event to trigger React's event system.
+          const inputEvent = new Event("input", { bubbles: true });
+          input.dispatchEvent(inputEvent);
+          // 'input' and 'change' events are interchangable to React's event system when \
+          // it comes to updating the value. Since we're already dispatching an event, we \
+          // might as well trigger 'change' for any other case when events are handled by \
+          // a standard DOM (i.e Vanilla JS/other frameworks) and have different functionality.
+          const changeEvent = new Event("change", { bubbles: true });
+          input.dispatchEvent(changeEvent);
+          // We can also dispatch 'blur' event to emulate natural user behaviour and intended UX.
+          // Simply changing the input.value doesn't trigget any events.
+          const blurEvent = new Event("blur", { bubbles: true });
+          input.dispatchEvent(blurEvent);
         },
 
         async handleOnClickSLButton(inputElem, slButton) {
