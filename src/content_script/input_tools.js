@@ -164,6 +164,42 @@ if (!window._hasExecutedSlExtension) {
           updatePosition();
         },
 
+        setInputValue(input, value) {
+          // Accessing the original setter in the input element's prototype \
+          // to update the value, thus bypassing React's getters/setters.
+          const prototype = Object.getPrototypeOf(input);
+          const descriptor = Object.getOwnPropertyDescriptor(
+            prototype,
+            "value"
+          );
+          const valueSetter = descriptor ? descriptor.set : null;
+
+          // More on why we're dispatching an event at the end of the function definition.
+          const focusEvent = new Event("focus", { bubbles: true });
+          input.dispatchEvent(focusEvent);
+
+          if (valueSetter) {
+            valueSetter.call(input, value);
+          } else {
+            // Fallback for environments where the setter is not found
+            input.value = value;
+          }
+
+          // Define and dispatch a bubbling 'input' event to trigger React's event system.
+          const inputEvent = new Event("input", { bubbles: true });
+          input.dispatchEvent(inputEvent);
+          // 'input' and 'change' events are interchangable to React's event system when \
+          // it comes to updating the value. Since we're already dispatching an event, we \
+          // might as well trigger 'change' for any other case when events are handled by \
+          // a standard DOM (i.e Vanilla JS/other frameworks) and have different functionality.
+          const changeEvent = new Event("change", { bubbles: true });
+          input.dispatchEvent(changeEvent);
+          // We can also dispatch 'blur' event to emulate natural user behaviour and intended UX.
+          // Simply changing the input.value doesn't trigget any events.
+          const blurEvent = new Event("blur", { bubbles: true });
+          input.dispatchEvent(blurEvent);
+        },
+
         async handleOnClickSLButton(inputElem, slButton) {
           if (InputTools.isLoading) {
             return;
@@ -182,7 +218,7 @@ if (!window._hasExecutedSlExtension) {
           InputTools.isLoading = false;
           slButton.classList.remove("loading");
 
-          inputElem.value = res.alias;
+          InputTools.setInputValue(inputElem, res.alias);
         },
 
         sumPixel(dimensions) {
