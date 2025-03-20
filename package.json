@@ -1,6 +1,6 @@
 {
   "name": "simplelogin-extension",
-  "version": "3.0.6",
+  "version": "3.0.7",
   "betaRev": "0",
   "description": "SimpleLogin Browser Extension",
   "author": "extension@simplelogin.io",
@@ -10,6 +10,7 @@
     "prettier:write": "npm run prettier -- --write",
     "prettier:check": "prettier --check \"src/**/*.{js,vue}\"",
     "build": "cross-env NODE_ENV=production webpack",
+    "build:dev": "cross-env NODE_ENV=development webpack",
     "build:firefox": "cross-env NODE_ENV=production FIREFOX=1 webpack",
     "build:firefox:beta": "cross-env NODE_ENV=production BETA=1 FIREFOX=1 webpack",
     "build:lite": "cross-env NODE_ENV=production LITE=1 webpack",

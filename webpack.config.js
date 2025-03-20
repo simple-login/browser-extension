@@ -159,12 +159,17 @@ const config = {
   ],
 };
 
+console.log(`[Build] Using config.mode = ${config.mode}`);
+
 if (config.mode === 'development') {
+  const pluginConfig = {
+    'devConfig': JSON.stringify(devConfig),
+    'process.env.BETA': JSON.stringify(!!process.env.BETA),
+  };
+
+  console.log(`[development] Using pluginConfig: ${JSON.stringify(pluginConfig)}`);
   config.plugins = (config.plugins || []).concat([
-    new webpack.DefinePlugin({
-      'devConfig': JSON.stringify(devConfig),
-      'process.env.BETA': JSON.stringify(!!process.env.BETA),
-    }),
+    new webpack.DefinePlugin(pluginConfig),
   ]);
 }
 
@@ -177,14 +182,16 @@ if (process.env.MAC){
 }
 
 if (config.mode === 'production') {
+  const pluginConfig = {
+    'devConfig': 'null',
+    'process.env': {
+    'NODE_ENV': '"production"',
+      'BETA': JSON.stringify(!!process.env.BETA),
+    }
+  };
+  console.log(`[production] Using pluginConfig: ${JSON.stringify(pluginConfig)}`);
   config.plugins = (config.plugins || []).concat([
-    new webpack.DefinePlugin({
-      'devConfig': 'null',
-      'process.env': {
-        'NODE_ENV': '"production"',
-        'BETA': JSON.stringify(!!process.env.BETA),
-      },
-    }),
+    new webpack.DefinePlugin(pluginConfig),
   ]);
 }
 

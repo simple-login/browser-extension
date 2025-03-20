@@ -14,10 +14,12 @@ import Utils from "../popup/Utils";
  * Get app settings
  */
 async function handleGetAppSettings() {
+  const apiKey = await SLStorage.get(SLStorage.SETTINGS.API_KEY);
   return {
     showSLButton:
-      (await SLStorage.get(SLStorage.SETTINGS.API_KEY)) !== "" &&
-      (await SLStorage.get(SLStorage.SETTINGS.SHOW_SL_BUTTON)),
+      apiKey !== "" && (await SLStorage.get(SLStorage.SETTINGS.SHOW_SL_BUTTON)),
+    isLoggedIn: apiKey !== "",
+    url: await SLStorage.get(SLStorage.SETTINGS.API_URL),
     SLButtonPosition: await SLStorage.get(
       SLStorage.SETTINGS.SL_BUTTON_POSITION
     ),
