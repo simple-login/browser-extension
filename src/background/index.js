@@ -134,7 +134,7 @@ browser.runtime.onMessage.addListener(async function (request, sender) {
       ? await SLStorage.get(SLStorage.SETTINGS.API_URL)
       : await handleExtensionSetup();
   } else if (request.tag === "EXTENSION_INSTALLED_QUERY") {
-    return await handleExtensionInstalledQuery();
+    return handleExtensionInstalledQuery();
   } else if (request.tag === "SAFARI_FINALIZE_EXTENSION_SETUP") {
     return await finalizeExtensionSetup(request.data);
   }
