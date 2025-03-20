@@ -258,6 +258,15 @@ if (!window._hasExecutedSlExtension) {
         if (!event.data) return;
         if (!event.data.tag) return;
         if (event.data.tag === "PERFORM_EXTENSION_SETUP") {
+          const SLSettings = await sendMessageToBackground("GET_APP_SETTINGS");
+          if (SLSettings.isLoggedIn) {
+            console.log(
+              "Received PERFORM_EXTENSION_SETUP but extension is already logged in. Redirecting to dashboard"
+            );
+            window.location.href = `${SLSettings.url}/dashboard/`;
+            return;
+          }
+
           if (!hasProcessedSetup) {
             hasProcessedSetup = true;
             const apiUrl = await sendMessageToBackground("EXTENSION_SETUP");

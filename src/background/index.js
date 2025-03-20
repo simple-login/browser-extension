@@ -14,10 +14,12 @@ import Utils from "../popup/Utils";
  * Get app settings
  */
 async function handleGetAppSettings() {
+  const apiKey = await SLStorage.get(SLStorage.SETTINGS.API_KEY);
   return {
     showSLButton:
-      (await SLStorage.get(SLStorage.SETTINGS.API_KEY)) !== "" &&
-      (await SLStorage.get(SLStorage.SETTINGS.SHOW_SL_BUTTON)),
+      apiKey !== "" && (await SLStorage.get(SLStorage.SETTINGS.SHOW_SL_BUTTON)),
+    isLoggedIn: apiKey !== "",
+    url: await SLStorage.get(SLStorage.SETTINGS.API_URL),
     SLButtonPosition: await SLStorage.get(
       SLStorage.SETTINGS.SL_BUTTON_POSITION
     ),
@@ -132,7 +134,7 @@ browser.runtime.onMessage.addListener(async function (request, sender) {
       ? await SLStorage.get(SLStorage.SETTINGS.API_URL)
       : await handleExtensionSetup();
   } else if (request.tag === "EXTENSION_INSTALLED_QUERY") {
-    return handleExtensionInstalledQuery();
+    return await handleExtensionInstalledQuery();
   } else if (request.tag === "SAFARI_FINALIZE_EXTENSION_SETUP") {
     return await finalizeExtensionSetup(request.data);
   }
